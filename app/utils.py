@@ -1,7 +1,12 @@
 from flask import url_for as _url_for, current_app, _request_ctx_stack
+import time
 import os
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
+
+def timestamp():
+    """Return the current timestamp as an integer."""
+    return int(time.time())
 
 def url_for(*args, **kwargs):
     """

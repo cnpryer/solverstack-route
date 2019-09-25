@@ -1,8 +1,8 @@
-"""added user & demand tables
+"""added user & demand schemas
 
-Revision ID: 30a016e1c44f
+Revision ID: 3e45f3944387
 Revises: 
-Create Date: 2019-09-25 09:03:38.557687
+Create Date: 2019-09-25 10:33:34.897484
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '30a016e1c44f'
+revision = '3e45f3944387'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,10 +36,11 @@ def upgrade():
     sa.Column('city', sa.String(length=128), nullable=True),
     sa.Column('state', sa.String(length=50), nullable=True),
     sa.Column('zip', sa.String(length=10), nullable=True),
+    sa.Column('latitude', sa.Float(), nullable=True),
+    sa.Column('longitude', sa.Float(), nullable=True),
     sa.Column('weight', sa.Float(), nullable=True),
     sa.Column('pallets', sa.Float(), nullable=True),
-    sa.Column('date', sa.DateTime(), nullable=True),
-    sa.Column('data_source', sa.String(length=10), nullable=True),
+    sa.Column('upload_date', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')

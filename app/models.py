@@ -10,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
 
+from .utils import timestamp
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -91,9 +93,10 @@ class Demand(db.Model):
     city = db.Column(db.String(128))
     state = db.Column(db.String(50))
     zip = db.Column(db.String(10))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
     weight = db.Column(db.Float)
     pallets = db.Column(db.Float)
-    date = db.Column(db.DateTime)
-    data_source = db.Column(db.String(10))
+    upload_date = db.Column(db.Integer, default=timestamp)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
         nullable=False)
