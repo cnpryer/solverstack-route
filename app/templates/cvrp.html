@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}CSVRP{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <table id="excelDataTable" border="1">
+    </table>
+    {% block javascript %}
+    <script src="{{ url_for('static', filename='js/cvrp.js') }}"></script>
+    <script type="text/javascript" charset="utf-8">
+        data = {{ data | tojson }}
+        buildHtmlTable('#excelDataTable', data)
+    </script>
+    <!-- The contents of myscript.js will be loaded inside the script tag -->
+    {% endblock %}
+{% endblock %}

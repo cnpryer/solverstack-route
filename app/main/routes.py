@@ -43,6 +43,7 @@ def upload():
         if file and allowed_file(file.filename):
             user_id = current_user.get_id()
             current_time = timestamp()
+            Demand.query.filter_by(user_id=user_id).delete()
             csv_file = TextIOWrapper(file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             columns = []
@@ -62,5 +63,15 @@ def upload():
                     )
                     db.session.add(demand)
                     db.session.commit()
-            return redirect('/index')
+            return redirect('/cvrp')
     return render_template('upload.html')
+
+@bp.route('/cvrp', methods=['GET', 'POST'])
+@login_required
+def cvrp():
+    if request.method == 'GET':
+        user = current_user.get_id()
+        demand = db.engine.execute(
+            'select * from demand where demand.user_id = %s' % user).fetchall()
+        data = [dict(row) for row in demand]
+    return render_template('cvrp.html', data=data)
