@@ -33,3 +33,65 @@ function addAllColumnHeaders(data, selector) {
 
   return columnSet;
 }
+
+function buildPlotlyMap(selector, solution) {
+
+    function unpack(rows, key) {
+        return rows.map(function(row) { return row[key]; });
+    }
+
+    var id = unpack(solution, 'id'),
+        pallets = unpack(solution, 'pallets'),
+        lat = unpack(solution, 'latitude'),
+        lon = unpack(solution, 'longitude'),
+        cluster = unpack(solution, 'cluster')
+        size = [],
+        hoverText = [],
+        //scale = 2.* Math.max(null, pallets) / (100**2);
+        scale = 2;
+
+    for ( var i = 0 ; i < pallets.length; i++) {
+        var currentSize = pallets[i] / scale;
+        var currentText = "pallets: " + pallets[i] + "<br>cluster: " + cluster[i];
+        size.push(currentSize);
+        hoverText.push(currentText);
+    }
+
+    var data = [{
+        type: 'scattergeo',
+        locationmode: 'USA-states',
+        lat: lat,
+        lon: lon,
+        hoverinfo: 'text',
+        text: hoverText,
+        marker: {
+            size: size,
+            color: cluster,
+            line: {
+                color: 'black',
+                width: 0.5
+            },
+        }
+    }];
+
+    var layout = {
+        title: '',
+        showlegend: false,
+        width: '100%',
+        height: '100%',
+        geo: {
+            scope: 'usa',
+            projection: {
+                type: 'albers usa'
+            },
+            showland: true,
+            landcolor: 'rgb(217, 217, 217)',
+            subunitwidth: 1,
+            countrywidth: 1,
+            subunitcolor: 'rgb(255,255,255)',
+            countrycolor: 'rgb(255,255,255)'
+        },
+    };
+
+    Plotly.plot(selector, data, layout, {showLink: false});
+}
