@@ -10,6 +10,8 @@ from io import TextIOWrapper
 import csv
 
 from ..utils import timestamp
+from fyords.cluster import DBSCAN
+import pandas as pd
 
 ALLOWED_EXTENSIONS = {'csv'}
 
@@ -74,4 +76,17 @@ def cvrp():
         demand = db.engine.execute(
             'select * from demand where demand.user_id = %s' % user).fetchall()
         data = [dict(row) for row in demand]
-    return render_template('cvrp.html', data=data)
+        df = pd.DataFrame(data)
+        epsilon = 0.79585 # approximate degree delta for 50 miles
+        minpts = 2 # at least cluster 2
+
+        x = df.latitude.values + 90
+        y = df.longitude.values + 180
+
+        # TODO: use haversine instead of euclidean
+        dbscan = DBSCAN(epsilon, minpts)
+        dbscan.fit(x, y)
+        dbscan.predict()
+        df['cluster'] = dbscan.clusters
+        solution = df.to_json(orient='records')
+    return render_template('cvrp.html', data=data, solution=solution)
