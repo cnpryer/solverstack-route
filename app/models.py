@@ -98,5 +98,6 @@ class Demand(db.Model):
     weight = db.Column(db.Float)
     pallets = db.Column(db.Float)
     upload_date = db.Column(db.Integer, default=timestamp)
+    cluster = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
         nullable=False)

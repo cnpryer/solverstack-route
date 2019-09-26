@@ -1,12 +1,12 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, g, \
-    jsonify, current_app
+    jsonify, current_app, make_response
 from flask_login import current_user, login_required
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm, MessageForm
 from app.models import User, Demand
 from app.main import bp
-from io import TextIOWrapper
+from io import TextIOWrapper, StringIO
 import csv
 
 from ..utils import timestamp
@@ -61,8 +61,7 @@ def upload():
                         weight=row[positions['weight']],
                         pallets=row[positions['pallets']],
                         upload_date=timestamp(),
-                        user_id=user_id
-                    )
+                        user_id=user_id)
                     db.session.add(demand)
                     db.session.commit()
             return redirect('/cvrp')
@@ -72,21 +71,50 @@ def upload():
 @login_required
 def cvrp():
     if request.method == 'GET':
-        user = current_user.get_id()
-        demand = db.engine.execute(
-            'select * from demand where demand.user_id = %s' % user).fetchall()
+        user_id = current_user.get_id()
+        demand = db.engine.execute('select * from demand '
+            ' where demand.user_id = %s' % user_id).fetchall()
         data = [dict(row) for row in demand]
         df = pd.DataFrame(data)
         epsilon = 0.79585 # approximate degree delta for 50 miles
         minpts = 2 # at least cluster 2
-
         x = df.latitude.values + 90
         y = df.longitude.values + 180
-
         # TODO: use haversine instead of euclidean
         dbscan = DBSCAN(epsilon, minpts)
         dbscan.fit(x, y)
         dbscan.predict()
         df['cluster'] = dbscan.clusters
         solution = df.to_json(orient='records')
+        # upload to database
+        Demand.query.filter_by(user_id=user_id).delete()
+        for i in range(len(df)):
+            demand = Demand(
+                latitude=df.latitude.iloc[i],
+                longitude=df.longitude.iloc[i],
+                weight=df.weight.iloc[i],
+                pallets=df.pallets.iloc[i],
+                upload_date=timestamp(),
+                user_id=user_id,
+                cluster=df.cluster.iloc[i])
+            db.session.add(demand)
+            db.session.commit()
     return render_template('cvrp.html', data=data, solution=solution)
+
+@bp.route('/download')
+@login_required
+def download():
+    user_id = current_user.get_id()
+    si = StringIO()
+    csv_writer = csv.writer(si)
+    cursor = db.engine.execute('select * from demand '
+        ' where user_id = %s' % user_id)
+    columns = cursor.keys()
+    rows = cursor.fetchall()
+    csv_writer.writerow(columns)
+    csv_writer.writerows(rows)
+    response = make_response(si.getvalue())
+    response.headers['Content-Disposition'] = \
+        'attachment; filename=solution.csv'
+    response.headers['Content-type'] = 'text/csv'
+    return response
