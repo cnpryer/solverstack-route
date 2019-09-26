@@ -77,8 +77,8 @@ function buildPlotlyMap(selector, solution) {
     var layout = {
         title: '',
         showlegend: false,
-        width: '100%',
-        height: '100%',
+        autosize: true,
+        height: '500px',
         geo: {
             scope: 'usa',
             projection: {
