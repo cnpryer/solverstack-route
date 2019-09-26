@@ -38,10 +38,13 @@ def upload():
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
+
         file = request.files['file']
+
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+
         if file and allowed_file(file.filename):
             user_id = current_user.get_id()
             current_time = timestamp()
@@ -49,12 +52,13 @@ def upload():
             csv_file = TextIOWrapper(file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             columns = []
-            for row in csv_reader: # assmes first row is field names
+            for row in csv_reader: # assumes first row is field names
                 columns = list(row)
                 break
+            # get position of uploaded fields for more dynamic storage population
             positions = {col: i for i, col in enumerate(columns)}
             for i, row in enumerate(csv_reader):
-                if i > 0:
+                if i > 0:  # upload values only (field names are first row)
                     demand = Demand(
                         latitude=row[positions['latitude']],
                         longitude=row[positions['longitude']],
@@ -64,6 +68,7 @@ def upload():
                         user_id=user_id)
                     db.session.add(demand)
                     db.session.commit()
+
             return redirect('/cvrp')
     return render_template('upload.html')
 
