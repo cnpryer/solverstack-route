@@ -8,25 +8,20 @@
 {% block app_content %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style src="{{ url_for('static', filename='style/style.css')}}"></style>
     <div class="container">
         <div class="row">
-            <div class="col-sm-6">
-                <label>Input</label>
-                <table id="data" border="1"></table>
-            </div>
-            <div class="col-sm-6">
-                <label>Output</label>
-                <div id="solution"></div>
-                <table id="solution-data" border="1"></table>
-                <a href="{{ url_for('main.download') }}">Download</a>
-            </div>
+            <div id="solution"></div>
+        </div>
+        <div class="row" style="margin-top: 25px;">
+            <table class="table table-striped" id="solution-data"></table>
+            <a href="{{ url_for('main.download') }}">Download</a>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/cvrp.js') }}"></script>
     <script type="text/javascript" charset="utf-8">
         data = {{ data | tojson }}
         solution = {{ solution | safe }}
-        buildHtmlTable('#data', data);
         buildHtmlTable('#solution-data', solution);
         buildPlotlyMap('solution', solution);
     </script>
