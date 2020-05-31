@@ -10,7 +10,7 @@ from io import TextIOWrapper, StringIO
 import csv
 
 from ..utils import timestamp
-from fyords.cluster import DBSCAN
+#from fyords.cluster import DBSCAN
 import pandas as pd
 
 ALLOWED_EXTENSIONS = {'csv'}
@@ -86,10 +86,10 @@ def cvrp():
         x = df.latitude.values + 90
         y = df.longitude.values + 180
         # TODO: use haversine instead of euclidean
-        dbscan = DBSCAN(epsilon, minpts)
-        dbscan.fit(x, y)
-        dbscan.predict()
-        df['cluster'] = dbscan.clusters
+        #dbscan = DBSCAN(epsilon, minpts)
+        #dbscan.fit(x, y)
+        #dbscan.predict()
+        df['cluster'] = -1 #dbscan.clusters
         solution = df.to_json(orient='records')
         # upload to database
         Demand.query.filter_by(user_id=user_id).delete()
