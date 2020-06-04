@@ -10,7 +10,7 @@ from io import TextIOWrapper, StringIO
 import csv
 
 from ..utils import timestamp
-from pyords.cluster import DBSCAN
+from pyords.cluster.algorithms import DBSCAN
 import pandas as pd
 
 ALLOWED_EXTENSIONS = {'csv'}
@@ -80,7 +80,12 @@ def cvrp():
         demand = db.engine.execute('select * from demand '
             ' where demand.user_id = %s' % user_id).fetchall()
         data = [dict(row) for row in demand]
+        
         df = pd.DataFrame(data)
+        if df.empty:
+            flash('upload data')
+            return render_template('upload.html')
+
         epsilon = 0.79585 # approximate degree delta for 50 miles
         minpts = 2 # at least cluster 2
         x = df.latitude.values + 90
