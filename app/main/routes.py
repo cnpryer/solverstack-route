@@ -69,7 +69,7 @@ def upload():
                     db.session.add(demand)
                     db.session.commit()
 
-            return redirect('/cvrp')
+            return redirect(url_for('main.cvrp'))
     return render_template('upload.html')
 
 @bp.route('/cvrp', methods=['GET', 'POST'])
@@ -84,7 +84,7 @@ def cvrp():
         df = pd.DataFrame(data)
         if df.empty:
             flash('upload data')
-            return render_template('upload.html')
+            return redirect(url_for('main.upload'))
 
         epsilon = 0.79585 # approximate degree delta for 50 miles
         minpts = 2 # at least cluster 2
@@ -105,8 +105,7 @@ def cvrp():
                 weight=df.weight.iloc[i],
                 pallets=df.pallets.iloc[i],
                 upload_date=timestamp(),
-                user_id=user_id,
-                cluster=df.cluster.iloc[i])
+                user_id=user_id)
             db.session.add(demand)
             db.session.commit()
     return render_template('cvrp.html', data=data, solution=solution)
