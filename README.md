@@ -28,7 +28,7 @@ Initial development will be monolithic type until services can be abstracted. Fo
 add instance/app.db & create database (if it doesn't exist)
 ```cmd/bash
 mkdir instance
-touch app.db
+touch instance/app.db
 python manage.py db create_all
 ```
 
