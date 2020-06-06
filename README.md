@@ -42,4 +42,4 @@ FLASK_DEBUG=1 # not needed
 flask run
 ```
 
-![demo img](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.1.png?raw=true)
+![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.1.PNG?raw=true)
