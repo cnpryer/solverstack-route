@@ -32,12 +32,14 @@ flask db migrate
 flask db upgrade
 ```
 
+add .env file or set environment variables yourself
 ```.env
 FLASK_APP=app
 FLASK_ENV=development
 FLASK_DEBUG=1 # not needed
 ```
 
+:rocket: launch
 ```cmd/bash
 flask run
 ```
