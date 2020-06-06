@@ -25,11 +25,11 @@ Initial development will be monolithic type until services can be abstracted. Fo
 
 # demo
 
-add instance/app.db
+add instance/app.db & create database (if it doesn't exist)
 ```cmd/bash
-flask db init
-flask db migrate
-flask db upgrade
+mkdir instance
+touch app.db
+python manage.py db create_all
 ```
 
 add .env file or set environment variables yourself
@@ -41,7 +41,7 @@ FLASK_DEBUG=1 # not needed
 
 :rocket: launch
 ```cmd/bash
-flask run
+python manage.py runserver
 ```
 
 ![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.1.PNG?raw=true)
