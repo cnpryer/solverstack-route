@@ -22,3 +22,24 @@ Initial development will be monolithic type until services can be abstracted. Fo
 
 1. Test with instance/app.db
 2. use init.sh for initial database migrations
+
+# demo
+
+add instance/app.db
+```cmd/bash
+flask db init
+flask db migrate
+flask db upgrade
+```
+
+```.env
+FLASK_APP=app
+FLASK_ENV=development
+FLASK_DEBUG=1 # not needed
+```
+
+```cmd/bash
+flask run
+```
+
+![demo img](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.1.png?raw=true)
