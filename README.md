@@ -11,18 +11,30 @@ Development projcet for solving the cvrp problem via containerized microservices
 - build a deployable prototype in python to get going
 - refator and optimize using c++
 - lean on and learn to contribute to [or-tools](https://github.com/google/or-tools)
-- dive deeper into numpy utilization & custom optimizations
+- dive deeper into numpy utilization and custom optimizations
 - deploy to [DO](https://www.digitalocean.com/)
 - complete as modular service for future projects
 
 # development
 
-Initial development will be monolithic type until services can be abstracted. For the meantime use the following process:
+Initial development will be monolithic type until services can be abstracted. Current process:
 
-1. Test with instance/app.db
-2. use init.sh for initial database migrations
+1. Setup vagrant environment
+2. Setup database for environment
+3. Test environment
+4. Launch app
 
 # demo
+
+recommended: setup vagrant development environment
+```
+vagrant up
+vagrant ssh
+python3 -m venv venv/cvrp-app
+source venv/cvrp-app/bin/activate
+cd /vagrant
+pip3 install -r requirements.txt
+```
 
 add instance/app.db & create database (if it doesn't exist)
 ```cmd/bash
