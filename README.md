@@ -1,5 +1,4 @@
-![Python package](https://github.com/christopherpryer/cvrp-app/workflows/Python%20package/badge.svg)
-[![codebeat badge](https://codebeat.co/badges/10637c50-1887-4bd1-ae4e-1f970d2302de)](https://codebeat.co/projects/github-com-christopherpryer-cvrp-app-master)
+![Python application](https://github.com/christopherpryer/cvrp-app/workflows/Python%20application/badge.svg)
 
 # cvrp-app
 Development projcet for solving the cvrp problem via containerized microservices & a restful API implementation.
