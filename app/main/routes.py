@@ -69,7 +69,7 @@ def upload():
                     db.session.add(demand)
                     db.session.commit()
 
-            return redirect(url_for('main.cvrp'))
+            return redirect(url_for('main.index'))
     return render_template('upload.html')
 
 @bp.route('/cvrp', methods=['GET', 'POST'])
