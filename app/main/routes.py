@@ -11,6 +11,7 @@ import csv
 
 from ..utils import timestamp
 from pyords.cluster.algorithms import DBSCAN
+from pyords.solver.implementations import get_ortools_solution_dataframe 
 import pandas as pd
 
 ALLOWED_EXTENSIONS = {'csv'}
@@ -95,19 +96,9 @@ def cvrp():
         dbscan.fit(x, y)
         dbscan.predict()
         df['cluster'] = dbscan.clusters
+        df = get_ortools_solution_dataframe(df)
         solution = df.to_json(orient='records')
-        # upload to database
-        Demand.query.filter_by(user_id=user_id).delete()
-        for i in range(len(df)):
-            demand = Demand(
-                latitude=df.latitude.iloc[i],
-                longitude=df.longitude.iloc[i],
-                weight=df.weight.iloc[i],
-                pallets=df.pallets.iloc[i],
-                upload_date=timestamp(),
-                user_id=user_id)
-            db.session.add(demand)
-            db.session.commit()
+
     return render_template('cvrp.html', data=data, solution=solution)
 
 @bp.route('/download')

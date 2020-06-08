@@ -55,4 +55,4 @@ FLASK_DEBUG=1 # not needed
 python manage.py runserver
 ```
 
-![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.1.PNG?raw=true)
+![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.5.PNG?raw=true)

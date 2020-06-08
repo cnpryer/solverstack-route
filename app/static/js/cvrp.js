@@ -45,6 +45,7 @@ function buildPlotlyMap(selector, solution) {
         lat = unpack(solution, 'latitude'),
         lon = unpack(solution, 'longitude'),
         cluster = unpack(solution, 'cluster')
+        vehicle = unpack(solution, 'vehicle')
         size = [],
         hoverText = [],
         //scale = 2.* Math.max(null, pallets) / (100**2);
@@ -52,7 +53,9 @@ function buildPlotlyMap(selector, solution) {
 
     for ( var i = 0 ; i < pallets.length; i++) {
         var currentSize = pallets[i] / scale;
-        var currentText = "pallets: " + pallets[i] + "<br>cluster: " + cluster[i];
+        var currentText = "pallets: " + pallets[i] 
+          + "<br>cluster: " + cluster[i]
+          + "<br>vehicle: " + vehicle[i];
         size.push(currentSize);
         hoverText.push(currentText);
     }
@@ -66,7 +69,7 @@ function buildPlotlyMap(selector, solution) {
         text: hoverText,
         marker: {
             size: size,
-            color: cluster,
+            color: vehicle,
             line: {
                 color: 'black',
                 width: 0.5
