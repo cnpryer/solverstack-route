@@ -22,7 +22,8 @@
     <script type="text/javascript" charset="utf-8">
         data = {{ data | tojson }}
         solution = {{ solution | safe }}
+        version = {{ version | safe }}
         buildHtmlTable('#solution-data', solution);
-        buildPlotlyMap('solution', solution);
+        buildPlotlyMap('solution', solution, version);
     </script>
 {% endblock %}

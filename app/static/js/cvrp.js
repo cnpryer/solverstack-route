@@ -53,9 +53,7 @@ function buildPlotlyMap(selector, solution) {
 
     for ( var i = 0 ; i < pallets.length; i++) {
         var currentSize = pallets[i] / scale;
-        var currentText = "pallets: " + pallets[i] 
-          + "<br>cluster: " + cluster[i]
-          + "<br>vehicle: " + vehicle[i];
+        var currentText = "pallets: " + pallets[i]  + "<br>cluster: " + cluster[i] + "<br>vehicle: " + vehicle[i];
         size.push(currentSize);
         hoverText.push(currentText);
     }
@@ -78,14 +76,14 @@ function buildPlotlyMap(selector, solution) {
     }];
 
     var layout = {
-        title: '',
+        title: 'without dbscan preprocessing (segmentation)',
         showlegend: false,
         autosize: true,
         margin: {
             l: 0,
             r: 0,
             b: 0,
-            t: 0,
+            t: 30,
             pad: 4
         },
         geo: {

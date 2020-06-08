@@ -55,4 +55,9 @@ FLASK_DEBUG=1 # not needed
 python manage.py runserver
 ```
 
+register & sign in
+upload test data 
+```cvrp-app/tests/vrp_testing_data.csv```
+![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.5_upload.PNG?raw=true)
+
 ![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.5.PNG?raw=true)

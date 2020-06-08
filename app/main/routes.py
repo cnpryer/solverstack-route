@@ -12,7 +12,9 @@ import csv
 from ..utils import timestamp
 from pyords.cluster.algorithms import DBSCAN
 from pyords.solver.implementations import get_ortools_solution_dataframe 
+
 import pandas as pd
+from .. import __version__
 
 ALLOWED_EXTENSIONS = {'csv'}
 
