@@ -10,8 +10,8 @@ from io import TextIOWrapper, StringIO
 import csv
 
 from ..utils import timestamp
-from pyords.cluster.algorithms import DBSCAN
-from pyords.solver.implementations import get_ortools_solution_dataframe 
+from pyords.cluster.implementations import get_dbscan_clusters
+from pyords.solver.implementations import get_many_ortools_solutions_dataframe 
 
 import pandas as pd
 from .. import __version__
@@ -89,16 +89,14 @@ def cvrp():
             flash('upload data')
             return redirect(url_for('main.upload'))
 
-        epsilon = 0.79585 # approximate degree delta for 50 miles
-        minpts = 2 # at least cluster 2
-        x = df.latitude.values + 90
-        y = df.longitude.values + 180
-        # TODO: use haversine instead of euclidean
-        dbscan = DBSCAN(epsilon, minpts)
-        dbscan.fit(x, y)
-        dbscan.predict()
-        df['cluster'] = dbscan.clusters
-        df = get_ortools_solution_dataframe(df)
+        df = get_dbscan_clusters(df)
+        df = get_many_ortools_solutions_dataframe(df, segmentation_col='cluster')
+
+        enumerator = enumerate(df.vehicle.fillna('unassigned').unique())
+        vehicle_mapping = {old: new for new, old in enumerator}
+        df.vehicle = df.vehicle.replace(vehicle_mapping)
+        df.vehicle = df.vehicle.replace({vehicle_mapping['unassigned']: 'unassigned'})
+        df = df.sort_values(by='vehicle')
         solution = df.to_json(orient='records')
 
     return render_template('cvrp.html', data=data, solution=solution)

@@ -76,7 +76,7 @@ function buildPlotlyMap(selector, solution) {
     }];
 
     var layout = {
-        title: 'without dbscan preprocessing (segmentation)',
+        title: 'dbscan segmented ortools vrp basic routing',
         showlegend: false,
         autosize: true,
         margin: {
