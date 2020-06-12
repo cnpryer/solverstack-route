@@ -56,8 +56,13 @@ python manage.py runserver
 ```
 
 register & sign in
+
 upload test data 
+
 ```cvrp-app/tests/vrp_testing_data.csv```
+
 ![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.2_upload.PNG?raw=true)
+
+pull cvrp service ```/cvrp```
 
 ![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.2.PNG?raw=true)
