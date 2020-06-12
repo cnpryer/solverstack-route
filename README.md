@@ -1,7 +1,7 @@
 ![Python application](https://github.com/christopherpryer/cvrp-app/workflows/Python%20application/badge.svg)
 
 # cvrp-app
-Development projcet for solving the cvrp problem via containerized microservices & a restful API implementation.
+Development projcet for solving the vehicle routing problem via containerized microservices & a restful API implementation.
 
 # objectives
 
