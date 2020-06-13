@@ -11,7 +11,7 @@ from flask_moment import Moment
 from flask_assets import Environment, Bundle
 from flask_caching import Cache
 from config import Config
-__version__ = 'v0.0.3'
+__version__ = 'v0.0.4'
 
 db = SQLAlchemy()
 migrate = Migrate()
