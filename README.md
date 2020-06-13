@@ -30,8 +30,6 @@ recommended: setup vagrant development environment
 ```
 vagrant up
 vagrant ssh
-python3 -m venv venv/cvrp-app
-source venv/cvrp-app/bin/activate
 cd /vagrant
 pip3 install -r requirements.txt
 ```
@@ -40,7 +38,7 @@ add instance/app.db & create database (if it doesn't exist)
 ```cmd/bash
 mkdir instance
 touch instance/app.db
-python manage.py db create_all
+python3 manage.py db create_all
 ```
 
 add .env file or set environment variables yourself
@@ -52,7 +50,7 @@ FLASK_DEBUG=1 # not needed
 
 :rocket: launch
 ```cmd/bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 
 register & sign in
@@ -65,4 +63,4 @@ upload test data
 
 pull cvrp service ```/cvrp```
 
-![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.2.PNG?raw=true)
+![](https://github.com/christopherpryer/cvrp-app/blob/master/docs/img/v0.0.8.PNG?raw=true)

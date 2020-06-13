@@ -34,18 +34,24 @@ function addAllColumnHeaders(data, selector) {
   return columnSet;
 }
 
+function onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
+}
+
 function buildPlotlyMap(selector, solution) {
 
     function unpack(rows, key) {
         return rows.map(function(row) { return row[key]; });
     }
 
-    var id = unpack(solution, 'id'),
-        pallets = unpack(solution, 'pallets'),
+    var pallets = unpack(solution, 'pallets'),
         lat = unpack(solution, 'latitude'),
         lon = unpack(solution, 'longitude'),
-        cluster = unpack(solution, 'cluster')
-        vehicle = unpack(solution, 'vehicle')
+        cluster = unpack(solution, 'cluster'),
+        vehicle = unpack(solution, 'vehicle'),
+        sequence = unpack(solution, 'sequence'),
+        stop_distance = unpack(solution, 'stop_distance'),
+        stop_load = unpack(solution, 'stop_load'),
         size = [],
         hoverText = [],
         //scale = 2.* Math.max(null, pallets) / (100**2);
@@ -53,31 +59,61 @@ function buildPlotlyMap(selector, solution) {
 
     for ( var i = 0 ; i < pallets.length; i++) {
         var currentSize = pallets[i] / scale;
-        var currentText = "pallets: " + pallets[i]  + "<br>cluster: " + cluster[i] + "<br>vehicle: " + vehicle[i];
+        var currentText = "pallets: " + pallets[i]  
+          + "<br>cluster: " + cluster[i] 
+          + "<br>vehicle: " + vehicle[i]
+          + "<br>seq: " + sequence[i]
+          + "<br>stop_distance: " + stop_distance[i]
+          + "<br>stop_load: " + stop_load[i];
         size.push(currentSize);
         hoverText.push(currentText);
     }
+    
+    // iterate over vehicles to add new traces
+    var data = [];
+    var vehicle_lat = [];
+    var vehicle_lon = [];
+    var vehicle_hover = [];
+    var vehicle_bubble_size = [];
+    var last_vehicle = vehicle[0];
+    for ( var i = 0 ; i < pallets.length; i++) {
+        if (vehicle[i] == last_vehicle) {
 
-    var data = [{
-        type: 'scattergeo',
-        locationmode: 'USA-states',
-        lat: lat,
-        lon: lon,
-        hoverinfo: 'text',
-        text: hoverText,
-        marker: {
-            size: size,
-            color: vehicle,
-            line: {
-                color: 'black',
-                width: 0.5
-            },
-        }
-    }];
+          vehicle_lat.push(lat[i]);
+          vehicle_lon.push(lon[i]);
+          vehicle_hover.push(hoverText[i]);
+          vehicle_bubble_size.push(size[i]);
+
+        } else {
+
+          data.push({
+            type: 'scattergeo',
+            locationmode: 'USA-states',
+            lat: vehicle_lat,
+            lon: vehicle_lon,
+            hoverinfo: 'text',
+            text: vehicle_hover,
+            name: last_vehicle,
+            marker: {
+                size: vehicle_bubble_size,
+                line: {
+                    color: 'black',
+                    width: 0.5
+                },
+              }
+            })
+            
+          var vehicle_lat = [lat[i]];
+          var vehicle_lon = [lon[i]];
+          var vehicle_hover = [hoverText[i]];
+          var vehicle_bubble_size = [size[i]];
+          var last_vehicle = vehicle[i];
+         }
+      }
 
     var layout = {
         title: 'dbscan segmented ortools vrp basic routing',
-        showlegend: false,
+        showlegend: true,
         autosize: true,
         margin: {
             l: 0,

@@ -10,13 +10,25 @@ from io import TextIOWrapper, StringIO
 import csv
 
 from ..utils import timestamp
-from pyords.cluster.implementations import get_dbscan_clusters
-from pyords.solver.implementations import get_many_ortools_solutions_dataframe 
 
+from pyords.cluster.implementations import create_dbscan_expanded_clusters
+from pyords.distance.haversine import create_haversine_matrix
+import pyords as pyr
 import pandas as pd
-from .. import __version__
+import numpy as np
+
 
 ALLOWED_EXTENSIONS = {'csv'}
+
+def init_vrp_w_df(dataframe:pd.DataFrame):
+    lats, lons = dataframe.latitude, dataframe.longitude
+    origins = [(41.4191, -87.7748)]
+    matrix = create_haversine_matrix(origins, lats, lons)
+    # unit is load for each node with demand (in this case
+    # only destinations). inserting 0 at the front of the array
+    demand = np.insert(dataframe.pallets.values, 0, 0)
+
+    return matrix, demand
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -89,13 +101,24 @@ def cvrp():
             flash('upload data')
             return redirect(url_for('main.upload'))
 
-        df = get_dbscan_clusters(df)
-        df = get_many_ortools_solutions_dataframe(df, segmentation_col='cluster')
+        # simplify euclidean distance calculation by projecting to positive vals
+        x = df.latitude.values + 90
+        y = df.longitude.values + 180
+        df['cluster'] = create_dbscan_expanded_clusters(x, y)
 
-        enumerator = enumerate(df.vehicle.fillna('unassigned').unique())
-        vehicle_mapping = {old: new for new, old in enumerator}
-        df.vehicle = df.vehicle.replace(vehicle_mapping)
-        df.vehicle = df.vehicle.replace({vehicle_mapping['unassigned']: 'unassigned'})
+        results = pd.DataFrame(columns=df.columns.tolist())
+        for cluster in df.cluster.unique():
+            clustered_df = df[df.cluster == cluster].copy().reset_index(drop=True)
+            
+            matrix, demand = init_vrp_w_df(clustered_df)
+            bndl = pyr.VrpBundle(matrix=matrix, demand=demand)
+            clustered_df = bndl.run().cast_solution_to_df(clustered_df)
+            clustered_df.vehicle = str(int(cluster)) + '-' + clustered_df.vehicle.astype(int)\
+                .astype(str)
+            results = results.append(clustered_df, sort=False)
+
+        df = results.copy()
+        
         df = df.sort_values(by='vehicle')
         solution = df.to_json(orient='records')
 
