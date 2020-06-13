@@ -19,7 +19,7 @@ Development projcet for solving the vehicle routing problem via containerized mi
 
 Initial development will be monolithic type until services can be abstracted. Current process:
 
-1. Setup vagrant environment
+1. Setup vagrant environment (not needed but some of the commands below might change)
 2. Setup database for environment
 3. Test environment
 4. Launch app
@@ -35,7 +35,7 @@ pip3 install -r requirements.txt
 ```
 
 add instance/app.db & create database (if it doesn't exist)
-```cmd/bash
+```
 mkdir instance
 touch instance/app.db
 python3 manage.py db create_all
@@ -49,8 +49,8 @@ FLASK_DEBUG=1 # not needed
 ```
 
 :rocket: launch
-```cmd/bash
-python3 manage.py runserver
+```
+python3 manage.py runserver --host=0.0.0.0
 ```
 
 register & sign in
