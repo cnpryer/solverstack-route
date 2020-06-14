@@ -30,6 +30,25 @@ def init_vrp_w_df(dataframe:pd.DataFrame):
 
     return matrix, demand
 
+def process_vrp(dataframe:pd.DataFrame):
+    # simplify euclidean distance calculation by projecting to positive vals
+    x = dataframe.latitude.values + 90
+    y = dataframe.longitude.values + 180
+    dataframe['cluster'] = create_dbscan_expanded_clusters(x, y)
+
+    results = pd.DataFrame(columns=dataframe.columns.tolist())
+    for cluster in dataframe.cluster.unique():
+        clustered_df = dataframe[dataframe.cluster == cluster].copy().reset_index(drop=True)
+        
+        matrix, demand = init_vrp_w_df(clustered_df)
+        bndl = pyr.VrpBundle(matrix=matrix, demand=demand)
+        clustered_df = bndl.run().cast_solution_to_df(clustered_df)
+        clustered_df.vehicle = str(int(cluster)) + '-' + clustered_df.vehicle.astype(int)\
+            .astype(str)
+        results = results.append(clustered_df, sort=False)
+
+    return results
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -63,29 +82,36 @@ def upload():
         if file and allowed_file(file.filename):
             user_id = current_user.get_id()
             current_time = timestamp()
-            Demand.query.filter_by(user_id=user_id).delete()
-            csv_file = TextIOWrapper(file, encoding='utf-8')
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            columns = []
-            for row in csv_reader: # assumes first row is field names
-                columns = list(row)
-                break
+
+            Demand.query.filter_by(user_id=user_id).delete() # TODO: for demo
+
+            df = process_vrp(pd.read_csv(TextIOWrapper(file, encoding='utf-8')))
+            #df = process_vrp(pd.read_csv(csv.reader(csv_file, delimiter=',')))
+            flash('optimiztaion complete!')
+            flash('uploading...')
+
             # get position of uploaded fields for more dynamic storage population
-            positions = {col: i for i, col in enumerate(columns)}
-            for i, row in enumerate(csv_reader):
+            for i in range(len(df)):
                 if i > 0:  # upload values only (field names are first row)
                     demand = Demand(
-                        latitude=row[positions['latitude']],
-                        longitude=row[positions['longitude']],
-                        weight=row[positions['weight']],
-                        pallets=row[positions['pallets']],
+                        latitude=df.latitude.iloc[i],
+                        longitude=df.longitude.iloc[i],
+                        weight=df.weight.iloc[i],
+                        pallets=df.pallets.iloc[i],
                         upload_date=timestamp(),
-                        user_id=user_id)
+                        user_id=user_id,
+                        vehicle_id=df.vehicle.iloc[i],
+                        sequence_num=df.sequence.iloc[i],
+                        stop_distance=df.stop_distance.iloc[i],
+                        stop_load=df.stop_load.iloc[i]
+                    )
                     db.session.add(demand)
                     db.session.commit()
 
             flash('upload successful!')
-            return redirect(url_for('main.index'))
+
+            return redirect(url_for('main.cvrp'))
+
     return render_template('upload.html')
 
 @bp.route('/cvrp', methods=['GET', 'POST'])
@@ -101,26 +127,8 @@ def cvrp():
         if df.empty:
             flash('upload data')
             return redirect(url_for('main.upload'))
-
-        # simplify euclidean distance calculation by projecting to positive vals
-        x = df.latitude.values + 90
-        y = df.longitude.values + 180
-        df['cluster'] = create_dbscan_expanded_clusters(x, y)
-
-        results = pd.DataFrame(columns=df.columns.tolist())
-        for cluster in df.cluster.unique():
-            clustered_df = df[df.cluster == cluster].copy().reset_index(drop=True)
-            
-            matrix, demand = init_vrp_w_df(clustered_df)
-            bndl = pyr.VrpBundle(matrix=matrix, demand=demand)
-            clustered_df = bndl.run().cast_solution_to_df(clustered_df)
-            clustered_df.vehicle = str(int(cluster)) + '-' + clustered_df.vehicle.astype(int)\
-                .astype(str)
-            results = results.append(clustered_df, sort=False)
-
-        df = results.copy()
         
-        df = df.sort_values(by='vehicle')
+        df = df.sort_values(by='vehicle_id')
         solution = df.to_json(orient='records')
 
     return render_template('cvrp.html', data=data, solution=solution)
@@ -141,4 +149,5 @@ def download():
     response.headers['Content-Disposition'] = \
         'attachment; filename=solution.csv'
     response.headers['Content-type'] = 'text/csv'
+    
     return response

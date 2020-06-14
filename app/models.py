@@ -101,3 +101,7 @@ class Demand(db.Model):
     cluster = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
         nullable=False)
+    vehicle_id = db.Column(db.String(10))
+    sequence_num = db.Column(db.Integer)
+    stop_distance = db.Column(db.Float)
+    stop_load = db.Column(db.Float)
