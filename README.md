@@ -9,7 +9,10 @@ Development projcet for solving the vehicle routing problem via containerized mi
 - learn to utilize [Vagrant](https://www.vagrantup.com/) for standard linux development environments
 - learn to utilize [docker](https://www.docker.com/)
 - build a deployable prototype in python to get going
-- refator and optimize using c++
+- refator and optimize using c++ and typescript for learning purposes (some features will remain in python).
+  - service balancers and product optimzations: c++
+  - solution optimizations: c++
+  - web client: typescript, vue.js?, css framework?
 - lean on and learn to contribute to [or-tools](https://github.com/google/or-tools)
 - dive deeper into numpy utilization and custom optimizations
 - deploy to [DO](https://www.digitalocean.com/)
