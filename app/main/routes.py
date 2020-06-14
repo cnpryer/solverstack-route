@@ -86,9 +86,7 @@ def upload():
             Demand.query.filter_by(user_id=user_id).delete() # TODO: for demo
 
             df = process_vrp(pd.read_csv(TextIOWrapper(file, encoding='utf-8')))
-            #df = process_vrp(pd.read_csv(csv.reader(csv_file, delimiter=',')))
-            flash('optimiztaion complete!')
-            flash('uploading...')
+            flash('optimization complete!')
 
             # get position of uploaded fields for more dynamic storage population
             for i in range(len(df)):
@@ -107,8 +105,6 @@ def upload():
                     )
                     db.session.add(demand)
                     db.session.commit()
-
-            flash('upload successful!')
 
             return redirect(url_for('main.cvrp'))
 
@@ -149,5 +145,5 @@ def download():
     response.headers['Content-Disposition'] = \
         'attachment; filename=solution.csv'
     response.headers['Content-type'] = 'text/csv'
-    
+
     return response
