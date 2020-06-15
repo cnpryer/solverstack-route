@@ -3,7 +3,7 @@
 [![Slack](https://img.shields.io/badge/slack-workspace-orange)](https://join.slack.com/t/andromiasoftware/shared_invite/zt-felqfjhs-Tvma8OYuCExxdmQgHOIGsg)
 
 # cvrp-app
-Development projcet for solving the vehicle routing problem via containerized microservices & a restful API implementation. **Note that the first few iterations will be monolithic.** The goal is to identify and abstract services for meaningul improvements.
+Development projcet for solving the vehicle routing problem via containerized microservices & a restful API implementation. **Note that the first few iterations will be monolithic.** The goal is to identify and abstract services for meaningful improvements.
 
 # objectives
 
