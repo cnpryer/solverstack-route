@@ -14,7 +14,7 @@ Development project for solving the vehicle routing problem via containerized mi
 - refator and optimize using c++ and typescript for learning purposes (some features will remain in python).
   - service balancers and product optimzations: c++
   - solution optimizations: c++
-  - web client: typescript, vue.js?, css framework?
+  - web client: typescript, vue.js?, electron.js? css framework?
 - lean on and learn to contribute to [or-tools](https://github.com/google/or-tools)
 - dive deeper into numpy utilization and custom optimizations
 - deploy to [DO](https://www.digitalocean.com/)
