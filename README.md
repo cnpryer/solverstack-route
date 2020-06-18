@@ -5,6 +5,13 @@
 # cvrp-app
 Development project for solving the vehicle routing problem via containerized microservices & a restful API implementation. **Note that the first few iterations will be monolithic.** The goal is to identify and abstract services for meaningful improvements.
 
+# CVRP
+Stands for **c**apacitated **v**ehicle **r**outing **p**roblem which is a kind of subset of [vrp](https://en.wikipedia.org/wiki/Vehicle_routing_problem). 
+
+## /paintpicture
+
+Using the testing ```.csv``` file as a reference, maybe you are a business that owns multiple stores in the middle of the USA. These stores are spread across several different states (can be 50, 100, 200 miles apart from eachother). It's the beginning of the week and you need to make sure that you fill up those stores with enough inventory for the re-opening of different segments of the country after a pandemic lockdown (economic freeze). Your goal is to come up with a cost-effective way to get all the product from your distribution center and to each store during their business hours or specified loading times (the time window component is technically VRPTW). You have a limited number of trucks and limited budget for driver hours. What do?
+
 # objectives
 
 - redevelop the [cvrp-app](https://github.com/christopherpryer/cvrp-app) for production-grade requirements
