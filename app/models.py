@@ -1,107 +1,131 @@
-import base64
-from datetime import datetime, timedelta
-from hashlib import md5
-import json
-import os
-from time import time
-from flask import current_app, url_for
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-import jwt
-from app import db, login
-
 from .utils import timestamp
 
-class User(UserMixin, db.Model):
-    __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    token = db.Column(db.String(32), index=True, unique=True)
-    token_expiration = db.Column(db.DateTime)
+from app import db
 
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
+def create_fk(identifier:str, nullable:bool=False):
+    return db.Column(db.Integer, db.ForeignKey(identifier), nullable=nullable)
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+class Model(db.Model):
+    """
+    Models are solution design instances. These consist of:
+      - model identifiers
+      - data chassis identifiers
+    """
+    __tablename__ = 'model'
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    model_id = db.Column(db.Integer, primary_key=True)
+    data_chassis_id = create_fk('data_chassis.data_chassis_id')
 
-    def get_reset_password_token(self, expires_in=600):
-        return jwt.encode(
-            {'reset_password': self.id, 'exp': time() + expires_in},
-            current_app.config['SECRET_KEY'],
-            algorithm='HS256').decode('utf-8')
+class DataChassis(db.Model):
+    """
+    DataChassis is configuration to formulate a problem definition.
+      - data chassis identifier (pk)
+      - origin identifier (fk)
+      - demand idendifier (fk)
+      - asset class identifier (fk)
+    """
+    __tablename__ = 'data_chassis'
 
-    @staticmethod
-    def verify_reset_password_token(token):
-        try:
-            id = jwt.decode(token, current_app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
-        except:
-            return
-        return User.query.get(id)
+    data_chassis_id = db.Column(db.Integer, primary_key=True)
+    origin_id = create_fk('origin.origin_id')
+    demand_id = create_fk('demand.demand_id')
+    asset_class_id = create_fk('asset_class.asset_class_id')
 
-    def to_dict(self, include_email=False):
-        data = {
-            'id': self.id,
-            'username': self.username,
-            'last_seen': self.last_seen.isoformat() + 'Z'
-        }
-        if include_email:
-            data['email'] = self.email
-        return data
+class Scenario(db.Model):
+    """
+    Scenarios are subsets of models meant to abstract any representation of model configurations.
+      - scenario identifier (pk)
+      - scenario name string
+      - model identifier (fk)
+    """
+    __tablename__ = 'scenario'
 
-    def from_dict(self, data, new_user=False):
-        for field in ['username', 'email']:
-            if field in data:
-                setattr(self, field, data[field])
-        if new_user and 'password' in data:
-            self.set_password(data['password'])
+    scenario_id = db.Column(db.Integer, primary_key=True)
+    scenario_name = db.Column(db.String(16))
+    model_id = create_fk('model.model_id')
 
-    def get_token(self, expires_in=3600):
-        now = datetime.utcnow()
-        if self.token and self.token_expiration > now + timedelta(seconds=60):
-            return self.token
-        self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
-        self.token_expiration = now + timedelta(seconds=expires_in)
-        db.session.add(self)
-        return self.token
+class Unit(db.Model):
+    """
+    Units are unit of measure resources. For example, 'pallets', 'pounds', 'haversine miles', etc.
+      - unit of measure identifier (pk)
+      - unit of measure string
+    """
+    __tablename__ = 'unit'
 
-    def revoke_token(self):
-        self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
-
-    @staticmethod
-    def check_token(token):
-        user = User.query.filter_by(token=token).first()
-        if user is None or user.token_expiration < datetime.utcnow():
-            return None
-        return user
-
-
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+    unit_id = db.Column(db.Integer, primary_key=True)
+    unit_name = db.Column(db.String(10))
 
 class Demand(db.Model):
+    """
+    Demand is a destination node to be routed.
+      - demand identifier (pk)
+      - geocodes (latitude & longitude)
+      - units for capacity constraint
+      - unit identifier (fk)
+      - cluster identifier for sub-problem spaces
+    """
     __tablename__ = 'demand'
-    id = db.Column(db.Integer, primary_key=True)
-    city = db.Column(db.String(128))
-    state = db.Column(db.String(50))
-    zip = db.Column(db.String(10))
+
+    demand_id = db.Column(db.Integer, primary_key=True)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    weight = db.Column(db.Float)
-    pallets = db.Column(db.Float)
-    upload_date = db.Column(db.Integer, default=timestamp)
-    cluster = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
-        nullable=False)
-    vehicle_id = db.Column(db.String(10))
-    sequence_num = db.Column(db.Integer)
-    stop_distance = db.Column(db.Float)
-    stop_load = db.Column(db.Float)
+    units = db.Column(db.Float, nullable=False)
+    unit_id = create_fk('unit.unit_id')
+    cluster_id = db.Column(db.Integer)
+
+class AssetClass(db.Model):
+    """
+    AssetClass identifies available assets to use.
+      - asset class identifier (pk)
+    """
+    __tablename__ = 'asset_class'
+
+    asset_class_id = db.Column(db.Integer, primary_key=True)
+
+class Vehicle(db.Model):
+    """
+    Vehicle is defined by capacity and other configurables to be used.
+      - vehicle identifier (pk)
+      - max capacity constraint
+      - unit identifier (fk)
+      - asset class identifier (fk)
+    """
+    __tablename__ = 'vehicle'
+
+    vehicle_id = db.Column(db.Integer, primary_key=True)
+    max_capacity = db.Column(db.Float, nullable=False)
+    unit_id = create_fk('unit.unit_id')
+    asset_class_id = create_fk('asset_class.asset_class_id')
+
+class Stop(db.Model):
+    """
+    Stops are extensions of vehicles (desired output for vrp solutions).
+      - scenario identifier (fk)
+      - vehicle identifer (fk)
+      - stop number
+      - travel distance
+      - unit identifier (fk)
+      - demand identifier (fk)
+    """
+    __tablename__ = 'stop'
+
+    stop_id = db.Column(db.Integer, primary_key=True)
+    scenario_id = create_fk('scenario.scenario_id')
+    vehicle_id = create_fk('vehicle.vehicle_id')
+    stop_num = db.Column(db.Integer, nullable=False)
+    stop_distance = db.Column(db.Float, nullable=False)
+    unit_id = create_fk('unit.unit_id')
+    demand_id = create_fk('demand.demand_id')
+
+class Origin(db.Model):
+    """
+    Origins defined by users. 
+      - origin_id
+      - latitude
+      - longitude
+    """
+    __tablename__ = 'origin'
+
+    origin_id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
