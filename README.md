@@ -36,7 +36,8 @@ Initial development will be monolithic type until services can be abstracted. Cu
 3. Test environment
 4. Launch app
 
-# demo
+# demo cvrp-poc
+this is how to demo the [proof of concept flask app](https://github.com/pybrgr/cvrp-poc) for this api.
 
 recommended: setup vagrant development environment
 ```
@@ -76,3 +77,149 @@ upload test data
 pull cvrp service ```/cvrp```
 
 ![](https://github.com/andromia/cvrp-app/blob/master/docs/img/v0.0.8.PNG?raw=true)
+
+
+# planned cvrp-app backend API v0.1
+
+TODO: server logging for capturing run data.
+TODO: abstraction for ```/api/<version>/cvrp``` one-stop endpoint.
+
+# Tables
+##  Model
+
+```Model```s are instances of solution designs containing:
+
+  - model_id
+  - data_chassis_id
+
+## DataChassis
+```DataChassis``` ties together models with their available data.
+
+  - data_chassis_id
+  - origin_id
+  - demand_id
+  - asset_class_id
+
+## Scenarios
+```Scenario```s are snapshots of models with different configurations.
+TODO: expand on reasoning for this abstraction.
+
+  - scenario_id
+  - model_id
+  - scenario_name
+
+## Units
+```Unit```s are different *unit of measures* used (pallets, weight, miles).
+NOTE: haversine vs pcmiler should be abstracted (clustering methods too?).
+  - unit_name: 'pallets', 'weight', 'miles'
+  - unit_id
+
+## Demand
+```Demand``` is each node with capacity to route:
+
+  - demand_id
+  - latitude
+  - longitude
+  - units
+  - unit_id 
+  - model_id
+
+### manage demand
+**endpoint:** /cvrp/demand
+**methods:** ```GET```, ```POST```
+**```GET``` data expected:**
+
+```json
+{ 'model_id': '', 'demand': [ {'demand_id': '', 'latitude': '', 'longitude': '', 'units': '', 'unit_name': ''}, ... ] }
+```
+
+**```POST``` data required:**
+
+```json
+{
+  'latitude': [],
+  'longitude': [],
+  'units': [],
+  'unit_of_measure': ''
+}
+```
+
+## AssetClass
+```AssetClass``` groups vehicles (and other potential assets) together to form a pool of assets available to models.
+
+  - asset_class_id
+
+## Vehicles
+```Vehicle```s are resources describing vehicle capacity and number of vehicles:
+TODO: expand on how this will scale with additional modeling configurables.
+
+  - vehicle_id
+  - max_capacity
+  - unit_id
+  - asset_class_id
+
+### manage vehicles
+**endpoint:** /cvrp/vehicles
+**methods:** ```GET```, ```POST```, ```CREATE?```
+
+**```GET``` data expected:**
+
+```json
+{ 'vehicles': [ {'vehicle_id': '', 'max_capacity': '', 'unit_name': '', 'asset_class_id': ''}, ... ] }
+```
+
+**```POST``` data required:**
+
+```
+vehicles = [26, 26, ...] # start with a minimum requirement of having **at least** the same number of vehicles as unique demand points (also lets force the capacities to be the same early on too -- this can change).
+```
+
+**```CREATE```**
+this creates a default set of vehicles for the model to use.
+
+## Stops
+Target output data for cvrp routing (one join with demand at the least).
+```Stop```s are output data points that contain:
+
+  - scenario_id
+  - vehicle_id
+  - stop_num
+  - stop_distance
+  - unit_id
+  - demand_id
+
+### manage stops
+this is what the end goal of the service is for our client.
+**endpoint:** /cvrp/vehicles/stops
+**methods:** ```GET```
+
+**```GET``` data expected:**
+
+```json
+{ 'scenario_id': '', 'stops': [ {'vehicle_id': '', 'stop_num': '', 'stop_distance': '', 'unit_name': '', 'demand_id': ''}, ... ] }
+```
+
+## Origins
+```Origin```s are the node users want to generate routes from (routes are sequences of stops):
+
+  - origin_id
+  - latitude
+  - latitude
+
+### manage origin
+**endpoint:** /cvrp/origin
+**methods:** ```GET```, ```POST```
+**```GET``` data expected:**
+
+```json
+{ 'origin_id': '', 'latitude': '', 'longitude': ''}
+```
+
+**```POST``` data required:**
+
+```json
+{
+  'latitude': '',
+  'longitude': ''
+}
+```
