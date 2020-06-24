@@ -1,5 +1,6 @@
 from . import bp
 
+
 @bp.route('/demand', methods=['GET', 'POST'])
 def demand():
     return 'demand placeholder'
@@ -8,7 +9,7 @@ def demand():
 def vehicles():
     return 'vehicles placeholder'
 
-@bp.route('/stops', methods=['GET'])
+@bp.route('/vehicles/stops', methods=['GET'])
 def stops():
     return 'stops placeholder'
 
