@@ -13,23 +13,8 @@ class Model(db.Model):
     """
     __tablename__ = 'model'
 
-    model_id = db.Column(db.Integer, primary_key=True)
-    data_chassis_id = create_fk('data_chassis.data_chassis_id')
-
-class DataChassis(db.Model):
-    """
-    DataChassis is configuration to formulate a problem definition.
-      - data chassis identifier (pk)
-      - origin identifier (fk)
-      - demand idendifier (fk)
-      - asset class identifier (fk)
-    """
-    __tablename__ = 'data_chassis'
-
-    data_chassis_id = db.Column(db.Integer, primary_key=True)
-    origin_id = create_fk('origin.origin_id')
-    demand_id = create_fk('demand.demand_id')
-    asset_class_id = create_fk('asset_class.asset_class_id')
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(16))
 
 class Scenario(db.Model):
     """
@@ -40,9 +25,9 @@ class Scenario(db.Model):
     """
     __tablename__ = 'scenario'
 
-    scenario_id = db.Column(db.Integer, primary_key=True)
-    scenario_name = db.Column(db.String(16))
-    model_id = create_fk('model.model_id')
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(16))
+    model_id = create_fk('model.id')
 
 class Unit(db.Model):
     """
@@ -52,8 +37,21 @@ class Unit(db.Model):
     """
     __tablename__ = 'unit'
 
-    unit_id = db.Column(db.Integer, primary_key=True)
-    unit_name = db.Column(db.String(10))
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10))
+
+class Origin(db.Model):
+    """
+    Origins defined by users. 
+      - origin_id
+      - latitude
+      - longitude
+    """
+    __tablename__ = 'origin'
+
+    id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
 
 class Demand(db.Model):
     """
@@ -63,15 +61,17 @@ class Demand(db.Model):
       - units for capacity constraint
       - unit identifier (fk)
       - cluster identifier for sub-problem spaces
+      - model identifier (fk)
     """
     __tablename__ = 'demand'
 
-    demand_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     units = db.Column(db.Float, nullable=False)
-    unit_id = create_fk('unit.unit_id')
+    unit_id = create_fk('unit.id')
     cluster_id = db.Column(db.Integer)
+    model_id = create_fk('model.id')
 
 class AssetClass(db.Model):
     """
@@ -80,7 +80,7 @@ class AssetClass(db.Model):
     """
     __tablename__ = 'asset_class'
 
-    asset_class_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
 class Vehicle(db.Model):
     """
@@ -92,10 +92,10 @@ class Vehicle(db.Model):
     """
     __tablename__ = 'vehicle'
 
-    vehicle_id = db.Column(db.Integer, primary_key=True)
-    max_capacity = db.Column(db.Float, nullable=False)
-    unit_id = create_fk('unit.unit_id')
-    asset_class_id = create_fk('asset_class.asset_class_id')
+    id = db.Column(db.Integer, primary_key=True)
+    max_capacity_units = db.Column(db.Float, nullable=False)
+    unit_id = create_fk('unit.id')
+    asset_class_id = create_fk('asset_class.id')
 
 class Stop(db.Model):
     """
@@ -109,23 +109,10 @@ class Stop(db.Model):
     """
     __tablename__ = 'stop'
 
-    stop_id = db.Column(db.Integer, primary_key=True)
-    scenario_id = create_fk('scenario.scenario_id')
-    vehicle_id = create_fk('vehicle.vehicle_id')
+    id = db.Column(db.Integer, primary_key=True)
+    scenario_id = create_fk('scenario.id')
+    vehicle_id = create_fk('vehicle.id')
     stop_num = db.Column(db.Integer, nullable=False)
     stop_distance = db.Column(db.Float, nullable=False)
-    unit_id = create_fk('unit.unit_id')
-    demand_id = create_fk('demand.demand_id')
-
-class Origin(db.Model):
-    """
-    Origins defined by users. 
-      - origin_id
-      - latitude
-      - longitude
-    """
-    __tablename__ = 'origin'
-
-    origin_id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
+    unit_id = create_fk('unit.id')
+    demand_id = create_fk('demand.id')
