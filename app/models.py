@@ -73,15 +73,6 @@ class Demand(db.Model):
     cluster_id = db.Column(db.Integer)
     model_id = create_fk('model.id')
 
-class AssetClass(db.Model):
-    """
-    AssetClass identifies available assets to use.
-      - asset class identifier (pk)
-    """
-    __tablename__ = 'asset_class'
-
-    id = db.Column(db.Integer, primary_key=True)
-
 class Vehicle(db.Model):
     """
     Vehicle is defined by capacity and other configurables to be used.
@@ -95,7 +86,7 @@ class Vehicle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     max_capacity_units = db.Column(db.Float, nullable=False)
     unit_id = create_fk('unit.id')
-    asset_class_id = create_fk('asset_class.id')
+    scenario_id = create_fk('scenario.id')
 
 class Stop(db.Model):
     """
@@ -110,9 +101,8 @@ class Stop(db.Model):
     __tablename__ = 'stop'
 
     id = db.Column(db.Integer, primary_key=True)
-    scenario_id = create_fk('scenario.id')
     vehicle_id = create_fk('vehicle.id')
     stop_num = db.Column(db.Integer, nullable=False)
-    stop_distance = db.Column(db.Float, nullable=False)
+    distance_units = db.Column(db.Float, nullable=False)
     unit_id = create_fk('unit.id')
     demand_id = create_fk('demand.id')
