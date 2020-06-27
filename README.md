@@ -8,23 +8,6 @@
 # MVP
 root: ```/api/<version>/```
 
-#  Model
-
-NOTE: how should we abstract run logging?
-
-```Model```s are instances of solution designs containing:
-
-  - ```id```: integer
-  - ```name```: string
-
-# Scenario
-```Scenario```s are snapshots of models with different configurations.
-Models consist of scenarios. Scenarios are projections of the different uses of the resources.
-
-  - ```id```: integer
-  - ```model_id```: integer
-  - ```name```: string
-
 # Unit
 ```Unit```s are different *unit of measures* used (pallets, weight, miles).
 
@@ -47,9 +30,9 @@ NOTE: haversine vs pcmiler should be abstracted (clustering methods too?).
 
 ```json
 {
-  "id": 0,
-   "latitude": 0.,
-  "latitude": 0.
+  "id": "",
+  "latitude": "",
+  "latitude": ""
 }
 ```
 
@@ -57,8 +40,8 @@ NOTE: haversine vs pcmiler should be abstracted (clustering methods too?).
 
 ```json
 {
-  "latitude": 0.,
-  "longitude": 0.
+  "latitude": "",
+  "longitude": ""
 }
 ```
 
@@ -85,7 +68,7 @@ NOTE: haversine vs pcmiler should be abstracted (clustering methods too?).
   "longitude": [],
   "[uom name]": [],
   "cluster_id": [],
-  "model_name": ''
+  "model_name": ""
 }
 
 ```
@@ -96,14 +79,9 @@ NOTE: haversine vs pcmiler should be abstracted (clustering methods too?).
   "longitude": [],
   "[uom name]": [],
   "cluster_id": [],
-  "uom": ''
+  "uom": ""
 }
 ```
-
-## AssetClass
-```AssetClass``` groups vehicles (and other potential assets) together to form a pool of assets available to models.
-
-  - ```id```: integer
 
 ## Vehicle
 ```Vehicle```s are resources describing vehicle capacity and number of vehicles:
@@ -113,7 +91,7 @@ TODO: expand on how this will scale with additional modeling configurables.
   - ```id```: integer
   - ```max_capacity_units```: integer # could change
   - ```unit_id```: integer
-  - ```asset_class_id```: integer
+  - ```scenario_id```: integer
 
 ## Manage Vehicles
   - **endpoint:** /vehicles
@@ -140,33 +118,30 @@ TODO: expand on how this will scale with additional modeling configurables.
   - **```CREATE```**
 This creates a default set of vehicles for the model to use.
 
-## Stop
-Target output data for cvrp routing (one join with demand at the least).
-```Stop```s are output data points that contain:
+## Solution
+```Solution```s define inputs and their outputs via cvrp rpc calls.
 
   - ```id```: integer
-  - ```scenario_id```: integer
-  - ```vehicle_id```: integer
-  - ```stop_num```: integer
-  - ```stop_distance```: float
-  - ```unit_id```: integer
   - ```demand_id```: integer
+  - ```origin_id```: integer
+  - ```vehicle_id```: float
+  - ```stop_num```: integer
+  - ```stop_distance_units```: float
+  - ```unit_id```: integer
 
-## Manage Stops
+## Manage Solutions
 This is what the end goal of the service is for our client.
-  - **endpoint:** /cvrp/vehicles/stops?
+  - **endpoint:** /solution
   - **methods:** ```GET```
 
   - **```GET``` data expected:**
 
 ```json
 {
-  "scenario_name": "",
+  "demand_id": [],
+  "origin_id": [],
   "vehicle_id": [],
   "stop_num": [],
-  "stop_distance": [],
   "[uom name]": []
 }
 ```
-
-TODO: RPC for results combo or define resource ```Solution```.
