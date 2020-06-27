@@ -18,6 +18,9 @@ class APIModelCase(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
 
+    def teardown(self):
+        pass
+
 def test_app():
     case = APIModelCase()
     case.setup()
