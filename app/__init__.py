@@ -7,7 +7,6 @@ from config import Config
 __version__ = 'v0.0.1'
 
 
-migrate = Migrate()
 cache = Cache()
 
 def create_app(config_class=Config):
