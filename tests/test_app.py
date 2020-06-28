@@ -24,7 +24,7 @@ def test_main_procedure(client):
     endpoint = f'/api/{__version__}/procedure'
     logging.debug(f'endpoint: {endpoint}')
 
-    response = client.post(endpoint, data=input_data)
+    response = client.post(endpoint, json=input_data)
     output = json.loads(response.get_data())
 
     assert output == input_data
