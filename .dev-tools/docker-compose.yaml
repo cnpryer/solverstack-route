@@ -5,7 +5,7 @@ services:
         image: flask_api_dev:1.00
         container_name: flask_api_dev
         restart: unless-stopped
-        command: 
+        command: python manage.py runserver --host=0.0.0.0
         build:
             context: ../
             dockerfile: .dev-tools/Dockerfile.test
