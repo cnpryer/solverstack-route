@@ -18,7 +18,7 @@ def client():
     yield create_app(TestConfig).test_client()
 
 def test_main_procedure(client):
-    input_data = json.dumps(dict())
+    input_data = json.dumps(common.get_vrp_data())
     endpoint = '/api/%s/procedure' % __version__
     logging.debug('endpoint: %s.' % endpoint)
 
