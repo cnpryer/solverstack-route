@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+    flask_api_dev:
+        image: flask_api_dev:1.00
+        container_name: flask_api_dev
+        restart: unless-stopped
+        command: 
+        build:
+            context: ../
+            dockerfile: .dev-tools/Dockerfile.test
+        ports:
+            - "5000:5000"
+        volumes:
+            - ..:/usr/app
