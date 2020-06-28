@@ -18,10 +18,11 @@ def client():
     yield create_app(TestConfig).test_client()
 
 def test_main_procedure(client):
-    input_data = jeson.dumps(dict())
+    input_data = json.dumps(dict())
     endpoint = '/api/%s/procedure' % __version__
     logging.debug('endpoint: %s.' % endpoint)
 
-    output = client.post(endpoint, data=input_data)
+    response = client.post(endpoint, data=input_data)
+    output = json.loads(response.get_data())
 
     assert output == input_data

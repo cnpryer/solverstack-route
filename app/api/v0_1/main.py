@@ -21,6 +21,6 @@ def main_procedure():
         "vehicles": [] # optional
     }
     """
-    data = request.json
+    data = request.data
 
     return jsonify(data)
