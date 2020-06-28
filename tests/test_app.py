@@ -3,6 +3,7 @@ from app.api import __version__
 import logging
 
 from app import create_app
+from app.api.v0_1 import distance
 from config import Config
 
 import pytest
@@ -39,6 +40,21 @@ def test_vrp_demand_data():
 
     assert isinstance(demand_unit_name, str)
     assert len(demand_unit_name) > 0
+
+def test_matrix_processing():
+    origin_lat, origin_lon = common.get_vrp_origin()
+    demand_lats = common.get_vrp_lats()
+    demand_lons = common.get_vrp_lons()
+
+    matrix = distance.create_matrix(
+        origin_lat,
+        origin_lon,
+        demand_lats, 
+        demand_lons
+    )
+
+    assert len(matrix) == len(demand_lats) + 1
+    
 
 def test_main_procedure(client):
     input_data = VRP_DATA
