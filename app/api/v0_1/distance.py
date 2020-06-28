@@ -1,9 +1,14 @@
 import numpy as np
 
 
-def create_vectorized_distances(origin_lat:float, origin_lon:float, dest_lons:list, 
+def create_vectorized_haversine_li(origin_lat:float, origin_lon:float, dest_lons:list, 
 dest_lats:list, unit:str='mi'):
-    # haversine formula
+    """
+    haversine formula: https://en.wikipedia.org/wiki/Haversine_formula
+
+    TODO: validate formula (w. tests)
+    returns distances:list
+    """
     dlat = dest_lats - origin_lat
     dlon = dest_lons - origin_lon
 
@@ -36,7 +41,7 @@ def create_matrix(origin_lat:float, origin_lon:float, dest_lats:list, dest_lons:
 
     matrix = []
     for i in range(len(lats)):
-        distances = create_vectorized_distances(
+        distances = create_vectorized_haversine_li(
             origin_lat=lats[i],
             origin_lon=lons[i],
             dest_lats=lats,
