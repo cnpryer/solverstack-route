@@ -5,7 +5,7 @@
 # cvrp-app-rpc
 [Under Development] 
 
-RPC API for logistics optimization web service API.
+RPC API for logistics optimization web services.
 
 # MVP
 ```/api/<version>/``` 
