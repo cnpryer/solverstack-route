@@ -1,5 +1,5 @@
 from . import bp
-
+from json import loads
 from flask import request, jsonify
 
 
@@ -21,6 +21,8 @@ def main_procedure():
         "vehicles": [] # optional
     }
     """
-    data = request.data
+
+    # request.data is a bytestring
+    data = loads(request.data)
 
     return jsonify(data)
