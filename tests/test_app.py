@@ -19,8 +19,10 @@ def client():
 
 def test_main_procedure(client):
     input_data = json.dumps(common.get_vrp_data())
-    endpoint = '/api/%s/procedure' % __version__
-    logging.debug('endpoint: %s.' % endpoint)
+    logging.debug(f'input data : {input_data}')
+
+    endpoint = f'/api/{__version__}/procedure'
+    logging.debug(f'endpoint: {endpoint}')
 
     response = client.post(endpoint, data=input_data)
     output = json.loads(response.get_data())
