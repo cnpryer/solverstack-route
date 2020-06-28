@@ -22,7 +22,6 @@ dest_lats:list, unit:str='mi'):
 
     return c * r
 
-
 def create_matrix(origin_lat:float, origin_lon:float, dest_lats:list, dest_lons: list):
     """
     creates matrix using optimized matrix processing.

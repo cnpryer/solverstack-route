@@ -55,7 +55,6 @@ def test_matrix_processing():
 
     assert len(matrix) == len(demand_lats) + 1
     
-
 def test_main_procedure(client):
     input_data = VRP_DATA
     logging.debug(f'input data : {input_data}')
