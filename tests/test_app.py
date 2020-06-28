@@ -9,6 +9,8 @@ import pytest
 import json
 
 
+VRP_DATA = common.VRP_DATA
+
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
@@ -39,7 +41,7 @@ def test_vrp_demand_data():
     assert len(demand_unit_name) > 0
 
 def test_main_procedure(client):
-    input_data = json.dumps(common.get_vrp_data())
+    input_data = VRP_DATA
     logging.debug(f'input data : {input_data}')
 
     endpoint = f'/api/{__version__}/procedure'
