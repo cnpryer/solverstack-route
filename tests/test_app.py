@@ -18,13 +18,10 @@ def client():
     yield create_app(TestConfig).test_client()
 
 def test_main_procedure(client):
-    input_data = dict()
+    input_data = jeson.dumps(dict())
     endpoint = '/api/%s/procedure' % __version__
     logging.debug('endpoint: %s.' % endpoint)
 
-    d = client.post(
-        endpoint, 
-        data=json.dumps(input_data)
-    )
+    output = client.post(endpoint, data=input_data)
 
-    assert d is not None
+    assert output == input_data
