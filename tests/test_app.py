@@ -1,27 +1,30 @@
-#!/usr/bin/env python
 from . import common
+from app.api import __version__
 import logging
 
-from datetime import datetime, timedelta
-import unittest
 from app import create_app
 from config import Config
+
+import pytest
+import json
 
 
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
 
-class APIModelCase(unittest.TestCase):
-    def setup(self):
-        self.app = create_app(TestConfig)
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+@pytest.fixture
+def client():
+    yield create_app(TestConfig).test_client()
 
-    def teardown(self):
-        pass
+def test_main_procedure(client):
+    input_data = dict()
+    endpoint = '/api/%s/procedure' % __version__
+    logging.debug('endpoint: %s.' % endpoint)
 
-def test_app():
-    case = APIModelCase()
-    case.setup()
-    case.teardown()
+    d = client.post(
+        endpoint, 
+        data=json.dumps(input_data)
+    )
+
+    assert d is not None

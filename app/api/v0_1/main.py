@@ -1,5 +1,7 @@
 from . import bp
 
+from flask import request, jsonify
+
 
 @bp.route('/procedure', methods=['GET', 'POST'])
 def main_procedure():
@@ -19,4 +21,6 @@ def main_procedure():
         "vehicles": [] # optional
     }
     """
-    return 'main procedure placeholder'
+    data = request.json
+
+    return jsonify(data)

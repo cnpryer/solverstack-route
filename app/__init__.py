@@ -4,7 +4,6 @@ import os
 from flask import Flask, request, current_app
 from flask_caching import Cache
 from config import Config
-__version__ = 'v0.0.1'
 
 
 cache = Cache()
