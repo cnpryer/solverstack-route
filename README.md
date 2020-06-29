@@ -25,11 +25,12 @@ RPC API for logistics optimization web services.
     "demand": {
         "latitude": [],
         "longitude": [],
-        "units": [], // this will change with future iterations
+        "units": [],
         "unit_name": "",
         "cluster": []
     },
-    "vehicles": [] // optional
+    "max_vehicle_capacity_units": "",
+    "vehicles": []
 }
 ```
 
