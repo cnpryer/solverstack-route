@@ -50,7 +50,8 @@ def get_vrp_data():
             'unit_name': get_vrp_unit_name(),
             'cluster': None #
         },
-        'vehicles': None
+        'max_vehicle_capacity_units': '26',
+        'vehicles': None # TODO
     }
 
 def get_matrix():
