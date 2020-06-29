@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 
 
 def create_vectorized_haversine_li(origin_lat:float, origin_lon:float, dest_lons:list, 
@@ -60,7 +61,7 @@ class DBSCAN:
         try:
             _dict['n X'] = len(self.X)
         except:
-            logging.warning('X has not been set.')
+            logging.debug('X has not been set.')
         return _dict
 
     def fit(self, x, y):
