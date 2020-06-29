@@ -54,6 +54,14 @@ def test_matrix_processing():
     )
 
     assert len(matrix) == len(demand_lats) + 1
+
+def test_cluster_processing():
+    lats = common.get_vrp_lats()
+    lons = common.get_vrp_lons()
+
+    clusters = distance.create_dbscan_clusters(lats, lons)
+
+    assert len(lats) == len(clusters)
     
 def test_main_procedure(client):
     input_data = VRP_DATA
