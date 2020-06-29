@@ -140,7 +140,6 @@ def add_closest_clusters(x:list, y:list, clusters:list):
     
     return c
 
-
 def create_dbscan_basic(x:list, y:list):
     epsilon = 0.79585 # approximate degree delta for 50 miles
     minpts = 2 # at least cluster 2
