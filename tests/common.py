@@ -1,3 +1,5 @@
+from app.api.v0_1 import distance
+
 import logging
 
 
@@ -29,7 +31,8 @@ def get_vrp_unit_name():
     return name
 
 def get_vrp_units():
-    units = ['5', '10', '2', '4', '12', '6', '14']
+    """demand units must have 0 for origin node"""
+    units = ['0', '5', '10', '2', '4', '12', '6', '14']
     logging.debug(f'demand units: {units}')
 
     return units
@@ -49,5 +52,23 @@ def get_vrp_data():
         },
         'vehicles': None
     }
+
+def get_matrix():
+    origin_lat, origin_lon = get_vrp_origin()
+    demand_lats = get_vrp_lats()
+    demand_lons = get_vrp_lons()
+
+    return distance.create_matrix(
+        origin_lat,
+        origin_lon,
+        demand_lats, 
+        demand_lons
+    )
+
+def get_dbscan_clusters():
+    lats = get_vrp_lats()
+    lons = get_vrp_lons()
+
+    return distance.create_dbscan_clusters(lats, lons)
 
 VRP_DATA = get_vrp_data()
