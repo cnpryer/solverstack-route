@@ -1,3 +1,6 @@
+# profiling
+/prof
+
 # Vagrant
 .vagrant
 registry
