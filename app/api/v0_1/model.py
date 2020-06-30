@@ -82,8 +82,11 @@ class VrpBasicBundle:
     def get_solution(self):
         total_distance = 0
         total_load = 0
-        solution = []
 
+        # positions in matrix (demand)
+        solution = np.zeros(len(self.demand) - 1)
+        
+        # original solution building
         for vehicle in range(len(self.vehicles)):
             i = self.model.Start(vehicle)
             info = {'vehicle': vehicle, 'stops': list(), 'stop_distances': [0],
@@ -91,6 +94,10 @@ class VrpBasicBundle:
 
             while not self.model.IsEnd(i):
                 node = self.manager.IndexToNode(i)
+
+                if node != 0:
+                    solution[node - 1] = vehicle
+
                 info['stops'].append(node)
                 info['stop_loads'].append(self.demand[node])
 
@@ -101,9 +108,10 @@ class VrpBasicBundle:
             # add return to depot to align with solution data
             info['stops'].append(0)
             info['stop_loads'].append(0)
-            solution.append(info)
+            #solution.append(info)
         
-        return solution
+        # NOTE: returning vehicle assignments only
+        return list(solution)
 
     def ortools(self):
         """init of ortools modeling"""
