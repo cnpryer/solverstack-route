@@ -47,14 +47,19 @@ def main_procedure():
     # request.data is a bytestring
     data = loads(request.data)
 
-    matrix = parse_for_matrix(data)
-    demand, units_name = parse_for_demand(data)
-    bndl = model.VrpBasicBundle(
-        matrix=matrix,
-        demand=demand,
-        max_vehicle_capacity_units=int(data['max_vehicle_capacity_units'])
+    # cluster by location (lat, lon)
+    clusters = distance.create_dbscan_clusters(
+        data['demand']['latitude'], 
+        data['demand']['longitude']
     )
 
-    solution = bndl.run().get_solution()
+    # list of lists for all-to-all distances
+    matrix = parse_for_matrix(data)
 
-    return jsonify(solution)
+    # describe the demand
+    demand, units_name = parse_for_demand(data)
+
+    # manage solve
+    solution = model.create_vehicles(matrix, demand, clusters)
+    
+    return jsonify(list(solution))

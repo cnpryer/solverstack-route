@@ -125,3 +125,39 @@ class VrpBasicBundle:
         self.assignment = self.model.SolveWithParameters(search)
 
         return self
+
+def create_vehicles(matrix:list, demand:list, clusters:list, max_vehicle_capacity_units:int=26):
+    """
+    solve by cluster and return assigned list of vehicles
+    
+    :matrix:      list of lists for all-to-all distances (includes origin)
+    :demand:      list of demand (includes origin zero'd)
+    :clusters:    numpy array of cluster output. length is matrix|demand - 1
+
+    returns vehicles:list
+    """
+    vehicles = np.zeros(len(demand) - 1)
+    matrix = np.array(matrix)
+    demand = np.array(demand)
+
+    for c in np.unique(clusters):
+
+        # align with matrix, demand
+        is_cluster = np.where(clusters == c)[0]
+        is_cluster = is_cluster + 1
+        is_cluster = np.insert(is_cluster, 0, 0)
+
+        bndl = VrpBasicBundle(
+            matrix=matrix[is_cluster],
+            demand=demand[is_cluster],
+            max_vehicle_capacity_units=int(max_vehicle_capacity_units)
+        )
+        
+        # list of vehcles # NOTE: will change
+        solution = bndl.run().get_solution()
+
+        # assign
+        is_cluster = is_cluster[is_cluster != 0] - 1
+        vehicles[is_cluster] = solution
+
+    return vehicles

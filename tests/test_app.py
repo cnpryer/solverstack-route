@@ -19,7 +19,8 @@ class TestConfig(Config):
 @pytest.fixture
 def client():
     yield create_app(TestConfig).test_client()
-    
+
+@pytest.mark.filterwarnings
 def test_main_procedure(client):
     input_data = VRP_DATA
     logging.debug(f'input data : {input_data}')

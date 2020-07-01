@@ -138,6 +138,9 @@ def add_closest_clusters(x:list, y:list, clusters:list):
         deltas = x_deltas + y_deltas
         
         c[i] = c[np.argmin(deltas)]
+
+    # return -1 if None
+    c = [i if i else -1 for i in c]
     
     return c
 
