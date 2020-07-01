@@ -154,10 +154,10 @@ def create_vehicles(matrix:list, demand:list, clusters:list, max_vehicle_capacit
         )
         
         # list of vehcles # NOTE: will change
-        solution = bndl.run().get_solution()
+        solution = np.array(bndl.run().get_solution())
 
         # assign
         is_cluster = is_cluster[is_cluster != 0] - 1
-        vehicles[is_cluster] = solution
+        vehicles[is_cluster] = solution * c
 
     return vehicles
