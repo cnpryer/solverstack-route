@@ -138,7 +138,7 @@ def add_closest_clusters(x:list, y:list, clusters:list):
         clusters[i] = clusters[np.argmin(deltas)]
 
     # return -1 if None
-    clusters = np.where(clusters != np.nan, clusters, -1)
+    clusters = np.nan_to_num(clusters, copy=True, nan=-1)
     
     return clusters
 
