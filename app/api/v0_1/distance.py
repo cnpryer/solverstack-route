@@ -120,11 +120,9 @@ def add_closest_clusters(x:list, y:list, clusters:list):
     
     return list of clusters
     """
-    c = list(clusters)
     
-    positions = list(range(len(c)))
-    missing_clusters = [i for i in positions if c[i] == np.nan]
-    has_clusters = [i for i in positions if i not in missing_clusters]
+    missing_clusters = np.where(clusters == np.nan)[0]
+    has_clusters = np.where(clusters != np.nan)[0]
     
     x_copy = np.array(x, dtype=float)
     x_copy[missing_clusters] = np.inf
@@ -137,12 +135,12 @@ def add_closest_clusters(x:list, y:list, clusters:list):
         y_deltas = abs(y[i] - y_copy)
         deltas = x_deltas + y_deltas
         
-        c[i] = c[np.argmin(deltas)]
+        clusters[i] = clusters[np.argmin(deltas)]
 
     # return -1 if None
-    c = [i if i else -1 for i in c]
+    clusters = np.where(clusters != np.nan, clusters, -1)
     
-    return c
+    return clusters
 
 def create_dbscan_basic(x:list, y:list):
     epsilon = 0.79585 # approximate degree delta for 50 miles
@@ -172,7 +170,7 @@ def create_dbscan_clusters(latitudes:list, longitudes:list):
     
     # add those without an assigned cluster
     # to their closest cluster
-    clusters = [c if int(c) >= 0 else None for c in dbscan.clusters]
+    clusters = np.where(dbscan.clusters > 0, dbscan.clusters, np.nan)
     clusters = add_closest_clusters(x, y, clusters)
     
     return clusters
