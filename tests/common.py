@@ -1,4 +1,4 @@
-from app.api.v0_1 import distance
+from app import distance
 
 import logging
 

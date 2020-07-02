@@ -1,5 +1,5 @@
 from . import common
-from app.api.v0_1 import distance, model
+from app import model
 
 import numpy as np
 import pytest

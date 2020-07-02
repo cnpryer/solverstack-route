@@ -14,7 +14,9 @@ input:
 "vehicles": [] # optional
 }
 """
-from . import bp, distance, model
+from . import bp
+from app import distance, model
+
 from json import loads
 from flask import request, jsonify
 

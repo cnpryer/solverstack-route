@@ -3,7 +3,6 @@ from app.api import __version__
 import logging
 
 from app import create_app
-from app.api.v0_1 import distance
 from config import Config
 
 import pytest
