@@ -48,7 +48,8 @@ def create_matrix(origin_lat:float, origin_lon:float, dest_lats:list, dest_lons:
             dest_lons=lons
         )
 
-        distances = np.ceil(distances).astype(int)
+        # must be integer for solver
+        distances = (distances * 100).astype(int)
         matrix.append(distances)
     
     return matrix
