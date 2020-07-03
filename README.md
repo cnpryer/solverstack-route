@@ -16,18 +16,40 @@ RPC API for logistics optimization web services.
 
 - **endpoint**: ```/procedure```
 - **methods**: ```GET```, ```POST```
-- **data**:
+- **input data**:
 
 ```json
 {
     "origin_latitude": "",
     "origin_longitude": "",
     "demand": {
+        "demand_id": [],
         "latitude": [],
         "longitude": [],
-        "units": [],
-        "unit_name": "",
+        "unit": "",
+        "quantity": [],
         "cluster": []
+    },
+    "max_vehicle_capacity_units": "",
+    "vehicles": []
+}
+```
+
+- **output data**:
+
+```json
+{
+    "origin_latitude": "",
+    "origin_longitude": "",
+    "demand": {
+        "demand_id": [],
+        "latitude": [],
+        "longitude": [],
+        "unit": "",
+        "quantity": [],
+        "cluster": [],
+        "vehicle_id": [],
+        "stop_num": []
     },
     "max_vehicle_capacity_units": "",
     "vehicles": []
