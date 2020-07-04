@@ -80,3 +80,8 @@ You can use a Docker container for running the tests by using the provided _Dock
 
 ## TODO
 - replace ```dict```[key][key]... with ```pandas``` wrappers.
+
+## Other
+See [cvrp-poc](https://github.com/pybrgr/cvrp-poc) for demo application.
+
+![](https://github.com/pybrgr/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)
