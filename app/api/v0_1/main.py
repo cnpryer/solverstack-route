@@ -64,4 +64,8 @@ def main_procedure():
     # manage solve
     solution = model.create_vehicles(matrix, demand, clusters)
     
-    return jsonify(list(solution))
+    # TODO: fix this
+    data['demand']['vehicle_id'] = list(solution['id'])
+    data['demand']['stop_num'] = list(solution['stops'])
+
+    return jsonify(data)

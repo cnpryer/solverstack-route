@@ -16,7 +16,7 @@ CLUSTERS = common.get_dbscan_clusters_basic()
 def test_create_vehicles():
     vehicles = model.create_vehicles(MATRIX, DEMAND, np.array(CLUSTERS))
 
-    assert len(vehicles) == len(CLUSTERS)
+    assert len(vehicles['id']) == len(CLUSTERS)
 
 @pytest.mark.filterwarnings
 def test_vrp_bundle_case():
@@ -29,4 +29,4 @@ def test_vrp_bundle_case():
 
     lats = common.get_vrp_lats_basic()
 
-    assert len(bndl.run().get_solution()) == len(lats)
+    assert len(bndl.run().get_solution()['id']) == len(lats)

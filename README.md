@@ -77,3 +77,6 @@ You can use a Docker container for running the tests by using the provided _Dock
 
 - Build the Docker image using `docker build -f Dockerfile.test . -t andromia:mds-cvrp-rpc-test`.
 - Run the image using `docker run andromia:mds-cvrp-rpc-test`
+
+## TODO
+- replace ```dict```[key][key]... with ```pandas``` wrappers.

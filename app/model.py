@@ -84,7 +84,8 @@ class VrpBasicBundle:
         total_load = 0
 
         # positions in matrix (demand)
-        solution = np.zeros(len(self.demand) - 1)
+        vehicles = np.zeros(len(self.demand) - 1)
+        stops = np.zeros(len(self.demand) - 1)
         
         # original solution building
         for vehicle in range(len(self.vehicles)):
@@ -96,7 +97,8 @@ class VrpBasicBundle:
                 node = self.manager.IndexToNode(i)
 
                 if node != 0:
-                    solution[node - 1] = vehicle
+                    vehicles[node - 1] = vehicle
+                    stops[node - 1] = node
 
                 info['stops'].append(node)
                 info['stop_loads'].append(self.demand[node])
@@ -108,10 +110,13 @@ class VrpBasicBundle:
             # add return to depot to align with solution data
             info['stops'].append(0)
             info['stop_loads'].append(0)
-            #solution.append(info)
+            #olution.append(info)
         
         # NOTE: returning vehicle assignments only
-        return list(solution)
+        return {
+            'id': vehicles,
+            'stops': stops
+        }
 
     def ortools(self):
         """init of ortools modeling"""
@@ -137,6 +142,7 @@ def create_vehicles(matrix:list, demand:list, clusters:list, max_vehicle_capacit
     returns vehicles:list
     """
     vehicles = np.zeros(len(demand) - 1)
+    stops = np.zeros(len(demand) - 1)
     matrix = np.array(matrix)
     demand = np.array(demand)
 
@@ -154,10 +160,14 @@ def create_vehicles(matrix:list, demand:list, clusters:list, max_vehicle_capacit
         )
         
         # list of vehcles # NOTE: will change
-        solution = np.array(bndl.run().get_solution())
+        segment_vehicles = bndl.run().get_solution()
 
         # assign
         is_cluster = is_cluster[is_cluster != 0] - 1
-        vehicles[is_cluster] = solution * c
+        vehicles[is_cluster] = segment_vehicles['id'] * c
+        stops[is_cluster] = segment_vehicles['stops']
 
-    return vehicles
+    return {
+        'id': vehicles,
+        'stops': stops
+    }
