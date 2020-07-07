@@ -22,16 +22,14 @@ RPC API for logistics optimization web services.
 {
     "origin_latitude": "",
     "origin_longitude": "",
-    "demand": {
-        "demand_id": [],
-        "latitude": [],
-        "longitude": [],
-        "unit": "",
-        "quantity": [],
-        "cluster": []
-    },
-    "max_vehicle_capacity_units": "",
-    "vehicles": []
+    "demand_id": [],
+    "demand_latitude": [],
+    "demand_longitude": [],
+    "demand_unit": "",
+    "demand_quantity": [],
+    "demand_cluster": [],
+    "vehicle_max_capacity_quantity": "",
+    "vehicles_definitions": []
 }
 ```
 
@@ -41,18 +39,16 @@ RPC API for logistics optimization web services.
 {
     "origin_latitude": "",
     "origin_longitude": "",
-    "demand": {
-        "demand_id": [],
-        "latitude": [],
-        "longitude": [],
-        "unit": "",
-        "quantity": [],
-        "cluster": [],
-        "vehicle_id": [],
-        "stop_num": []
-    },
-    "max_vehicle_capacity_units": "",
-    "vehicles": []
+    "demand_id": [],
+    "demand_latitude": [],
+    "demand_longitude": [],
+    "demand_unit": "",
+    "demand_quantity": [],
+    "demand_cluster": [],
+    "vehicle_id": [],
+    "stop_num": [],
+    "vehicle_max_capacity_quantity": "",
+    "vehicles_definitions": []
 }
 ```
 
