@@ -1,17 +1,16 @@
 """
 input: 
 {
-"origin_latitude": "",
-"origin_longitude": "",
-"demand": {
-    "latitude": [],
-    "longitude": [],
-    "units": [], # this will change with future iterations
-    "unit_name": "",
-    "max_vehicle_capacity_units": "",
-    "cluster": []
-},
-"vehicles": [] # optional
+    "origin_latitude": "",
+    "origin_longitude": "",
+    "demand_id": [],
+    "demand_latitude": [],
+    "demand_longitude": [],
+    "demand_unit": "",
+    "demand_quantity": [],
+    "demand_cluster": [],
+    "vehicle_max_capacity_quantity": "",
+    "vehicles_definitions": []
 }
 """
 from . import bp
@@ -23,8 +22,8 @@ from flask import request, jsonify
 
 def parse_for_matrix(data:dict):
     origin_lat, origin_lon = data['origin_latitude'], data['origin_longitude']
-    demand_lats = data['demand']['latitude']
-    demand_lons = data['demand']['longitude']
+    demand_lats = data['demand_latitude']
+    demand_lons = data['demand_longitude']
 
     return distance.create_matrix(
         origin_lat,
@@ -35,8 +34,8 @@ def parse_for_matrix(data:dict):
 
 def parse_for_demand(data:dict):
     """returns units, unit name"""
-    units = data['demand']['units']
-    unit_name = data['demand']['unit_name']
+    units = data['demand_quantity']
+    unit_name = data['demand_unit']
 
     return units, unit_name
 
@@ -51,8 +50,8 @@ def main_procedure():
 
     # cluster by location (lat, lon)
     clusters = distance.create_dbscan_clusters(
-        data['demand']['latitude'], 
-        data['demand']['longitude']
+        data['demand_latitude'], 
+        data['demand_longitude']
     )
 
     # list of lists for all-to-all distances
@@ -65,7 +64,7 @@ def main_procedure():
     solution = model.create_vehicles(matrix, demand, clusters)
     
     # TODO: fix this
-    data['demand']['vehicle_id'] = list(solution['id'])
-    data['demand']['stop_num'] = list(solution['stops'])
+    data['vehicle_id'] = list(solution['id'])
+    data['stop_num'] = list(solution['stops'])
 
     return jsonify(data)

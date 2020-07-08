@@ -82,32 +82,29 @@ def get_vrp_data_basic():
     return {
         'origin_latitude': origin_lat,
         'origin_longitude': origin_lat,
-        'demand': {
-            'latitude': get_vrp_lats_basic(),
-            'longitude': get_vrp_lons_basic(),
-            'units': get_vrp_units_basic(),
-            'unit_name': get_vrp_unit_name_basic(),
-            'cluster': None #
-        },
-        'max_vehicle_capacity_units': '26',
-        'vehicles': None # TODO
+        'demand_latitude': get_vrp_lats_basic(),
+        'demand_longitude': get_vrp_lons_basic(),
+        'demand_unit': get_vrp_unit_name_basic(),
+        'demand_quantity': get_vrp_units_basic(),
+        'demand_cluster': None, # TODO
+        'vehicle_max_capacity_quantity': '26',
+        'vehicle_definitions': None # TODO
     }
 
 def get_vrp_data_csv():
+    # TODO: abstract json def
     origin_lat, origin_lon = get_vrp_origin_basic()
 
     return {
         'origin_latitude': origin_lat,
         'origin_longitude': origin_lat,
-        'demand': {
-            'latitude': get_vrp_lats_csv(),
-            'longitude': get_vrp_lons_csv(),
-            'units': get_vrp_units_csv(),
-            'unit_name': get_vrp_unit_name_basic(),
-            'cluster': None #
-        },
-        'max_vehicle_capacity_units': '26',
-        'vehicles': None # TODO
+        'demand_latitude': get_vrp_lats_csv(),
+        'demand_longitude': get_vrp_lons_csv(),
+        'demand_quantity': get_vrp_units_csv(),
+        'demand_unit': get_vrp_unit_name_basic(),
+        'demand_cluster': None, # TODO
+        'vehicle_max_capacity_quantity': '26',
+        'vehicle_definitions': None # TODO
     }
 
 def get_matrix_basic():

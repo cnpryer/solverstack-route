@@ -30,4 +30,4 @@ def test_main_procedure(client):
     response = client.post(endpoint, json=input_data)
     output = json.loads(response.get_data())
 
-    assert len(output['demand']['vehicle_id']) == len(VRP_DATA['demand']['latitude'])
+    assert len(output['vehicle_id']) == len(VRP_DATA['demand_latitude'])
