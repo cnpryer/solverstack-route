@@ -4,7 +4,9 @@
 [![Discord](https://img.shields.io/discord/721862473132540007?label=discord&style=plastic)](https://discord.gg/wg7xSAf)
 [![Slack](https://img.shields.io/badge/slack-workspace-orange)](https://join.slack.com/t/andromiasoftware/shared_invite/zt-felqfjhs-Tvma8OYuCExxdmQgHOIGsg)
 
-[**Under Development**]
+[**Under Development**] **NOTE**: API is not finalized and **will** change.
+
+**TODO**: add current and future specs/features.
 
 RPC API for logistics optimization web services.
 
@@ -22,15 +24,25 @@ RPC API for logistics optimization web services.
 {
     "origin_latitude": "",
     "origin_longitude": "",
-    "demand_id": [],
-    "demand_latitude": [],
-    "demand_longitude": [],
     "demand_unit": "",
-    "demand_quantity": [],
-    "demand_cluster": [],
+    "demand": [ {"latitude": "", "longitude": "", "[unit]": ""} ],
     "vehicle_max_capacity_quantity": "",
     "vehicles_definitions": []
 }
+```
+*[unit]* is defined by *demand_unit* (should be the same value).
+
+```json
+"demand_unit": "weight",
+"demand": [ {"latitude": "", "longitude": "", "weight": ""} ]
+```
+
+*vehicle_max_capacity_quantity* should be the same unit of measure as *demand_unit*.
+
+*vehicles_definitions* (optional) represent both the number of vehicles and their max capacities.
+
+```json
+"vehicles_definitions": [26, 26, 26, 26]
 ```
 
 - **output data**:
@@ -39,14 +51,8 @@ RPC API for logistics optimization web services.
 {
     "origin_latitude": "",
     "origin_longitude": "",
-    "demand_id": [],
-    "demand_latitude": [],
-    "demand_longitude": [],
     "demand_unit": "",
-    "demand_quantity": [],
-    "demand_cluster": [],
-    "vehicle_id": [],
-    "stop_num": [],
+    "demand": [ {"latitude": "", "longitude": "", "[unit]*": "", "cluster_id": "", "vehicle_id": "", "stop_num": ""} ],
     "vehicle_max_capacity_quantity": "",
     "vehicles_definitions": []
 }
