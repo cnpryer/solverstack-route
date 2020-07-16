@@ -4,6 +4,7 @@ import logging
 import os
 
 from pandas import read_csv
+from json import loads
 
 
 TEST_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -13,7 +14,11 @@ CSV_TESTING_FILEPATH = os.path.join(TEST_ROOT, CSV_TESTING_FILENAME)
 def get_csv():
     logging.debug(f'filepath: {CSV_TESTING_FILEPATH}.')
 
-    return read_csv(CSV_TESTING_FILEPATH)
+    dtypes = {'latitude': str, 'longitude': str, 'pallets': str}
+    df = read_csv(CSV_TESTING_FILEPATH)
+    df.pallets = df.pallets.fillna(1)
+
+    return df
 
 TESTING_CSV_DF = get_csv()
 
@@ -76,33 +81,15 @@ def get_vrp_units_csv():
 
     return units
 
-def get_vrp_data_basic():
-    origin_lat, origin_lon = get_vrp_origin_basic()
-
-    return {
-        'origin_latitude': origin_lat,
-        'origin_longitude': origin_lat,
-        'demand_latitude': get_vrp_lats_basic(),
-        'demand_longitude': get_vrp_lons_basic(),
-        'demand_unit': get_vrp_unit_name_basic(),
-        'demand_quantity': get_vrp_units_basic(),
-        'demand_cluster': None, # TODO
-        'vehicle_max_capacity_quantity': '26',
-        'vehicle_definitions': None # TODO
-    }
-
-def get_vrp_data_csv():
+def get_vrp_data():
     # TODO: abstract json def
     origin_lat, origin_lon = get_vrp_origin_basic()
 
     return {
         'origin_latitude': origin_lat,
         'origin_longitude': origin_lat,
-        'demand_latitude': get_vrp_lats_csv(),
-        'demand_longitude': get_vrp_lons_csv(),
-        'demand_quantity': get_vrp_units_csv(),
-        'demand_unit': get_vrp_unit_name_basic(),
-        'demand_cluster': None, # TODO
+        'unit': 'pallets',
+        'demand': loads(TESTING_CSV_DF.to_json(orient='records')),
         'vehicle_max_capacity_quantity': '26',
         'vehicle_definitions': None # TODO
     }
@@ -143,4 +130,4 @@ def get_dbscan_clusters_csv():
 
     return distance.create_dbscan_clusters(lats, lons)
 
-VRP_DATA = get_vrp_data_csv()
+VRP_DATA = get_vrp_data()

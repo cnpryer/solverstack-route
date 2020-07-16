@@ -24,20 +24,20 @@ RPC API for logistics optimization web services.
 {
     "origin_latitude": "",
     "origin_longitude": "",
-    "demand_unit": "",
+    "unit": "",
     "demand": [ {"latitude": "", "longitude": "", "[unit]": ""} ],
     "vehicle_max_capacity_quantity": "",
     "vehicles_definitions": []
 }
 ```
-*[unit]* is defined by *demand_unit* (should be the same value).
+*[unit]* is defined by *unit* (should be the same value).
 
 ```json
-"demand_unit": "weight",
+"unit": "weight",
 "demand": [ {"latitude": "", "longitude": "", "weight": ""} ]
 ```
 
-*vehicle_max_capacity_quantity* should be the same unit of measure as *demand_unit*.
+*vehicle_max_capacity_quantity* should be the same unit of measure as *unit*.
 
 *vehicles_definitions* (optional) represent both the number of vehicles and their max capacities.
 
@@ -51,7 +51,7 @@ RPC API for logistics optimization web services.
 {
     "origin_latitude": "",
     "origin_longitude": "",
-    "demand_unit": "",
+    "unit": "",
     "demand": [ {"latitude": "", "longitude": "", "[unit]*": "", "cluster_id": "", "vehicle_id": "", "stop_num": ""} ],
     "vehicle_max_capacity_quantity": "",
     "vehicles_definitions": []
