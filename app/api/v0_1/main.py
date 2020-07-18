@@ -21,9 +21,10 @@ def parse_json(json:dict):
 
     for i in range(len(json['demand'])):
         row = json['demand'][i]
+        print(row)
 
         data['demand_latitude'].append(row['latitude'])
-        data['demand_longitude'].append(row['latitude'])
+        data['demand_longitude'].append(row['longitude'])
         data['demand_quantity'].append(row[data['unit']])
 
     return data
