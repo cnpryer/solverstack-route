@@ -1,6 +1,6 @@
 # solverstack-vrp-rpc
 
-![Python application](https://github.com/andromia/solverstack-vrp-rpc/workflows/Python%20application/badge.svg)
+![vrp-rpc](https://github.com/andromia/solverstack-vrp-rpc/workflows/vrp-rpc/badge.svg)
 [![Discord](https://img.shields.io/discord/721862473132540007?label=discord&style=plastic)](https://discord.gg/wg7xSAf)
 [![Slack](https://img.shields.io/badge/slack-workspace-orange)](https://join.slack.com/t/andromiasoftware/shared_invite/zt-felqfjhs-Tvma8OYuCExxdmQgHOIGsg)
 
