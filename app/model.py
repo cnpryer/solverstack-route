@@ -3,16 +3,17 @@ from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 
 import numpy as np
+from typing import List
 
 
 class VrpBasicBundle:
 
-    def __init__(self, matrix:list, demand:list, max_vehicle_capacity_units:int,
+    def __init__(self, matrix:List[List[int]], demand:List[int], max_vehicle_capacity_units:int,
         max_search_seconds:int=5):
         """
         high level implementation of an ortools capacitated vehicle routing model.
 
-        :matrix:          [[dist0, dist1, dist2, ...], [...] ...] distance matrix of origin
+        :matrix:          [[int, int, int, ...], [...] ...] distance matrix of origin
                           at node 0 and demand nodes at 1 -> len(matrix) - 1.
         :demand:          [int, int, ... len(demand nodes) - 1]
         :max_vehicle_capacity_units:      int for vehicle capacity constraint (in demand units)
@@ -131,7 +132,8 @@ class VrpBasicBundle:
 
         return self
 
-def create_vehicles(matrix:list, demand:list, clusters:list, max_vehicle_capacity_units:int=26):
+def create_vehicles(matrix:List[List[int]], demand:List[int], clusters:List[int], 
+max_vehicle_capacity_units:int=26):
     """
     solve by cluster and return assigned list of vehicles
     
