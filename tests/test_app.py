@@ -24,7 +24,7 @@ def test_main_procedure(client):
     input_data = VRP_DATA
     logging.debug(f'input data : {input_data}')
 
-    endpoint = f'/api/{__version__}/procedure'
+    endpoint = f'/api/{__version__}/vrp'
     logging.debug(f'endpoint: {endpoint}')
 
     response = client.post(endpoint, json=input_data)

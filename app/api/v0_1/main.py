@@ -29,12 +29,25 @@ def parse_json(json:dict):
 
     return data
 
-@bp.route('/procedure', methods=['GET', 'POST'])
-def main_procedure():
+@bp.route('/vrp', methods=['GET', 'POST'])
+def vrp_procedure():
     """
     Main RPC endpoint for passing input data for optimized outputs.
-    """
 
+    :origin_latitude:               float
+    :origin_longitude:              float
+    :unit:                          string; maps to unit of measure 
+                                    key from POST
+    :demand:                        list-like; contains ordered demand
+                                    nodes represented as dict-like 
+                                    objects
+          :demand_longitude:        float
+          :demand_quantity:         int
+          :demand_cluster:          int
+    :vehicle_max_capacity_quantity: int
+    :vehicle_definitions':          list-like; int for vehicle max
+                                    capacity overrides                                 
+    """
     # request.data is a bytestring
     data = parse_json(loads(request.data))
 
