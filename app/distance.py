@@ -1,9 +1,10 @@
 import numpy as np
 import logging
+from typing import List
 
 
-def create_vectorized_haversine_li(origin_lat:float, origin_lon:float, dest_lons:list, 
-dest_lats:list, unit:str='mi'):
+def create_vectorized_haversine_li(origin_lat:float, origin_lon:float, dest_lons:List[float], 
+dest_lats:List[float], unit:str='mi'):
     """
     haversine formula: https://en.wikipedia.org/wiki/Haversine_formula
 
@@ -23,13 +24,15 @@ dest_lats:list, unit:str='mi'):
 
     return c * r
 
-def create_matrix(origin_lat:float, origin_lon:float, dest_lats:list, dest_lons: list):
+def create_matrix(origin_lat:float, origin_lon:float, 
+dest_lats:List[float], dest_lons: List[float]):
     """
     creates matrix using optimized matrix processing.
 
-    :origin:        ['latitude', 'longitude']
-    :lats:          ['lat', 'lat', 'lat', ...]
-    :lons:          ['lon', 'lon', 'lon', ...]
+    :origin_lat:    float; latitude
+    :origin_lon:    float; longitude
+    :dest_lats:     list-like of floats; latitudes
+    :test_lons:     list-like of floats; longitudes
 
     returns matrix:list[list, ..., len(origin+lats)-1]
     """
@@ -109,7 +112,7 @@ class DBSCAN:
                 cluster += 1
                 self.build_cluster(i, points, cluster)
 
-def add_closest_clusters(x:list, y:list, clusters:list):
+def add_closest_clusters(x:List[float], y:List[float], clusters:List[int]):
     """
     Takes a list of x, a list of y, and a list of clusters to
     process clusters for x, y without an assigned cluster.
@@ -117,9 +120,9 @@ def add_closest_clusters(x:list, y:list, clusters:list):
     distance to every node with a cluster. It will then assign
     the found node's cluster as its own.
     
-    x: list-like of x coordinates
-    y: list-like of y coordinates
-    clusters: list-like of clusters assigned
+    x:        list-like; x coordinates
+    y:        list-like; y coordinates
+    clusters: list-like; assigned clusters
     
     return list of clusters
     """
@@ -145,7 +148,15 @@ def add_closest_clusters(x:list, y:list, clusters:list):
     
     return clusters
 
-def create_dbscan_basic(x:list, y:list):
+def create_dbscan_basic(x:List[float], y:List[float]):
+    """
+    Instantiates a basic instance of DBSCAN.
+
+    :x:      list-like of floats; latitudes
+    :y:      list-like of floats; longitudes
+
+    returns DBSCAN with .clusters
+    """
     epsilon = 0.79585 # approximate degree delta for 50 miles
     minpts = 2 # at least cluster 2
 
@@ -155,13 +166,13 @@ def create_dbscan_basic(x:list, y:list):
     
     return dbscan
 
-def create_dbscan_clusters(latitudes:list, longitudes:list):
+def create_dbscan_clusters(latitudes:List[float], longitudes:List[float]):
     """
     Uses DBSCAN clutering algorithm to identify groups of nodes based
     on their distance from eachother
 
-    :latitudes:          ['lat', ...] destination lats
-    :longitudes:         ['lon', ...] destination lons
+    :latitudes:          list-like of floats
+    :longitudes:         list-like of floats
 
     returns clusters:list
     """
