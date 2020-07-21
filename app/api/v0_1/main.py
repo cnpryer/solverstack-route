@@ -5,31 +5,32 @@ from json import loads
 from flask import request, jsonify
 
 
-def parse_json(json:dict):
+def parse_json(json: dict):
     # TODO: require specific format/naming
     data = {
-        'origin_latitude': json['origin_latitude'],
-        'origin_longitude': json['origin_longitude'],
-        'unit': json['unit'],
-        'demand_latitude': [],
-        'demand_longitude': [],
-        'demand_quantity': [],
-        'demand_cluster': [],
-        'vehicle_max_capacity_quantity': json['vehicle_max_capacity_quantity'],
-        'vehicle_definitions': json['vehicle_definitions']
+        "origin_latitude": json["origin_latitude"],
+        "origin_longitude": json["origin_longitude"],
+        "unit": json["unit"],
+        "demand_latitude": [],
+        "demand_longitude": [],
+        "demand_quantity": [],
+        "demand_cluster": [],
+        "vehicle_max_capacity_quantity": json["vehicle_max_capacity_quantity"],
+        "vehicle_definitions": json["vehicle_definitions"],
     }
 
-    for i in range(len(json['demand'])):
-        row = json['demand'][i]
+    for i in range(len(json["demand"])):
+        row = json["demand"][i]
         print(row)
 
-        data['demand_latitude'].append(row['latitude'])
-        data['demand_longitude'].append(row['longitude'])
-        data['demand_quantity'].append(row[data['unit']])
+        data["demand_latitude"].append(row["latitude"])
+        data["demand_longitude"].append(row["longitude"])
+        data["demand_quantity"].append(row[data["unit"]])
 
     return data
 
-@bp.route('/vrp', methods=['GET', 'POST'])
+
+@bp.route("/vrp", methods=["GET", "POST"])
 def vrp_procedure():
     """
     Main RPC endpoint for passing input data for optimized outputs.
@@ -53,23 +54,22 @@ def vrp_procedure():
 
     # cluster by location (lat, lon)
     clusters = distance.create_dbscan_clusters(
-        data['demand_latitude'], 
-        data['demand_longitude']
+        data["demand_latitude"], data["demand_longitude"]
     )
 
     # list of lists for all-to-all distances
     matrix = distance.create_matrix(
-        data['origin_latitude'],
-        data['origin_longitude'],
-        data['demand_latitude'], 
-        data['demand_longitude']
+        data["origin_latitude"],
+        data["origin_longitude"],
+        data["demand_latitude"],
+        data["demand_longitude"],
     )
 
     # manage solve
-    solution = model.create_vehicles(matrix, ['0'] + data['demand_quantity'], clusters)
-    
+    solution = model.create_vehicles(matrix, ["0"] + data["demand_quantity"], clusters)
+
     # TODO: fix this
-    data['vehicle_id'] = list(solution['id'])
-    data['stop_num'] = list(solution['stops'])
+    data["vehicle_id"] = list(solution["id"])
+    data["stop_num"] = list(solution["stops"])
 
     return jsonify(data)

@@ -7,9 +7,13 @@ from typing import List
 
 
 class VrpBasicBundle:
-
-    def __init__(self, matrix:List[List[int]], demand:List[int], max_vehicle_capacity_units:int,
-        max_search_seconds:int=5):
+    def __init__(
+        self,
+        matrix: List[List[int]],
+        demand: List[int],
+        max_vehicle_capacity_units: int,
+        max_search_seconds: int = 5,
+    ):
         """
         high level implementation of an ortools capacitated vehicle routing model.
 
@@ -34,19 +38,19 @@ class VrpBasicBundle:
         assumes origin is position 0 in self.matrix and
         defines a vehicle of max_cap for each destination.
         """
-        return [self.max_vehicle_cap for i in range(len(self.matrix[1:]))] 
-        
+        return [self.max_vehicle_cap for i in range(len(self.matrix[1:]))]
+
     def create_manager(self):
         return pywrapcp.RoutingIndexManager(len(self.matrix), len(self.vehicles), 0)
 
-    def matrix_callback(self, i:int, j:int):
+    def matrix_callback(self, i: int, j: int):
         """index of from (i) and to (j)"""
         node_i = self.manager.IndexToNode(i)
         node_j = self.manager.IndexToNode(j)
 
         return self.matrix[node_i][node_j]
 
-    def demand_callback(self, i:int):
+    def demand_callback(self, i: int):
         """capacity constraint"""
         node = self.manager.IndexToNode(i)
 
@@ -64,20 +68,21 @@ class VrpBasicBundle:
         model.AddDimensionWithVehicleCapacity(
             # function which return the load at each location (cf. cvrp.py example)
             model.RegisterUnaryTransitCallback(self.demand_callback),
-            0, # null capacity slack
-            np.array([cap for cap in self.vehicles]), # vehicle maximum capacity
-            True, # start cumul to zero
-            'Capacity'
+            0,  # null capacity slack
+            np.array([cap for cap in self.vehicles]),  # vehicle maximum capacity
+            True,  # start cumul to zero
+            "Capacity",
         )
 
         return model
 
-    def create_search_params(self, max_seconds:int=5):
+    def create_search_params(self, max_seconds: int = 5):
         search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-        search_parameters.first_solution_strategy = \
+        search_parameters.first_solution_strategy = (
             routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
+        )
         search_parameters.time_limit.seconds = max_seconds
-        
+
         return search_parameters
 
     def get_solution(self):
@@ -87,12 +92,16 @@ class VrpBasicBundle:
         # positions in matrix (demand)
         vehicles = np.zeros(len(self.demand) - 1)
         stops = np.zeros(len(self.demand) - 1)
-        
+
         # original solution building
         for vehicle in range(len(self.vehicles)):
             i = self.model.Start(vehicle)
-            info = {'vehicle': vehicle, 'stops': list(), 'stop_distances': [0],
-                    'stop_loads': list()}
+            info = {
+                "vehicle": vehicle,
+                "stops": list(),
+                "stop_distances": [0],
+                "stop_loads": list(),
+            }
 
             while not self.model.IsEnd(i):
                 node = self.manager.IndexToNode(i)
@@ -101,23 +110,22 @@ class VrpBasicBundle:
                     vehicles[node - 1] = vehicle
                     stops[node - 1] = node
 
-                info['stops'].append(node)
-                info['stop_loads'].append(self.demand[node])
+                info["stops"].append(node)
+                info["stop_loads"].append(self.demand[node])
 
                 previous_i = int(i)
                 i = self.assignment.Value(self.model.NextVar(i))
-                info['stop_distances'].append(self.model.GetArcCostForVehicle(previous_i, i, vehicle))
+                info["stop_distances"].append(
+                    self.model.GetArcCostForVehicle(previous_i, i, vehicle)
+                )
 
             # add return to depot to align with solution data
-            info['stops'].append(0)
-            info['stop_loads'].append(0)
-            #olution.append(info)
-        
+            info["stops"].append(0)
+            info["stop_loads"].append(0)
+            # olution.append(info)
+
         # NOTE: returning vehicle assignments only
-        return {
-            'id': vehicles,
-            'stops': stops
-        }
+        return {"id": vehicles, "stops": stops}
 
     def ortools(self):
         """init of ortools modeling"""
@@ -126,14 +134,19 @@ class VrpBasicBundle:
 
         return self
 
-    def run(self, max_search_seconds:int=30):
+    def run(self, max_search_seconds: int = 30):
         search = self.create_search_params(max_search_seconds)
         self.assignment = self.model.SolveWithParameters(search)
 
         return self
 
-def create_vehicles(matrix:List[List[int]], demand:List[int], clusters:List[int], 
-max_vehicle_capacity_units:int=26):
+
+def create_vehicles(
+    matrix: List[List[int]],
+    demand: List[int],
+    clusters: List[int],
+    max_vehicle_capacity_units: int = 26,
+):
     """
     solve by cluster and return assigned list of vehicles
     
@@ -158,18 +171,15 @@ max_vehicle_capacity_units:int=26):
         bndl = VrpBasicBundle(
             matrix=matrix[is_cluster],
             demand=demand[is_cluster],
-            max_vehicle_capacity_units=int(max_vehicle_capacity_units)
+            max_vehicle_capacity_units=int(max_vehicle_capacity_units),
         )
-        
+
         # list of vehcles # NOTE: will change
         segment_vehicles = bndl.run().get_solution()
 
         # assign
         is_cluster = is_cluster[is_cluster != 0] - 1
-        vehicles[is_cluster] = segment_vehicles['id'] * c
-        stops[is_cluster] = segment_vehicles['stops']
+        vehicles[is_cluster] = segment_vehicles["id"] * c
+        stops[is_cluster] = segment_vehicles["stops"]
 
-    return {
-        'id': vehicles,
-        'stops': stops
-    }
+    return {"id": vehicles, "stops": stops}

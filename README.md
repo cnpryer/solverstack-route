@@ -12,34 +12,35 @@ RPC API for logistics optimization web services.
 
 ## MVP
 
-```/api/<version>/```
+`/api/<version>/`
 
 ## Main Procedure
 
-- **endpoint**: ```/procedure```
-- **methods**: ```GET```, ```POST```
+- **endpoint**: `/procedure`
+- **methods**: `GET`, `POST`
 - **input data**:
 
 ```json
 {
-    "origin_latitude": "",
-    "origin_longitude": "",
-    "unit": "",
-    "demand": [ {"latitude": "", "longitude": "", "[unit]": ""} ],
-    "vehicle_max_capacity_quantity": "",
-    "vehicles_definitions": []
+  "origin_latitude": "",
+  "origin_longitude": "",
+  "unit": "",
+  "demand": [{ "latitude": "", "longitude": "", "[unit]": "" }],
+  "vehicle_max_capacity_quantity": "",
+  "vehicles_definitions": []
 }
 ```
-*[unit]* is defined by *unit* (should be the same value).
+
+_[unit]_ is defined by _unit_ (should be the same value).
 
 ```json
 "unit": "weight",
 "demand": [ {"latitude": "", "longitude": "", "weight": ""} ]
 ```
 
-*vehicle_max_capacity_quantity* should be the same unit of measure as *unit*.
+_vehicle_max_capacity_quantity_ should be the same unit of measure as _unit_.
 
-*vehicles_definitions* (optional) represent both the number of vehicles and their max capacities.
+_vehicles_definitions_ (optional) represent both the number of vehicles and their max capacities.
 
 ```json
 "vehicles_definitions": [26, 26, 26, 26]
@@ -49,12 +50,21 @@ RPC API for logistics optimization web services.
 
 ```json
 {
-    "origin_latitude": "",
-    "origin_longitude": "",
-    "unit": "",
-    "demand": [ {"latitude": "", "longitude": "", "[unit]*": "", "cluster_id": "", "vehicle_id": "", "stop_num": ""} ],
-    "vehicle_max_capacity_quantity": "",
-    "vehicles_definitions": []
+  "origin_latitude": "",
+  "origin_longitude": "",
+  "unit": "",
+  "demand": [
+    {
+      "latitude": "",
+      "longitude": "",
+      "[unit]*": "",
+      "cluster_id": "",
+      "vehicle_id": "",
+      "stop_num": ""
+    }
+  ],
+  "vehicle_max_capacity_quantity": "",
+  "vehicles_definitions": []
 }
 ```
 
@@ -81,9 +91,11 @@ You can use a Docker container for running the tests by using the provided _Dock
 - Run the image using `docker run andromia:solverstack-vrp-rpc-test`
 
 ## TODO
-- replace ```dict```[key][key]... with ```pandas``` wrappers.
+
+- replace `dict`[key][key]... with `pandas` wrappers.
 
 ## Other
+
 See [cvrp-poc](https://github.com/fingafrog/cvrp-poc) for demo application.
 
 ![](https://github.com/fingafrog/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)

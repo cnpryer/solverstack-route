@@ -7,6 +7,7 @@ def test_matrix_processing():
 
     assert len(matrix) == len(demand_lats) + 1
 
+
 def test_cluster_processing():
     lats = common.get_vrp_lats_basic()
     clusters = common.get_dbscan_clusters_basic()
