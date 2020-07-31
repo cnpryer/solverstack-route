@@ -22,28 +22,28 @@ RPC API for logistics optimization web services.
 
 ```json
 {
-  "origin_latitude": "",
-  "origin_longitude": "",
+  "origin_latitude": <float>,
+  "origin_longitude": <float>,
   "unit": "",
-  "demand": [{ "latitude": "", "longitude": "", "[unit]": "" }],
-  "vehicle_max_capacity_quantity": "",
-  "vehicles_definitions": []
+  "demand": [{ "latitude": <float>, "longitude": <float>, "quantity": "" }],
+  "vehicle_capacity": ,
+  "vehicle_definitions": []
 }
 ```
 
-_[unit]_ is defined by _unit_ (should be the same value).
+<!-- _[unit]_ is defined by _unit_ (should be the same value).
 
 ```json
 "unit": "weight",
-"demand": [ {"latitude": "", "longitude": "", "weight": ""} ]
-```
+"demand": [ {"latitude": <float>, "longitude": <float>, "quantity": <float>} ]
+``` -->
 
-_vehicle_max_capacity_quantity_ should be the same unit of measure as _unit_.
+_vehicle_capacity_ should be the same unit of measure as _unit_.
 
-_vehicles_definitions_ (optional) represent both the number of vehicles and their max capacities.
+_vehicle_definitions_ (optional) represent both the number of vehicles and their max capacities.
 
 ```json
-"vehicles_definitions": [26, 26, 26, 26]
+"vehicle_definitions": [26, 26, 26, 26]
 ```
 
 - **output data**:
@@ -57,14 +57,14 @@ _vehicles_definitions_ (optional) represent both the number of vehicles and thei
     {
       "latitude": "",
       "longitude": "",
-      "[unit]*": "",
+      "quantity": "",
       "cluster_id": "",
       "vehicle_id": "",
       "stop_num": ""
     }
   ],
-  "vehicle_max_capacity_quantity": "",
-  "vehicles_definitions": []
+  "vehicle_capacity": "",
+  "vehicle_definitions": []
 }
 ```
 

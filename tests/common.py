@@ -1,11 +1,10 @@
-from app import distance
-
 import logging
 import os
-
-from pandas import read_csv
 from json import loads
 
+from pandas import read_csv
+
+from app import distance
 
 TEST_ROOT = os.path.dirname(os.path.abspath(__file__))
 CSV_TESTING_FILENAME = "vrp_testing_data.csv"

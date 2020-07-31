@@ -1,13 +1,13 @@
-from . import common
-from app.api import __version__
+import json
 import logging
 
+import pytest
+
 from app import create_app
+from app.api import __version__
 from config import Config
 
-import pytest
-import json
-
+from . import common
 
 VRP_DATA = common.VRP_DATA
 

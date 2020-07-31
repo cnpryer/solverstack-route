@@ -1,9 +1,9 @@
-from . import common
-from app import model
-
 import numpy as np
 import pytest
 
+from app import model
+
+from . import common
 
 CLUSTERS = common.get_dbscan_clusters_basic()
 MATRIX = common.get_matrix_basic()

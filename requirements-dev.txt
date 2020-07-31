@@ -4,3 +4,4 @@ pytest-profiling==1.7.0
 pandas==1.0.5
 flake8
 black
+isort
