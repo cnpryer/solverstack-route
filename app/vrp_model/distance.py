@@ -177,7 +177,7 @@ def create_dbscan_basic(x: List[float], y: List[float]):
 
 def create_dbscan_clusters(latitudes: List[float], longitudes: List[float]):
     """
-    Uses DBSCAN clutering algorithm to identify groups of nodes based
+    Uses DBSCAN clustering algorithm to identify groups of nodes based
     on their distance from eachother
 
     :latitudes:          list-like of floats
