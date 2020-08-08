@@ -8,22 +8,22 @@ from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 class VrpBasicBundle:
     def __init__(
         self,
-        matrix: List[List[int]],
-        demand: List[int],
+        distance_matrix: List[List[int]],
+        demand_quantities: List[int],
         max_vehicle_capacity_units: int,
         max_search_seconds: int = 5,
     ):
         """
         high level implementation of an ortools capacitated vehicle routing model.
 
-        :matrix:          [[int, int, int, ...], [...] ...] distance matrix of origin
+        :distance_matrix:          [[int, int, int, ...], [...] ...] distance matrix of origin
                           at node 0 and demand nodes at 1 -> len(matrix) - 1.
-        :demand:          [int, int, ... len(demand nodes) - 1]
+        :demand_quantities:          [int, int, ... len(demand nodes) - 1]
         :max_vehicle_capacity_units:      int for vehicle capacity constraint (in demand units)
         :max_search_seconds:      int for seconds allowance for solver
         """
-        self.matrix = matrix
-        self.demand = demand
+        self.distance_matrix = distance_matrix
+        self.demand_quantities = demand_quantities
         self.max_vehicle_cap = max_vehicle_capacity_units
         self.max_search_seconds = max_search_seconds
 
@@ -34,26 +34,28 @@ class VrpBasicBundle:
 
     def create_vehicles(self):
         """
-        assumes origin is position 0 in self.matrix and
+        assumes origin is position 0 in self.distance_matrix and
         defines a vehicle of max_cap for each destination.
         """
-        return [self.max_vehicle_cap for i in range(len(self.matrix[1:]))]
+        return [self.max_vehicle_cap for i in range(len(self.distance_matrix[1:]))]
 
     def create_manager(self):
-        return pywrapcp.RoutingIndexManager(len(self.matrix), len(self.vehicles), 0)
+        return pywrapcp.RoutingIndexManager(
+            len(self.distance_matrix), len(self.vehicles), 0
+        )
 
     def matrix_callback(self, i: int, j: int):
         """index of from (i) and to (j)"""
         node_i = self.manager.IndexToNode(i)
         node_j = self.manager.IndexToNode(j)
 
-        return self.matrix[node_i][node_j]
+        return self.distance_matrix[node_i][node_j]
 
     def demand_callback(self, i: int):
         """capacity constraint"""
         node = self.manager.IndexToNode(i)
 
-        return self.demand[node]
+        return self.demand_quantities[node]
 
     def create_model(self):
         model = pywrapcp.RoutingModel(self.manager)
@@ -89,8 +91,8 @@ class VrpBasicBundle:
         total_load = 0
 
         # positions in matrix (demand)
-        vehicles = np.zeros(len(self.demand) - 1)
-        stops = np.zeros(len(self.demand) - 1)
+        vehicles = np.zeros(len(self.demand_quantities) - 1)
+        stops = np.zeros(len(self.demand_quantities) - 1)
 
         # original solution building
         for vehicle in range(len(self.vehicles)):
@@ -110,7 +112,7 @@ class VrpBasicBundle:
                     stops[node - 1] = node
 
                 info["stops"].append(node)
-                info["stop_loads"].append(self.demand[node])
+                info["stop_loads"].append(self.demand_quantities[node])
 
                 previous_i = int(i)
                 i = self.assignment.Value(self.model.NextVar(i))
@@ -141,8 +143,8 @@ class VrpBasicBundle:
 
 
 def create_vehicles(
-    matrix: List[List[int]],
-    demand: List[int],
+    distance_matrix: List[List[int]],
+    demand_quantities: List[int],
     clusters: List[int],
     max_vehicle_capacity_units: int = 26,
 ):
@@ -155,22 +157,22 @@ def create_vehicles(
 
     returns vehicles:list
     """
-    vehicles = np.zeros(len(demand) - 1)
-    stops = np.zeros(len(demand) - 1)
-    matrix = np.array(matrix)
-    demand = np.array(demand)
+    vehicles = np.zeros(len(demand_quantities) - 1)
+    stops = np.zeros(len(demand_quantities) - 1)
+    distance_matrix = np.array(distance_matrix)
+    demand_quantities = np.array(demand_quantities)
 
     for c in np.unique(clusters):
 
-        # align with matrix, demand
+        # align with matrix, demand_quantities
         is_cluster = np.where(clusters == c)[0]
         is_cluster = is_cluster + 1
         is_cluster = np.insert(is_cluster, 0, 0)
 
         bndl = VrpBasicBundle(
-            matrix=matrix[is_cluster],
-            demand=demand[is_cluster],
-            max_vehicle_capacity_units=int(max_vehicle_capacity_units),
+            distance_matrix=distance_matrix[is_cluster],
+            demand_quantities=demand_quantities[is_cluster],
+            max_vehicle_capacity_units=max_vehicle_capacity_units,
         )
 
         # list of vehcles # NOTE: will change

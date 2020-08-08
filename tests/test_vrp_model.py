@@ -28,8 +28,8 @@ class TestVRPModel:
 
         demand = [int(d) for d in quantities]
         bndl = model.VrpBasicBundle(
-            matrix=matrix,
-            demand=demand,
+            distance_matrix=matrix,
+            demand_quantities=demand,
             max_vehicle_capacity_units=26,
             max_search_seconds=30,
         )
