@@ -12,7 +12,7 @@ class TestVRPModel:
     def test_create_vehicles(self, clusters, origin, latitudes, longitudes, quantities):
         origin_lat = origin["location"]["latitude"]
         origin_lon = origin["location"]["longitude"]
-        matrix = distance.create_matrix(origin_lat, origin_lon, latitudes, longitudes)
+        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
         demand = [int(d) for d in quantities]
         vehicles = model.create_vehicles(matrix, demand, np.array(clusters))
@@ -24,7 +24,7 @@ class TestVRPModel:
 
         origin_lat = origin["location"]["latitude"]
         origin_lon = origin["location"]["longitude"]
-        matrix = distance.create_matrix(origin_lat, origin_lon, latitudes, longitudes)
+        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
         demand = [int(d) for d in quantities]
         bndl = model.VrpBasicBundle(

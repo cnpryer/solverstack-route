@@ -1,12 +1,11 @@
 import logging
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 
 
 def create_vectorized_haversine_li(
-    origin_lat: float,
-    origin_lon: float,
+    origin: Tuple[float],
     dest_lons: List[float],
     dest_lats: List[float],
     unit: str = "mi",
@@ -17,6 +16,9 @@ def create_vectorized_haversine_li(
     TODO: validate formula (w. tests)
     returns distances:list
     """
+
+    origin_lat, origin_lon = origin
+
     dlat = dest_lats - origin_lat
     dlon = dest_lons - origin_lon
 
@@ -24,6 +26,7 @@ def create_vectorized_haversine_li(
         np.sin(dlat / 2) ** 2
         + np.cos(origin_lat) * np.cos(dest_lats) * np.sin(dlon / 2) ** 2
     )
+
     c = 2 * np.arcsin(np.sqrt(a))
 
     r = {"mi": 3956, "km": 6371}[unit]
@@ -32,20 +35,21 @@ def create_vectorized_haversine_li(
 
 
 def create_matrix(
-    origin_lat: float, origin_lon: float, dest_lats: List[float], dest_lons: List[float]
+    origin: Tuple[float],
+    # destinations: List[Tuple[float]],
+    dest_lats: List[float],
+    dest_lons: List[float],
 ):
     """
     creates matrix using optimized matrix processing.
 
-    :origin_lat:    float; latitude
-    :origin_lon:    float; longitude
+    :origin:        tuple(float); origin coordinates
     :dest_lats:     list-like of floats; latitudes
-    :test_lons:     list-like of floats; longitudes
+    :dest_lons:     list-like of floats; longitudes
 
     returns matrix:list[list, ..., len(origin+lats)-1]
     """
-    origin_lat = np.radians([float(origin_lat)])[0]
-    origin_lon = np.radians([float(origin_lon)])[0]
+    origin_lat, origin_lon = np.radians(origin)
 
     lats = np.array([origin_lat] + dest_lats, dtype=float)
     lons = np.array([origin_lon] + dest_lons, dtype=float)
@@ -53,7 +57,7 @@ def create_matrix(
     matrix = []
     for i in range(len(lats)):
         distances = create_vectorized_haversine_li(
-            origin_lat=lats[i], origin_lon=lons[i], dest_lats=lats, dest_lons=lons
+            (lats[i], lons[i]), dest_lats=lats, dest_lons=lons
         )
 
         # must be integer for solver

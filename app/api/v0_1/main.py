@@ -56,8 +56,7 @@ def vrp_procedure():
     origin = body.origin
     # list of lists for all-to-all distances
     matrix = distance.create_matrix(
-        origin.location.latitude,
-        origin.location.longitude,
+        (origin.location.latitude, origin.location.longitude,),
         demand_latitudes,
         demand_longitudes,
     )

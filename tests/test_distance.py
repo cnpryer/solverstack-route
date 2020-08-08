@@ -13,7 +13,7 @@ class TestDistance:
 
         origin_lat = origin["location"]["latitude"]
         origin_lon = origin["location"]["longitude"]
-        matrix = distance.create_matrix(origin_lat, origin_lon, latitudes, longitudes)
+        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
         assert len(matrix) == len(latitudes) + 1
 
