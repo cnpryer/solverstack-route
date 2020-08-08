@@ -2,18 +2,19 @@ from json import loads
 from typing import List
 
 from connexion import request
-from flask import jsonify
+from flask import jsonify, make_response
 
-from app.api.v0_1.models.body import Body  # noqa: E501
-from app.api.v0_1.models.inline_response200 import InlineResponse200  # noqa: E501
-from app.api.v0_1.models.invalid_usage_error import InvalidUsageError  # noqa: E501
+# from app.api.models.inline_response200 import InlineResponse200  # noqa: E501
+from app.api.models.invalid_usage_error import InvalidUsageError  # noqa: E501
+from app.api.v0_1.models.procedure_request import ProcedureRequest  # noqa: E501
+from app.api.v0_1.models.solution_response import SolutionResponse  # noqa: E501
 from app.vrp_model import distance, model
 
 from . import bp
 
 
 @bp.route("/vrp", methods=["POST"])
-def vrp_procedure(body):
+def vrp_procedure():
     """
     Main RPC endpoint for passing input data for optimized outputs.
 
@@ -32,20 +33,31 @@ def vrp_procedure(body):
                                     capacity overrides                                 
     """
 
-    demands: List[dict] = body["demands"]
+    if request.is_json:
+        body = ProcedureRequest.from_dict(request.get_json())  # noqa: E501
+    else:
+        return make_response(
+            jsonify(
+                InvalidUsageError(
+                    f"Incorrect request format! Content type received '{request.content_type}' instead of 'application/json'"
+                )
+            ),
+            400,
+        )
+    demands = body.demands
 
-    demand_latitudes = [demand["location"]["latitude"] for demand in demands]
-    demand_longitudes = [demand["location"]["longitude"] for demand in demands]
-    demand_quantities = [demand["quantity"] for demand in demands]
+    demand_latitudes = [demand.location.latitude for demand in demands]
+    demand_longitudes = [demand.location.longitude for demand in demands]
+    demand_quantities = [demand.quantity for demand in demands]
 
     # cluster by location (lat, lon)
     clusters = distance.create_dbscan_clusters(demand_latitudes, demand_longitudes)
 
-    origin = body["origin"]
+    origin = body.origin
     # list of lists for all-to-all distances
     matrix = distance.create_matrix(
-        origin["location"]["latitude"],
-        origin["location"]["longitude"],
+        origin.location.latitude,
+        origin.location.longitude,
         demand_latitudes,
         demand_longitudes,
     )
@@ -55,8 +67,8 @@ def vrp_procedure(body):
 
     response = {
         "origin": origin,
-        "unit": body["unit"],
-        "vehicle_capacity": body["vehicle_capacity"],
+        "unit": body.unit,
+        "vehicle_capacity": body.vehicle_capacity,
     }
 
     response_solutions = [

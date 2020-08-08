@@ -14,7 +14,6 @@ CSV_TESTING_FILEPATH = os.path.join(TEST_ROOT, CSV_TESTING_FILENAME)
 def get_csv():
     logging.debug(f"filepath: {CSV_TESTING_FILEPATH}.")
 
-    dtypes = {"latitude": str, "longitude": str, "pallets": str}
     df = read_csv(CSV_TESTING_FILEPATH)
     df.pallets = df.pallets.fillna(1)
 
@@ -22,36 +21,6 @@ def get_csv():
 
 
 TESTING_CSV_DF = get_csv()
-
-
-def get_vrp_origin_basic():
-    """returns lat:str, lon:str"""
-    lat, lon = "41.4191", "-87.7748"
-    logging.debug(f"origin lat: {lat}, lon: {lon}.")
-
-    return lat, lon
-
-
-def get_vrp_lats_basic():
-    lats = ["39.6893", "39.6893", "43.7266", "43.7266", "38.2306", "38.2306", "43.7266"]
-    logging.debug(f"demand lats: {lats}.")
-
-    return lats
-
-
-def get_vrp_lons_basic():
-    lons = [
-        "-86.3919",
-        "-86.3919",
-        "-87.8242",
-        "-87.8242",
-        "-84.35655",
-        "-84.35655",
-        "-87.8242",
-    ]
-    logging.debug(f"demand lons: {lons}.")
-
-    return lons
 
 
 def get_vrp_unit_name_basic():
@@ -67,20 +36,6 @@ def get_vrp_units_basic():
     logging.debug(f"demand units: {units}")
 
     return units
-
-
-def get_vrp_lats_csv():
-    lats = TESTING_CSV_DF.latitude.astype(str).tolist()
-    logging.debug(f"demand lats: {lats}")
-
-    return lats
-
-
-def get_vrp_lons_csv():
-    lons = TESTING_CSV_DF.longitude.astype(str).tolist()
-    logging.debug(f"demand lons: {lons}")
-
-    return lons
 
 
 def get_vrp_unit_name_csv():
@@ -100,31 +55,30 @@ def get_vrp_units_csv():
 
 def get_vrp_data():
     # TODO: abstract json def
-    origin_lat, origin_lon = get_vrp_origin_basic()
+    lat, lon = 41.4191, -87.7748
+    logging.debug(f"origin lat: {lat}, lon: {lon}.")
+
+    origin = {"location": {"latitude": lat, "longitude": lon}}
+
+    origin_lat = origin["location"]["latitude"]
+    origin_lon = origin["location"]["longitude"]
 
     return {
-        "origin_latitude": origin_lat,
-        "origin_longitude": origin_lat,
+        "origin": {"location": {"latitude": origin_lat, "longitude": origin_lon}},
         "unit": "pallets",
-        "demand": loads(TESTING_CSV_DF.to_json(orient="records")),
+        "demands": TESTING_CSV_DF.to_dict("records"),
         "vehicle_max_capacity_quantity": "26",
         "vehicle_definitions": None,  # TODO
     }
 
 
-def get_matrix_basic():
-    origin_lat, origin_lon = get_vrp_origin_basic()
+def get_matrix_basic(origin, demands):
+    origin_lat = origin["location"]["latitude"]
+    origin_lon = origin["location"]["longitude"]
     demand_lats = get_vrp_lats_basic()
     demand_lons = get_vrp_lons_basic()
 
     return distance.create_matrix(origin_lat, origin_lon, demand_lats, demand_lons)
-
-
-def get_dbscan_clusters_basic():
-    lats = get_vrp_lats_basic()
-    lons = get_vrp_lons_basic()
-
-    return distance.create_dbscan_clusters(lats, lons)
 
 
 def get_matrix_csv():

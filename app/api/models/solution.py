@@ -7,10 +7,7 @@ from typing import Dict, List  # noqa: F401
 
 from app import util
 from app.api.models.base_model_ import Model
-from app.api.v0_1.models.demand import Demand  # noqa: F401,E501
-from app.api.v0_1.models.latitude import Latitude  # noqa: F401,E501
-from app.api.v0_1.models.longitude import Longitude  # noqa: F401,E501
-from app.api.v0_1.models.quantity import Quantity  # noqa: F401,E501
+from app.api.models.demand import Demand  # noqa: F401,E501
 
 
 class Solution(Model):
@@ -21,21 +18,15 @@ class Solution(Model):
 
     def __init__(
         self,
-        latitude: Latitude = None,
-        longitude: Longitude = None,
-        quantity: Quantity = None,
+        demand: Demand = None,
         cluster_id: int = None,
         vehicle_id: int = None,
         stop_num: int = None,
     ):  # noqa: E501
         """Solution - a model defined in Swagger
 
-        :param latitude: The latitude of this Solution.  # noqa: E501
-        :type latitude: Latitude
-        :param longitude: The longitude of this Solution.  # noqa: E501
-        :type longitude: Longitude
-        :param quantity: The quantity of this Solution.  # noqa: E501
-        :type quantity: Quantity
+        :param demand: The demand of this Solution.  # noqa: E501
+        :type demand: Demand
         :param cluster_id: The cluster_id of this Solution.  # noqa: E501
         :type cluster_id: int
         :param vehicle_id: The vehicle_id of this Solution.  # noqa: E501
@@ -44,25 +35,19 @@ class Solution(Model):
         :type stop_num: int
         """
         self.swagger_types = {
-            "latitude": Latitude,
-            "longitude": Longitude,
-            "quantity": Quantity,
+            "demand": Demand,
             "cluster_id": int,
             "vehicle_id": int,
             "stop_num": int,
         }
 
         self.attribute_map = {
-            "latitude": "latitude",
-            "longitude": "longitude",
-            "quantity": "quantity",
+            "demand": "demand",
             "cluster_id": "cluster_id",
             "vehicle_id": "vehicle_id",
             "stop_num": "stop_num",
         }
-        self._latitude = latitude
-        self._longitude = longitude
-        self._quantity = quantity
+        self._demand = demand
         self._cluster_id = cluster_id
         self._vehicle_id = vehicle_id
         self._stop_num = stop_num
@@ -79,67 +64,25 @@ class Solution(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def latitude(self) -> Latitude:
-        """Gets the latitude of this Solution.
+    def demand(self) -> Demand:
+        """Gets the demand of this Solution.
 
 
-        :return: The latitude of this Solution.
-        :rtype: Latitude
+        :return: The demand of this Solution.
+        :rtype: Demand
         """
-        return self._latitude
+        return self._demand
 
-    @latitude.setter
-    def latitude(self, latitude: Latitude):
-        """Sets the latitude of this Solution.
-
-
-        :param latitude: The latitude of this Solution.
-        :type latitude: Latitude
-        """
-
-        self._latitude = latitude
-
-    @property
-    def longitude(self) -> Longitude:
-        """Gets the longitude of this Solution.
+    @demand.setter
+    def demand(self, demand: Demand):
+        """Sets the demand of this Solution.
 
 
-        :return: The longitude of this Solution.
-        :rtype: Longitude
-        """
-        return self._longitude
-
-    @longitude.setter
-    def longitude(self, longitude: Longitude):
-        """Sets the longitude of this Solution.
-
-
-        :param longitude: The longitude of this Solution.
-        :type longitude: Longitude
+        :param demand: The demand of this Solution.
+        :type demand: Demand
         """
 
-        self._longitude = longitude
-
-    @property
-    def quantity(self) -> Quantity:
-        """Gets the quantity of this Solution.
-
-
-        :return: The quantity of this Solution.
-        :rtype: Quantity
-        """
-        return self._quantity
-
-    @quantity.setter
-    def quantity(self, quantity: Quantity):
-        """Sets the quantity of this Solution.
-
-
-        :param quantity: The quantity of this Solution.
-        :type quantity: Quantity
-        """
-
-        self._quantity = quantity
+        self._demand = demand
 
     @property
     def cluster_id(self) -> int:
@@ -159,6 +102,10 @@ class Solution(Model):
         :param cluster_id: The cluster_id of this Solution.
         :type cluster_id: int
         """
+        if cluster_id is None:
+            raise ValueError(
+                "Invalid value for `cluster_id`, must not be `None`"
+            )  # noqa: E501
 
         self._cluster_id = cluster_id
 
@@ -180,6 +127,10 @@ class Solution(Model):
         :param vehicle_id: The vehicle_id of this Solution.
         :type vehicle_id: int
         """
+        if vehicle_id is None:
+            raise ValueError(
+                "Invalid value for `vehicle_id`, must not be `None`"
+            )  # noqa: E501
 
         self._vehicle_id = vehicle_id
 
@@ -201,5 +152,9 @@ class Solution(Model):
         :param stop_num: The stop_num of this Solution.
         :type stop_num: int
         """
+        if stop_num is None:
+            raise ValueError(
+                "Invalid value for `stop_num`, must not be `None`"
+            )  # noqa: E501
 
         self._stop_num = stop_num
