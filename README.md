@@ -16,18 +16,30 @@ RPC API for logistics optimization web services.
 
 ## Main Procedure
 
-- **endpoint**: `/procedure`
-- **methods**: `GET`, `POST`
-- **input data**:
+- **Endpoint**: `/vrp`
+- **Methods**: `POST`
+- **Request Syntax**:
 
 ```json
 {
-  "origin_latitude": <float>,
-  "origin_longitude": <float>,
-  "unit": "",
-  "demand": [{ "latitude": <float>, "longitude": <float>, "quantity": "" }],
-  "vehicle_capacity": ,
-  "vehicle_definitions": []
+  "origin": {
+    "latitude": <float>,
+    "longitude": <float>
+  },
+  "demands": [
+    {
+      "latitude": <float>,
+      "longitude": <float>,
+      "quantity": <int>
+    }
+  ],
+  "unit": <str>,
+  "vehicle_capacity": <int>,
+
+  // **OPTIONAL**
+  "vehicle_definitions": [
+    <int>
+  ]
 }
 ```
 
@@ -38,9 +50,9 @@ RPC API for logistics optimization web services.
 "demand": [ {"latitude": <float>, "longitude": <float>, "quantity": <float>} ]
 ``` -->
 
-_vehicle_capacity_ should be the same unit of measure as _unit_.
+*vehicle_capacity* should be the same unit of measure as *unit*.
 
-_vehicle_definitions_ (optional) represent both the number of vehicles and their max capacities.
+*vehicle_definitions* (optional) represent both the number of vehicles and their max capacities.
 
 ```json
 "vehicle_definitions": [26, 26, 26, 26]
@@ -50,21 +62,24 @@ _vehicle_definitions_ (optional) represent both the number of vehicles and their
 
 ```json
 {
-  "origin_latitude": "",
-  "origin_longitude": "",
-  "unit": "",
-  "demand": [
+  "origin": {
+    "latitude": <float>,
+    "longitude": <float>
+  },
+  "solutions": [
     {
-      "latitude": "",
-      "longitude": "",
-      "quantity": "",
-      "cluster_id": "",
-      "vehicle_id": "",
-      "stop_num": ""
+      "demand": {
+        "latitude": <float>,
+        "longitude": <float>,
+        "quantity": <int>
+      },
+      "cluster_id": <int>,
+      "vehicle_id": <int>,
+      "stop_num": <int>
     }
   ],
-  "vehicle_capacity": "",
-  "vehicle_definitions": []
+  "unit": <str>,
+  "vehicle_capacity": <int>
 }
 ```
 
@@ -98,4 +113,4 @@ You can use a Docker container for running the tests by using the provided _Dock
 
 See [cvrp-poc](https://github.com/fingafrog/cvrp-poc) for demo application.
 
-![](https://github.com/fingafrog/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)
+![Demo Image](https://github.com/fingafrog/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)
