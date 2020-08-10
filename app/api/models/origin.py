@@ -7,7 +7,8 @@ from typing import Dict, List  # noqa: F401
 
 from app import util
 from app.api.models.base_model_ import Model
-from app.api.models.coordinates import Coordinates  # noqa: F401,E501
+from app.api.models.latitude import Latitude  # noqa: F401,E501
+from app.api.models.longitude import Longitude  # noqa: F401,E501
 
 
 class Origin(Model):
@@ -16,16 +17,21 @@ class Origin(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, location: Coordinates = None):  # noqa: E501
+    def __init__(
+        self, latitude: Latitude = None, longitude: Longitude = None
+    ):  # noqa: E501
         """Origin - a model defined in Swagger
 
-        :param location: The location of this Origin.  # noqa: E501
-        :type location: Coordinates
+        :param latitude: The latitude of this Origin.  # noqa: E501
+        :type latitude: Latitude
+        :param longitude: The longitude of this Origin.  # noqa: E501
+        :type longitude: Longitude
         """
-        self.swagger_types = {"location": Coordinates}
+        self.swagger_types = {"latitude": Latitude, "longitude": Longitude}
 
-        self.attribute_map = {"location": "location"}
-        self._location = location
+        self.attribute_map = {"latitude": "latitude", "longitude": "longitude"}
+        self._latitude = latitude
+        self._longitude = longitude
 
     @classmethod
     def from_dict(cls, dikt) -> "Origin":
@@ -39,26 +45,43 @@ class Origin(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def location(self) -> Coordinates:
-        """Gets the location of this Origin.
+    def latitude(self) -> Latitude:
+        """Gets the latitude of this Origin.
 
 
-        :return: The location of this Origin.
-        :rtype: Coordinates
+        :return: The latitude of this Origin.
+        :rtype: Latitude
         """
-        return self._location
+        return self._latitude
 
-    @location.setter
-    def location(self, location: Coordinates):
-        """Sets the location of this Origin.
+    @latitude.setter
+    def latitude(self, latitude: Latitude):
+        """Sets the latitude of this Origin.
 
 
-        :param location: The location of this Origin.
-        :type location: Coordinates
+        :param latitude: The latitude of this Origin.
+        :type latitude: Latitude
         """
-        if location is None:
-            raise ValueError(
-                "Invalid value for `location`, must not be `None`"
-            )  # noqa: E501
 
-        self._location = location
+        self._latitude = latitude
+
+    @property
+    def longitude(self) -> Longitude:
+        """Gets the longitude of this Origin.
+
+
+        :return: The longitude of this Origin.
+        :rtype: Longitude
+        """
+        return self._longitude
+
+    @longitude.setter
+    def longitude(self, longitude: Longitude):
+        """Sets the longitude of this Origin.
+
+
+        :param longitude: The longitude of this Origin.
+        :type longitude: Longitude
+        """
+
+        self._longitude = longitude

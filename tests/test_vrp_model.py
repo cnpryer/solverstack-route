@@ -10,8 +10,8 @@ class TestVRPModel:
 
     @pytest.mark.filterwarnings
     def test_create_vehicles(self, clusters, origin, latitudes, longitudes, quantities):
-        origin_lat = origin["location"]["latitude"]
-        origin_lon = origin["location"]["longitude"]
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
         matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
         demand = [int(d) for d in quantities]
@@ -22,8 +22,8 @@ class TestVRPModel:
     @pytest.mark.filterwarnings
     def test_vrp_bundle_case(self, origin, latitudes, longitudes, quantities):
 
-        origin_lat = origin["location"]["latitude"]
-        origin_lon = origin["location"]["longitude"]
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
         matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
         demand = [int(d) for d in quantities]

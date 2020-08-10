@@ -7,7 +7,8 @@ from typing import Dict, List  # noqa: F401
 
 from app import util
 from app.api.models.base_model_ import Model
-from app.api.models.coordinates import Coordinates  # noqa: F401,E501
+from app.api.models.latitude import Latitude  # noqa: F401,E501
+from app.api.models.longitude import Longitude  # noqa: F401,E501
 from app.api.models.quantity import Quantity  # noqa: F401,E501
 
 
@@ -18,19 +19,33 @@ class Demand(Model):
     """
 
     def __init__(
-        self, location: Coordinates = None, quantity: Quantity = None
+        self,
+        latitude: Latitude = None,
+        longitude: Longitude = None,
+        quantity: Quantity = None,
     ):  # noqa: E501
         """Demand - a model defined in Swagger
 
-        :param location: The location of this Demand.  # noqa: E501
-        :type location: Coordinates
+        :param latitude: The latitude of this Demand.  # noqa: E501
+        :type latitude: Latitude
+        :param longitude: The longitude of this Demand.  # noqa: E501
+        :type longitude: Longitude
         :param quantity: The quantity of this Demand.  # noqa: E501
         :type quantity: Quantity
         """
-        self.swagger_types = {"location": Coordinates, "quantity": Quantity}
+        self.swagger_types = {
+            "latitude": Latitude,
+            "longitude": Longitude,
+            "quantity": Quantity,
+        }
 
-        self.attribute_map = {"location": "location", "quantity": "quantity"}
-        self._location = location
+        self.attribute_map = {
+            "latitude": "latitude",
+            "longitude": "longitude",
+            "quantity": "quantity",
+        }
+        self._latitude = latitude
+        self._longitude = longitude
         self._quantity = quantity
 
     @classmethod
@@ -45,29 +60,46 @@ class Demand(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def location(self) -> Coordinates:
-        """Gets the location of this Demand.
+    def latitude(self) -> Latitude:
+        """Gets the latitude of this Demand.
 
 
-        :return: The location of this Demand.
-        :rtype: Coordinates
+        :return: The latitude of this Demand.
+        :rtype: Latitude
         """
-        return self._location
+        return self._latitude
 
-    @location.setter
-    def location(self, location: Coordinates):
-        """Sets the location of this Demand.
+    @latitude.setter
+    def latitude(self, latitude: Latitude):
+        """Sets the latitude of this Demand.
 
 
-        :param location: The location of this Demand.
-        :type location: Coordinates
+        :param latitude: The latitude of this Demand.
+        :type latitude: Latitude
         """
-        if location is None:
-            raise ValueError(
-                "Invalid value for `location`, must not be `None`"
-            )  # noqa: E501
 
-        self._location = location
+        self._latitude = latitude
+
+    @property
+    def longitude(self) -> Longitude:
+        """Gets the longitude of this Demand.
+
+
+        :return: The longitude of this Demand.
+        :rtype: Longitude
+        """
+        return self._longitude
+
+    @longitude.setter
+    def longitude(self, longitude: Longitude):
+        """Sets the longitude of this Demand.
+
+
+        :param longitude: The longitude of this Demand.
+        :type longitude: Longitude
+        """
+
+        self._longitude = longitude
 
     @property
     def quantity(self) -> Quantity:

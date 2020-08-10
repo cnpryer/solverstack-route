@@ -11,8 +11,8 @@ class TestDistance:
 
     def test_matrix_processing(self, origin, latitudes, longitudes):
 
-        origin_lat = origin["location"]["latitude"]
-        origin_lon = origin["location"]["longitude"]
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
         matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
         assert len(matrix) == len(latitudes) + 1

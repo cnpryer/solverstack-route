@@ -3,8 +3,8 @@ from . import common
 
 class TestVRPData:
     def test_vrp_origin_data(self, origin):
-        origin_lat = origin["location"]["latitude"]
-        origin_lon = origin["location"]["longitude"]
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
         assert isinstance(origin_lat, float)
         assert -90 < origin_lat < 90
 

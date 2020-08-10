@@ -22,10 +22,8 @@ def client():
 def demands():
     return [
         {
-            "location": {
-                "latitude": random.uniform(-90, 90),
-                "longitude": random.uniform(-180, 180),
-            },
+            "latitude": random.uniform(-90, 90),
+            "longitude": random.uniform(-180, 180),
             "quantity": random.randint(0, 1000),
         }
         for i in range(10)
@@ -39,7 +37,7 @@ def origin():
     lat, lon = 41.4191, -87.7748
     logging.debug(f"origin lat: {lat}, lon: {lon}.")
 
-    return {"location": {"latitude": lat, "longitude": lon}}
+    return {"latitude": lat, "longitude": lon}
 
 
 @pytest.fixture()
@@ -72,17 +70,3 @@ def quantities():
     logging.debug(f"demand units: {units}")
 
     return units
-
-
-# def get_vrp_lats_csv():
-#     lats = TESTING_CSV_DF.latitude.astype(str).tolist()
-#     logging.debug(f"demand lats: {lats}")
-
-#     return lats
-
-
-# def get_vrp_lons_csv():
-#     lons = TESTING_CSV_DF.longitude.astype(str).tolist()
-#     logging.debug(f"demand lons: {lons}")
-
-#     return lons

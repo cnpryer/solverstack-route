@@ -15,11 +15,11 @@ class TestApp:
     @pytest.fixture()
     def test_data(self, origin, demands):
         # TODO: abstract json def
-        origin_lat = origin["location"]["latitude"]
-        origin_lon = origin["location"]["longitude"]
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
 
         return {
-            "origin": {"location": {"latitude": origin_lat, "longitude": origin_lon}},
+            "origin": {"latitude": origin_lat, "longitude": origin_lon},
             "unit": "pallets",
             "demands": demands,
             "vehicle_capacity": 26,

@@ -48,21 +48,27 @@ components:
       type: object
       description: A demand for some quantity of goods
       required:
-        - location
+        - latitude
+        - longitude
         - quantity
       properties:
-        location:
-          $ref: "#/components/schemas/Coordinates"
+        latitude:
+          $ref: "#/components/schemas/Latitude"
+        longitude:
+          $ref: "#/components/schemas/Longitude"
         quantity:
           $ref: "#/components/schemas/Quantity"
     Origin:
       type: object
       description: A source point for goods
       required:
-        - location
+        - latitude
+        - longitude
       properties:
-        location:
-          $ref: "#/components/schemas/Coordinates"
+        latitude:
+          $ref: "#/components/schemas/Latitude"
+        longitude:
+          $ref: "#/components/schemas/Longitude"
           # description: "The coordinates of the origin"
           # allOf:
           #   - $ref: '#/components/schemas/Coordinates'

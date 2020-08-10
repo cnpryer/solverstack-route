@@ -46,8 +46,8 @@ def vrp_procedure():
         )
     demands = body.demands
 
-    demand_latitudes = [demand.location.latitude for demand in demands]
-    demand_longitudes = [demand.location.longitude for demand in demands]
+    demand_latitudes = [demand.latitude for demand in demands]
+    demand_longitudes = [demand.longitude for demand in demands]
     demand_quantities = [demand.quantity for demand in demands]
 
     # cluster by location (lat, lon)
@@ -56,9 +56,7 @@ def vrp_procedure():
     origin = body.origin
     # list of lists for all-to-all distances
     matrix = distance.create_matrix(
-        (origin.location.latitude, origin.location.longitude,),
-        demand_latitudes,
-        demand_longitudes,
+        (origin.latitude, origin.longitude,), demand_latitudes, demand_longitudes,
     )
 
     # manage solve
