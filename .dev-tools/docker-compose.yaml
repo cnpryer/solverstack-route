@@ -5,10 +5,10 @@ services:
         image: flask_api_dev:1.00
         container_name: flask_api_dev
         restart: unless-stopped
-        command: python manage.py runserver --host=0.0.0.0
+        command: manage.py runserver --host=0.0.0.0
         build:
             context: ../
-            dockerfile: .dev-tools/Dockerfile.test
+            dockerfile: .dev-tools/Dockerfile
         ports:
             - "5000:5000"
         volumes:
