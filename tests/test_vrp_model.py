@@ -1,32 +1,37 @@
-from . import common
-from app import model
-
 import numpy as np
 import pytest
 
+from app.vrp_model import model, distance
 
-CLUSTERS = common.get_dbscan_clusters_basic()
-MATRIX = common.get_matrix_basic()
-DEMAND = [int(d) for d in common.get_vrp_units_basic()]
-MAX_VEHICLE_CAPACITY_UNITS = 26
-MAX_SEARCH_SECONDS = 30
-CLUSTERS = common.get_dbscan_clusters_basic()
 
-@pytest.mark.filterwarnings
-def test_create_vehicles():
-    vehicles = model.create_vehicles(MATRIX, DEMAND, np.array(CLUSTERS))
+class TestVRPModel:
+    MAX_VEHICLE_CAPACITY_UNITS = 26
+    MAX_SEARCH_SECONDS = 30
 
-    assert len(vehicles['id']) == len(CLUSTERS)
+    @pytest.mark.filterwarnings
+    def test_create_vehicles(self, clusters, origin, latitudes, longitudes, quantities):
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
+        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
-@pytest.mark.filterwarnings
-def test_vrp_bundle_case():
-    bndl = model.VrpBasicBundle(
-        matrix=MATRIX,
-        demand=DEMAND,
-        max_vehicle_capacity_units=26,
-        max_search_seconds=30
-    )
+        demand = [int(d) for d in quantities]
+        vehicles = model.create_vehicles(matrix, demand, np.array(clusters))
 
-    lats = common.get_vrp_lats_basic()
+        assert len(vehicles["id"]) == len(clusters)
 
-    assert len(bndl.run().get_solution()['id']) == len(lats)
+    @pytest.mark.filterwarnings
+    def test_vrp_bundle_case(self, origin, latitudes, longitudes, quantities):
+
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
+        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
+
+        demand = [int(d) for d in quantities]
+        bndl = model.VrpBasicBundle(
+            distance_matrix=matrix,
+            demand_quantities=demand,
+            max_vehicle_capacity_units=26,
+            max_search_seconds=30,
+        )
+
+        assert len(bndl.run().get_solution()["id"]) == len(latitudes)

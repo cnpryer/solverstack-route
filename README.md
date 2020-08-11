@@ -12,49 +12,74 @@ RPC API for logistics optimization web services.
 
 ## MVP
 
-```/api/<version>/```
+`/api/<version>/`
 
 ## Main Procedure
 
-- **endpoint**: ```/procedure```
-- **methods**: ```GET```, ```POST```
-- **input data**:
+- **Endpoint**: `/vrp`
+- **Methods**: `POST`
+- **Request Syntax**:
 
 ```json
 {
-    "origin_latitude": "",
-    "origin_longitude": "",
-    "unit": "",
-    "demand": [ {"latitude": "", "longitude": "", "[unit]": ""} ],
-    "vehicle_max_capacity_quantity": "",
-    "vehicles_definitions": []
+  "origin": {
+    "latitude": <float>,
+    "longitude": <float>
+  },
+  "demands": [
+    {
+      "latitude": <float>,
+      "longitude": <float>,
+      "quantity": <int>
+    }
+  ],
+  "unit": <str>,
+  "vehicle_capacity": <int>,
+
+  // **OPTIONAL**
+  "vehicle_definitions": [
+    <int>
+  ]
 }
 ```
-*[unit]* is defined by *unit* (should be the same value).
+
+<!-- _[unit]_ is defined by _unit_ (should be the same value).
 
 ```json
 "unit": "weight",
-"demand": [ {"latitude": "", "longitude": "", "weight": ""} ]
-```
+"demand": [ {"latitude": <float>, "longitude": <float>, "quantity": <float>} ]
+``` -->
 
-*vehicle_max_capacity_quantity* should be the same unit of measure as *unit*.
+*vehicle_capacity* should be the same unit of measure as *unit*.
 
-*vehicles_definitions* (optional) represent both the number of vehicles and their max capacities.
+*vehicle_definitions* (optional) represent both the number of vehicles and their max capacities.
 
 ```json
-"vehicles_definitions": [26, 26, 26, 26]
+"vehicle_definitions": [26, 26, 26, 26]
 ```
 
 - **output data**:
 
 ```json
 {
-    "origin_latitude": "",
-    "origin_longitude": "",
-    "unit": "",
-    "demand": [ {"latitude": "", "longitude": "", "[unit]*": "", "cluster_id": "", "vehicle_id": "", "stop_num": ""} ],
-    "vehicle_max_capacity_quantity": "",
-    "vehicles_definitions": []
+  "origin": {
+    "latitude": <float>,
+    "longitude": <float>
+  },
+  "solutions": [
+    {
+      "demand": {
+        "latitude": <float>,
+        "longitude": <float>,
+        "quantity": <int>
+      },
+      "cluster_id": <int>,
+      "vehicle_id": <int>,
+      "stop_num": <int>
+    }
+  ],
+  "unit": <str>,
+  "vehicle_capacity": <int>
 }
 ```
 
@@ -81,9 +106,11 @@ You can use a Docker container for running the tests by using the provided _Dock
 - Run the image using `docker run andromia:solverstack-vrp-rpc-test`
 
 ## TODO
-- replace ```dict```[key][key]... with ```pandas``` wrappers.
+
+- replace `dict`[key][key]... with `pandas` wrappers.
 
 ## Other
+
 See [cvrp-poc](https://github.com/fingafrog/cvrp-poc) for demo application.
 
-![](https://github.com/fingafrog/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)
+![Demo Image](https://github.com/fingafrog/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)

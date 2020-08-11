@@ -1,14 +1,27 @@
+import pytest
+from app.vrp_model import distance
+
 from . import common
 
 
-def test_matrix_processing():
-    matrix = common.get_matrix_basic()
-    demand_lats = common.get_vrp_lats_basic()
+class TestDistance:
+    @pytest.fixture()
+    def matrix(self):
+        pass
 
-    assert len(matrix) == len(demand_lats) + 1
+    def test_matrix_processing(self, origin, latitudes, longitudes):
 
-def test_cluster_processing():
-    lats = common.get_vrp_lats_basic()
-    clusters = common.get_dbscan_clusters_basic()
+        origin_lat = origin["latitude"]
+        origin_lon = origin["longitude"]
+        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
 
-    assert len(lats) == len(clusters)
+        assert len(matrix) == len(latitudes) + 1
+
+    def test_cluster_processing(self, latitudes, longitudes):
+        """Test creation of clusters"""
+
+        assert len(latitudes) == len(longitudes)
+
+        clusters = distance.create_dbscan_clusters(latitudes, longitudes)
+
+        assert len(latitudes) == len(clusters)

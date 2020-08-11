@@ -1,0 +1,150 @@
+openapi: 3.0.1
+info:
+  title: Solverstack RPC
+  description: 'Add description here'
+  # termsOfService: None yet
+  contact:
+    name: Solverstack
+    email: api@solverstack.com
+  license:
+    name: MIT License
+    url: https://github.com/andromia/solverstack-vrp-rpc/blob/master/LICENSE
+  version: 0.1.0
+# externalDocs:
+#   description: Find out more about Swagger
+#   url: http://swagger.io
+servers:
+- url: http://solverstack.com/api/v0_1/procedure
+tags:
+- name: procedure
+  description: Gets the solution to your demands
+  # externalDocs:
+  #   description: Find out more
+  #   url: http://swagger.io
+paths:
+  /vrp:
+    post:
+      tags:
+        - procedure
+      summary: Compute solutions
+      operationId: procedure
+      requestBody:
+        description: Total data for computation
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - origin
+                - demands
+                - vehicle_capacity
+                - unit
+              properties:
+                origin:
+                  $ref: '#/components/schemas/Origin'
+                demands:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Demand'
+                unit:
+                  $ref: '#/components/schemas/Unit'
+                vehicle_capacity:
+                  type: integer
+                  format: int64
+                vehicle_definitions:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+      responses:
+        400:
+          description: Invalid data supplied
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidUsageError'
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                properties:
+                  origin:
+                      $ref: '#/components/schemas/Origin'
+                  solutions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Solution'
+                  unit:
+                    $ref: '#/components/schemas/Unit'
+                  vehicle_capacity:
+                    type: integer
+                    format: int64
+components:
+  schemas:
+    Demand:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+    Origin:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/Latitude'
+        longitude:
+          $ref: '#/components/schemas/Longitude'
+    Latitude:
+      type: number
+      format: float
+      minimum: -90
+      maximum: 90
+    Longitude:
+      type: number
+      format: float
+      minimum: -180
+      maximum: 180
+    Unit:
+      type: string
+      minLength: 1
+      maxLength: 10
+    Quantity:
+      type: integer
+      format: int64
+    Solution:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Demand'
+      properties:
+        cluster_id:
+          type: integer
+          format: int32
+        vehicle_id:
+          type: integer
+          format: int32
+        stop_num:
+          type: integer
+          format: int32
+    InvalidUsageError:
+      type: object
+      properties:
+        message:
+          type: string
+  # securitySchemes:
+  #   solverstack_auth:
+  #     type: oauth2
+  #     flows:
+  #       implicit:
+  #         authorizationUrl: http://petstore.swagger.io/oauth/dialog
+  #         scopes:
+  #           write:pets: modify pets in your account
+  #           read:pets: read your pets
+  #   api_key:
+  #     type: apiKey
+  #     name: api_key
+  #     in: header
