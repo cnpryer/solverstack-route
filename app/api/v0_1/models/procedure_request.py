@@ -23,7 +23,7 @@ class ProcedureRequest(Model):
     def __init__(
         self,
         origin: Origin = None,
-        demands: List[Demand] = None,
+        demand: List[Demand] = None,
         unit: Unit = None,
         vehicle_capacity: VehicleCapacity = None,
         vehicle_definitions: List[VehicleCapacity] = None,
@@ -32,8 +32,8 @@ class ProcedureRequest(Model):
 
         :param origin: The origin of this ProcedureRequest.  # noqa: E501
         :type origin: Origin
-        :param demands: The demands of this ProcedureRequest.  # noqa: E501
-        :type demands: List[Demand]
+        :param demand: The demand of this ProcedureRequest.  # noqa: E501
+        :type demand: List[Demand]
         :param unit: The unit of this ProcedureRequest.  # noqa: E501
         :type unit: Unit
         :param vehicle_capacity: The vehicle_capacity of this ProcedureRequest.  # noqa: E501
@@ -43,7 +43,7 @@ class ProcedureRequest(Model):
         """
         self.swagger_types = {
             "origin": Origin,
-            "demands": List[Demand],
+            "demand": List[Demand],
             "unit": Unit,
             "vehicle_capacity": VehicleCapacity,
             "vehicle_definitions": List[VehicleCapacity],
@@ -51,13 +51,13 @@ class ProcedureRequest(Model):
 
         self.attribute_map = {
             "origin": "origin",
-            "demands": "demands",
+            "demand": "demand",
             "unit": "unit",
             "vehicle_capacity": "vehicle_capacity",
             "vehicle_definitions": "vehicle_definitions",
         }
         self._origin = origin
-        self._demands = demands
+        self._demand = demand
         self._unit = unit
         self._vehicle_capacity = vehicle_capacity
         self._vehicle_definitions = vehicle_definitions
@@ -99,29 +99,29 @@ class ProcedureRequest(Model):
         self._origin = origin
 
     @property
-    def demands(self) -> List[Demand]:
-        """Gets the demands of this ProcedureRequest.
+    def demand(self) -> List[Demand]:
+        """Gets the demand of this ProcedureRequest.
 
 
-        :return: The demands of this ProcedureRequest.
+        :return: The demand of this ProcedureRequest.
         :rtype: List[Demand]
         """
-        return self._demands
+        return self._demand
 
-    @demands.setter
-    def demands(self, demands: List[Demand]):
-        """Sets the demands of this ProcedureRequest.
+    @demand.setter
+    def demand(self, demand: List[Demand]):
+        """Sets the demand of this ProcedureRequest.
 
 
-        :param demands: The demands of this ProcedureRequest.
-        :type demands: List[Demand]
+        :param demand: The demand of this ProcedureRequest.
+        :type demand: List[Demand]
         """
-        if demands is None:
+        if demand is None:
             raise ValueError(
-                "Invalid value for `demands`, must not be `None`"
+                "Invalid value for `demand`, must not be `None`"
             )  # noqa: E501
 
-        self._demands = demands
+        self._demand = demand
 
     @property
     def unit(self) -> Unit:

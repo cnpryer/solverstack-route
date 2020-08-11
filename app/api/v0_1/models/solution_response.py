@@ -9,6 +9,7 @@ from typing import Dict, List  # noqa: F401
 from app import util
 from app.api.models.base_model_ import Model
 from app.api.models.origin import Origin  # noqa: F401,E501
+from app.api.models.demand import Demand
 from app.api.models.solution import Solution  # noqa: F401,E501
 from app.api.models.unit import Unit  # noqa: F401,E501
 
@@ -22,7 +23,8 @@ class SolutionResponse(Model):
     def __init__(
         self,
         origin: Origin = None,
-        solutions: List[Solution] = None,
+        demand: Demand = None,
+        solution: List[Solution] = None,
         unit: Unit = None,
         vehicle_capacity: int = None,
     ):  # noqa: E501
@@ -30,8 +32,10 @@ class SolutionResponse(Model):
 
         :param origin: The origin of this SolutionResponse.  # noqa: E501
         :type origin: Origin
-        :param solutions: The solutions of this SolutionResponse.  # noqa: E501
-        :type solutions: List[Solution]
+        :param demand: The demand of this SolutionResponse.
+        :type demand: Demand
+        :param solution: The solution of this SolutionResponse.  # noqa: E501
+        :type solution: List[Solution]
         :param unit: The unit of this SolutionResponse.  # noqa: E501
         :type unit: Unit
         :param vehicle_capacity: The vehicle_capacity of this SolutionResponse.  # noqa: E501
@@ -39,19 +43,22 @@ class SolutionResponse(Model):
         """
         self.swagger_types = {
             "origin": Origin,
-            "solutions": List[Solution],
+            "demand": Demand,
+            "solution": List[Solution],
             "unit": Unit,
             "vehicle_capacity": int,
         }
 
         self.attribute_map = {
             "origin": "origin",
-            "solutions": "solutions",
+            "demand": "demand",
+            "solution": "solution",
             "unit": "unit",
             "vehicle_capacity": "vehicle_capacity",
         }
         self._origin = origin
-        self._solutions = solutions
+        self._demand = demand
+        self._solution = solution
         self._unit = unit
         self._vehicle_capacity = vehicle_capacity
 
@@ -92,29 +99,54 @@ class SolutionResponse(Model):
         self._origin = origin
 
     @property
-    def solutions(self) -> List[Solution]:
-        """Gets the solutions of this SolutionResponse.
+    def demand(self) -> Demand:
+        """Gets the demand of this SolutionResponse.
 
 
-        :return: The solutions of this SolutionResponse.
+        :return: The demand of this SolutionResponse.
+        :rtype: Demand
+        """
+        return self._demand
+
+    @demand.setter
+    def demand(self, demand: Demand):
+        """Sets the demand of this SolutionResponse.
+
+
+        :param demand: The demand of this SolutionResponse.
+        :type demand: Demand
+        """
+        if demand is None:
+            raise ValueError(
+                "Invalid value for `demand`, must not be `None`"
+            )
+
+        self._demand = demand
+
+    @property
+    def solution(self) -> List[Solution]:
+        """Gets the solution of this SolutionResponse.
+
+
+        :return: The solution of this SolutionResponse.
         :rtype: List[Solution]
         """
-        return self._solutions
+        return self._solution
 
-    @solutions.setter
-    def solutions(self, solutions: List[Solution]):
-        """Sets the solutions of this SolutionResponse.
+    @solution.setter
+    def solution(self, solution: List[Solution]):
+        """Sets the solution of this SolutionResponse.
 
 
-        :param solutions: The solutions of this SolutionResponse.
-        :type solutions: List[Solution]
+        :param solution: The solution of this SolutionResponse.
+        :type solution: List[Solution]
         """
-        if solutions is None:
+        if solution is None:
             raise ValueError(
-                "Invalid value for `solutions`, must not be `None`"
+                "Invalid value for `solution`, must not be `None`"
             )  # noqa: E501
 
-        self._solutions = solutions
+        self._solution = solution
 
     @property
     def unit(self) -> Unit:

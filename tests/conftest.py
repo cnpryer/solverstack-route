@@ -19,7 +19,7 @@ def client():
 
 
 @pytest.fixture
-def demands():
+def demand():
     return [
         {
             "latitude": random.uniform(-90, 90),

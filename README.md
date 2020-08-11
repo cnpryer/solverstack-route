@@ -20,13 +20,13 @@ RPC API for logistics optimization web services.
 - **Methods**: `POST`
 - **Request Syntax**:
 
-```json
+```
 {
   "origin": {
     "latitude": <float>,
     "longitude": <float>
   },
-  "demands": [
+  "demand": [
     {
       "latitude": <float>,
       "longitude": <float>,
@@ -34,7 +34,7 @@ RPC API for logistics optimization web services.
     }
   ],
   "unit": <str>,
-  "vehicle_capacity": <int>,
+  "vehicle_max_capacity_units": <int>,
 
   // **OPTIONAL**
   "vehicle_definitions": [
@@ -43,14 +43,7 @@ RPC API for logistics optimization web services.
 }
 ```
 
-<!-- _[unit]_ is defined by _unit_ (should be the same value).
-
-```json
-"unit": "weight",
-"demand": [ {"latitude": <float>, "longitude": <float>, "quantity": <float>} ]
-``` -->
-
-*vehicle_capacity* should be the same unit of measure as *unit*.
+*vehicle_max_capacity_units* should be the same unit of measure as *unit*.
 
 *vehicle_definitions* (optional) represent both the number of vehicles and their max capacities.
 
@@ -66,20 +59,18 @@ RPC API for logistics optimization web services.
     "latitude": <float>,
     "longitude": <float>
   },
-  "solutions": [
-    {
-      "demand": {
-        "latitude": <float>,
-        "longitude": <float>,
-        "quantity": <int>
-      },
+  "demand": {
+    "latitude": <float>,
+    "longitude": <float>,
+    "quantity": <int>
+  },
+  "solution": [
       "cluster_id": <int>,
       "vehicle_id": <int>,
       "stop_num": <int>
-    }
   ],
   "unit": <str>,
-  "vehicle_capacity": <int>
+  "vehicle_max_capacity_units": <int>
 }
 ```
 

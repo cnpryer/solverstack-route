@@ -44,11 +44,11 @@ def vrp_procedure():
             ),
             400,
         )
-    demands = body.demands
+    demand = body.demand
 
-    demand_latitudes = [demand.latitude for demand in demands]
-    demand_longitudes = [demand.longitude for demand in demands]
-    demand_quantities = [demand.quantity for demand in demands]
+    demand_latitudes = [d.latitude for d in demand]
+    demand_longitudes = [d.longitude for d in demand]
+    demand_quantities = [d.quantity for d in demand]
 
     # cluster by location (lat, lon)
     clusters = distance.create_dbscan_clusters(demand_latitudes, demand_longitudes)
@@ -60,23 +60,23 @@ def vrp_procedure():
     )
 
     # manage solve
-    solutions = model.create_vehicles(matrix, ["0"] + demand_quantities, clusters)
+    solution = model.create_vehicles(matrix, ["0"] + demand_quantities, clusters)
 
     response = {
         "origin": origin,
+        "demand": demand,
         "unit": body.unit,
         "vehicle_capacity": body.vehicle_capacity,
     }
 
-    response_solutions = [
+    response_solution = [
         {
             "cluster": clusters[i],
-            "demand": demand,
-            "stop_id": solutions["stops"][i],
-            "vehicle_id": solutions["id"][i],
+            "stop_id": solution["stops"][i],
+            "vehicle_id": solution["id"][i],
         }
-        for i, demand in enumerate(demands)
+        for i, demand in enumerate(demand)
     ]
-    response["solutions"] = response_solutions
+    response["solution"] = response_solution
 
     return jsonify(response)

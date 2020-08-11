@@ -7,7 +7,6 @@ from typing import Dict, List  # noqa: F401
 
 from app import util
 from app.api.models.base_model_ import Model
-from app.api.models.demand import Demand  # noqa: F401,E501
 
 
 class Solution(Model):
@@ -18,15 +17,12 @@ class Solution(Model):
 
     def __init__(
         self,
-        demand: Demand = None,
         cluster_id: int = None,
         vehicle_id: int = None,
         stop_num: int = None,
     ):  # noqa: E501
         """Solution - a model defined in Swagger
 
-        :param demand: The demand of this Solution.  # noqa: E501
-        :type demand: Demand
         :param cluster_id: The cluster_id of this Solution.  # noqa: E501
         :type cluster_id: int
         :param vehicle_id: The vehicle_id of this Solution.  # noqa: E501
@@ -35,19 +31,16 @@ class Solution(Model):
         :type stop_num: int
         """
         self.swagger_types = {
-            "demand": Demand,
             "cluster_id": int,
             "vehicle_id": int,
             "stop_num": int,
         }
 
         self.attribute_map = {
-            "demand": "demand",
             "cluster_id": "cluster_id",
             "vehicle_id": "vehicle_id",
             "stop_num": "stop_num",
         }
-        self._demand = demand
         self._cluster_id = cluster_id
         self._vehicle_id = vehicle_id
         self._stop_num = stop_num
@@ -62,27 +55,6 @@ class Solution(Model):
         :rtype: Solution
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def demand(self) -> Demand:
-        """Gets the demand of this Solution.
-
-
-        :return: The demand of this Solution.
-        :rtype: Demand
-        """
-        return self._demand
-
-    @demand.setter
-    def demand(self, demand: Demand):
-        """Sets the demand of this Solution.
-
-
-        :param demand: The demand of this Solution.
-        :type demand: Demand
-        """
-
-        self._demand = demand
 
     @property
     def cluster_id(self) -> int:

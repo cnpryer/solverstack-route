@@ -23,7 +23,7 @@ def create_app(config_class=Config):
     app.json_encoder = encoder.JSONEncoder
 
     connexion_app.add_api(
-        "v0_1.yaml", arguments={"title": "Solverstack VRP CRUD"}, pythonic_params=True
+        "v0_1.yaml", arguments={"title": "solverstack Vrp"}, pythonic_params=True
     )
 
     app.config.from_object(config_class)

@@ -13,7 +13,7 @@ from app.api import __version__
 
 class TestApp:
     @pytest.fixture()
-    def test_data(self, origin, demands):
+    def test_data(self, origin, demand):
         # TODO: abstract json def
         origin_lat = origin["latitude"]
         origin_lon = origin["longitude"]
@@ -21,7 +21,7 @@ class TestApp:
         return {
             "origin": {"latitude": origin_lat, "longitude": origin_lon},
             "unit": "pallets",
-            "demands": demands,
+            "demand": demand,
             "vehicle_capacity": 26,
             "vehicle_definitions": None,  # TODO
         }
@@ -138,8 +138,6 @@ class TestApp:
 
         output = response.json
 
-        assert len(output["solutions"]) == len(test_data["demands"])
+        assert len(output["solution"]) == len(test_data["demand"])
         assert output["origin"] == test_data["origin"]
         assert output["unit"] == test_data["unit"]
-
-        # assert len(output["vehicle_id"]) == len(VRP_DATA["demand"])

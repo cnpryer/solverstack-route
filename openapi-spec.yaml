@@ -1,23 +1,23 @@
 openapi: 3.0.1
 info:
-  title: Solverstack RPC
-  description: 'Add description here'
+  title: solverstack Vrp
+  description: vehicle routing api
   # termsOfService: None yet
   contact:
-    name: Solverstack
+    name: solverstack
     email: api@solverstack.com
   license:
     name: MIT License
-    url: https://github.com/andromia/solverstack-vrp-rpc/blob/master/LICENSE
+    url: https://github.com/andromia/solverstack-vrp/blob/master/LICENSE
   version: 0.1.0
 # externalDocs:
 #   description: Find out more about Swagger
 #   url: http://swagger.io
 servers:
-- url: http://solverstack.com/api/v0_1/procedure
+- url: http://solverstack.com/api/v0_1/vrp
 tags:
-- name: procedure
-  description: Gets the solution to your demands
+- name: vrp
+  description: Gets the solution to your demand
   # externalDocs:
   #   description: Find out more
   #   url: http://swagger.io
@@ -25,9 +25,9 @@ paths:
   /vrp:
     post:
       tags:
-        - procedure
-      summary: Compute solutions
-      operationId: procedure
+        - vrp
+      summary: Compute solution
+      operationId: vrp
       requestBody:
         description: Total data for computation
         required: true
@@ -37,13 +37,13 @@ paths:
               type: object
               required:
                 - origin
-                - demands
+                - demand
                 - vehicle_capacity
                 - unit
               properties:
                 origin:
                   $ref: '#/components/schemas/Origin'
-                demands:
+                demand:
                   type: array
                   items:
                     $ref: '#/components/schemas/Demand'
@@ -72,7 +72,7 @@ paths:
                 properties:
                   origin:
                       $ref: '#/components/schemas/Origin'
-                  solutions:
+                  solution:
                     type: array
                     items:
                       $ref: '#/components/schemas/Solution'
@@ -118,8 +118,6 @@ components:
       format: int64
     Solution:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/Demand'
       properties:
         cluster_id:
           type: integer

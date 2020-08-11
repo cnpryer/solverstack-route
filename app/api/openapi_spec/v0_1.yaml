@@ -1,25 +1,25 @@
 openapi: 3.0.1
 info:
-  title: Solverstack VRP CRUD
-  description: Add description here
+  title: solverstack Vrp
+  description: vehicle routing api
   contact:
-    name: Solverstack
+    name: solverstack
     email: api@solverstack.com
   license:
     name: MIT License
-    url: https://github.com/andromia/solverstack-vrp-rpc/blob/master/LICENSE
+    url: https://github.com/andromia/solverstack-vrp/blob/master/LICENSE
   version: 0.1.0
 servers:
   - url: /api/v0_1
 tags:
-  - name: procedure
-    description: Gets the solution to your demands
+  - name: vrp
+    description: Gets the solution to your demand
 paths:
   /vrp:
     post:
       tags:
-        - procedure
-      summary: Compute solutions
+        - vrp
+      summary: Compute solution
       operationId: main.vrp_procedure
       requestBody:
         description: Total data for computation
@@ -60,7 +60,7 @@ components:
           $ref: "#/components/schemas/Quantity"
     Origin:
       type: object
-      description: A source point for goods
+      description: A source point for demand
       required:
         - latitude
         - longitude
@@ -114,8 +114,6 @@ components:
         - cluster_id
         - vehicle_id
       properties:
-        demand:
-          $ref: "#/components/schemas/Demand"
         cluster_id:
           type: integer
           format: int64
@@ -137,7 +135,7 @@ components:
           type: string
     procedureRequest:
       required:
-        - demands
+        - demand
         - origin
         - unit
         - vehicle_capacity
@@ -145,7 +143,7 @@ components:
       properties:
         origin:
           $ref: "#/components/schemas/Origin"
-        demands:
+        demand:
           type: array
           items:
             $ref: "#/components/schemas/Demand"
@@ -164,13 +162,13 @@ components:
     solutionResponse:
       required:
         - origin
-        - solutions
+        - solution
         - unit
         - vehicle_capacity
       properties:
         origin:
           $ref: "#/components/schemas/Origin"
-        solutions:
+        solution:
           type: array
           items:
             $ref: "#/components/schemas/Solution"
