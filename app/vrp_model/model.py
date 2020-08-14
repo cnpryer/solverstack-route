@@ -162,7 +162,7 @@ def create_vehicles(
     distance_matrix = np.array(distance_matrix)
     demand_quantities = np.array(demand_quantities)
 
-    for c in np.unique(clusters):
+    for i, c in enumerate(np.unique(clusters)):
 
         # align with matrix, demand_quantities
         is_cluster = np.where(clusters == c)[0]
@@ -180,7 +180,7 @@ def create_vehicles(
 
         # assign
         is_cluster = is_cluster[is_cluster != 0] - 1
-        vehicles[is_cluster] = [f"{int(c)}{int(v)}" for v in solution["id"]]
+        vehicles[is_cluster] = [f"{int(c)}{int(v)}{i}" for v in solution["id"]]
         stops[is_cluster] = solution["stops"]
 
     return {"id": vehicles, "stops": stops}

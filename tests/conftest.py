@@ -7,6 +7,8 @@ from app import create_app
 from app.vrp_model import distance
 from config import Config
 
+from . import common
+
 
 class TestConfig(Config):
     TESTING = True
@@ -24,11 +26,10 @@ def demand():
         {
             "latitude": random.uniform(-90, 90),
             "longitude": random.uniform(-180, 180),
-            "quantity": random.randint(0, 1000),
+            "quantity": random.randint(0, 26),
         }
         for i in range(10)
     ]
-    pass
 
 
 @pytest.fixture
@@ -49,14 +50,7 @@ def clusters(latitudes, longitudes):
 
 @pytest.fixture()
 def latitudes():
-    lats = [
-        39.6893, 39.6893, 43.7266, 43.7266, 38.2336, 38.2306, 43.7266,
-        39.6893, 39.6893, 43.7266, 43.7266, 38.2336, 38.2306, 43.7266,
-        39.6893, 39.6893, 43.7266, 43.7266, 38.2336, 38.2306, 43.7266,
-        39.6893, 39.6893, 43.7266, 43.7266, 38.2336, 38.2306, 43.7266,
-        39.6893, 39.6893, 43.7266, 43.7266, 38.2336, 38.2306, 43.7266,
-        39.6893, 39.6893, 43.7266, 43.7266, 38.2336, 38.2306, 43.7266
-    ]
+    lats = common.TESTING_CSV_DF.latitude.tolist()
     logging.debug(f"demand lats: {lats}.")
 
     return lats
@@ -64,14 +58,7 @@ def latitudes():
 
 @pytest.fixture()
 def longitudes():
-    lons = [
-        -86.3919, -86.3919, -87.8242, -87.8242, -84.35655, -84.35655, -87.8242,
-        -86.3919, -86.3919, -87.8242, -87.8242, -84.35655, -84.35655, -87.8242,
-        -86.3919, -86.3919, -87.8242, -87.8242, -84.35655, -84.35655, -87.8242,
-        -86.3919, -86.3919, -87.8242, -87.8242, -84.35655, -84.35655, -87.8242,
-        -86.3919, -86.3919, -87.8242, -87.8242, -84.35655, -84.35655, -87.8242,
-        -86.3919, -86.3919, -87.8242, -87.8242, -84.35655, -84.35655, -87.8242
-    ]
+    lons = common.TESTING_CSV_DF.longitude.tolist()
     logging.debug(f"demand lons: {lons}.")
 
     return lons
@@ -80,14 +67,7 @@ def longitudes():
 @pytest.fixture()
 def quantities():
     """demand units must have 0 for origin node"""
-    units = [
-        "0", "5", "10", "2", "4", "12", "6", "14",
-        "5", "10", "2", "4", "12", "6", "14",
-        "5", "10", "2", "4", "12", "6", "14",
-        "5", "10", "2", "4", "12", "6", "14",
-        "5", "10", "2", "4", "12", "6", "14",
-        "5", "10", "2", "4", "12", "6", "14"
-    ]
+    units = [0] + common.TESTING_CSV_DF.pallets.tolist()
     logging.debug(f"demand units: {units}")
 
     return units

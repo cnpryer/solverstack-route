@@ -56,11 +56,11 @@ def vrp_procedure():
     origin = body.origin
     # list of lists for all-to-all distances
     matrix = distance.create_matrix(
-        (origin.latitude, origin.longitude,), demand_latitudes, demand_longitudes,
+        (origin.latitude, origin.longitude), demand_latitudes, demand_longitudes,
     )
 
     # manage solve
-    solution = model.create_vehicles(matrix, ["0"] + demand_quantities, clusters)
+    solution = model.create_vehicles(matrix, [0] + demand_quantities, clusters)
 
     response = {
         "origin": origin,
@@ -75,7 +75,7 @@ def vrp_procedure():
             "stop_id": solution["stops"][i],
             "vehicle_id": solution["id"][i],
         }
-        for i, demand in enumerate(demand)
+        for i in range(len(demand))
     ]
     response["solution"] = response_solution
 
