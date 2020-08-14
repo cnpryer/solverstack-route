@@ -34,4 +34,6 @@ class TestVRPModel:
             max_search_seconds=30,
         )
 
-        assert len(bndl.run().get_solution()["id"]) == len(latitudes)
+        vehicles = bndl.run().get_solution()
+
+        assert len(vehicles["id"]) == len(latitudes)

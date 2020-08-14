@@ -70,7 +70,7 @@ class VrpBasicBundle:
             # function which return the load at each location (cf. cvrp.py example)
             model.RegisterUnaryTransitCallback(self.demand_callback),
             0,  # null capacity slack
-            np.array([cap for cap in self.vehicles]),  # vehicle maximum capacity
+            [cap for cap in self.vehicles],  # vehicle maximum capacity
             True,  # start cumul to zero
             "Capacity",
         )
@@ -176,11 +176,11 @@ def create_vehicles(
         )
 
         # list of vehcles # NOTE: will change
-        segment_vehicles = bndl.run().get_solution()
+        solution = bndl.run().get_solution()
 
         # assign
         is_cluster = is_cluster[is_cluster != 0] - 1
-        vehicles[is_cluster] = segment_vehicles["id"] * c
-        stops[is_cluster] = segment_vehicles["stops"]
+        vehicles[is_cluster] = [f"{int(c)}{int(v)}" for v in solution["id"]]
+        stops[is_cluster] = solution["stops"]
 
     return {"id": vehicles, "stops": stops}
