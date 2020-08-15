@@ -109,9 +109,8 @@ class VrpBasicBundle:
 
                 if node != 0:
                     vehicles[node - 1] = vehicle
-                    stops[node - 1] = node
 
-                info["stops"].append(node)
+                info["stops"].append(node - 1)
                 info["stop_loads"].append(self.demand_quantities[node])
 
                 previous_i = int(i)
@@ -119,12 +118,9 @@ class VrpBasicBundle:
                 info["stop_distances"].append(
                     self.model.GetArcCostForVehicle(previous_i, i, vehicle)
                 )
-
-            # add return to depot to align with solution data
-            info["stops"].append(0)
-            info["stop_loads"].append(0)
-            # olution.append(info)
-
+         
+            stops[info["stops"]] = list(range(len(info["stops"])))
+        
         # NOTE: returning vehicle assignments only
         return {"id": vehicles, "stops": stops}
 
