@@ -120,6 +120,7 @@ class VrpBasicBundle:
                 )
          
             stops[info["stops"]] = list(range(len(info["stops"])))
+            stops = np.where(stops == 0, 1, stops)
         
         # NOTE: returning vehicle assignments only
         return {"id": vehicles, "stops": stops}
