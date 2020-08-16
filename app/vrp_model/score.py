@@ -1,4 +1,7 @@
-def get_totals(vehicles: list, demand: list):
+from typing import List
+
+
+def get_totals(vehicles: List[int], demand: List[float]):
     """
     Create dict of sum and count demand per vehicle.
 
@@ -20,7 +23,32 @@ def get_totals(vehicles: list, demand: list):
     
     return totals
 
-def get_load_factor(vehicles: list, demand: list):
+def get_routes(vehicles: List[int], stops: List[int]):
+    """
+    Create dict of vehicles (key) and their routes (value).
+
+    :vehicles:      list of vehicle identities (same order as demand)
+    :stops:        list of stop numbers (same order as vehicles)
+
+    return dict
+    """
+    counts = {}
+    for vehicle in vehicles:
+        if vehicle in counts:
+            counts[vehicle] += 1
+        else:
+            counts[vehicle] = 1
+
+    routes = {}
+    for i, vehicle in enumerate(vehicles):
+        if vehicle not in routes:
+            routes[vehicle] = [None for j in range(counts[vehicle])]
+        
+        routes[vehicle][int(stops[i]) - 1] = i
+    
+    return routes
+
+def get_load_factor(vehicles: List[int], demand: List[float]):
     """
     Calculate average shipment size.
 
@@ -34,7 +62,7 @@ def get_load_factor(vehicles: list, demand: list):
     
     return load_factor
 
-def get_aggregation(vehicles: list, demand: list):
+def get_aggregation(vehicles: List[int], demand: List[float]):
     """
     Calculate the percent of demand aggregated.
 
@@ -52,3 +80,28 @@ def get_aggregation(vehicles: list, demand: list):
     aggregation = total_aggregation / len(demand)
 
     return aggregation
+
+def get_distance_factor(vehicles: List[int], stops: List[int], matrix: List[List[float]]):
+    """
+    Calculate average vehicle travel distance (TODO: does not include return-to-origin). 
+    len(vehicles) == len(stops) == len(matrix[1:]li[1:]). matrix contains origin node position.
+
+    :vehicles:      list of vehicle identifiers
+    :stops:         list of stop numbers
+    :matrix:        list of lists of travel distances between nodes (includes origin)
+    
+    return float
+    """
+    routes = get_routes(vehicles, stops)
+
+    total_distance = 0
+    for vehicle in routes:
+        for i in range(len(routes[vehicle]) - 1):
+            total_distance += matrix[routes[vehicle][i] + 1][routes[vehicle][i + 1] + 1]
+        
+        total_distance += matrix[0][routes[vehicle][0]]
+    
+    # NOTE: distance matrix is processed to integers using d * 100
+    distance_factor = total_distance / len(routes) / 100 
+
+    return distance_factor

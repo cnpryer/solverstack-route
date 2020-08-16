@@ -109,9 +109,7 @@ class VrpBasicBundle:
 
                 if node != 0:
                     vehicles[node - 1] = vehicle
-
-                info["stops"].append(node - 1)
-                info["stop_loads"].append(self.demand_quantities[node])
+                    info["stops"].append(node - 1)
 
                 previous_i = int(i)
                 i = self.assignment.Value(self.model.NextVar(i))
@@ -120,7 +118,7 @@ class VrpBasicBundle:
                 )
          
             stops[info["stops"]] = list(range(len(info["stops"])))
-            stops = np.where(stops == 0, 1, stops)
+        stops = stops + 1
         
         # NOTE: returning vehicle assignments only
         return {"id": vehicles, "stops": stops}
