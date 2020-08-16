@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from app.vrp_model import model, distance
+from app.vrp_model import model, distance, score
 
 
 class TestVRPModel:
@@ -16,6 +16,13 @@ class TestVRPModel:
 
         demand = [int(d) for d in quantities]
         vehicles = model.create_vehicles(matrix, demand, np.array(clusters))
+
+        load_factors = score.get_load_factors(vehicles["id"], demand)
+
+        assert all(
+            load_factors[vehicle] <= self.MAX_VEHICLE_CAPACITY_UNITS 
+            for vehicle in load_factors
+        )
 
         assert len(vehicles["id"]) == len(clusters)
 
