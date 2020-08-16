@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 
-from app.vrp_model import model, distance, score
+from app.vrp_model import model, distance
+from app.vrp_model.scoring import output_scoring
 
 
 class TestVRPModel:
@@ -17,7 +18,7 @@ class TestVRPModel:
         demand = [int(d) for d in quantities]
         vehicles = model.create_vehicles(matrix, demand, np.array(clusters))
 
-        load_factor = score.get_load_factor(vehicles["id"], demand[1:])
+        load_factor = output_scoring.get_load_factor(vehicles["id"], demand[1:])
 
         assert load_factor <= self.MAX_VEHICLE_CAPACITY_UNITS
 
