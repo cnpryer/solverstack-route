@@ -17,12 +17,12 @@ class TestVRPModel:
         demand = [int(d) for d in quantities]
         vehicles = model.create_vehicles(matrix, demand, np.array(clusters))
 
-        load_factors = score.get_load_factors(vehicles["id"], demand)
+        load_factor = score.get_load_factor(vehicles["id"], demand)
 
-        assert all(
-            load_factors[vehicle] <= self.MAX_VEHICLE_CAPACITY_UNITS 
-            for vehicle in load_factors
-        )
+        # good example of a score for validation that isn't necessarily a good test
+        aggregation = score.get_aggregation(vehicles["id"], demand)
+
+        assert load_factor <= self.MAX_VEHICLE_CAPACITY_UNITS
 
         assert len(vehicles["id"]) == len(clusters)
 
