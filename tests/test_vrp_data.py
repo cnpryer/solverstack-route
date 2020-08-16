@@ -2,6 +2,7 @@ from random import randint
 from . import common
 
 from app.vrp_model import distance
+from app.vrp_model.scoring import input_scoring
 
 
 class TestVRPData:
@@ -33,3 +34,6 @@ def test_matrix():
     i = randint(0, len(matrix) - 1)
 
     assert len(matrix) ==  len(matrix[i]) == len(dlats) + 1
+
+    # example of scoring not well-suited as a test
+    origin_score = input_scoring.get_origin_position_factor(matrix)

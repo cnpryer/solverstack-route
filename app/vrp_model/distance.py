@@ -2,6 +2,7 @@ import logging
 from typing import List, Tuple
 
 import numpy as np
+from haversine import haversine_vector, Unit
 
 
 def create_vectorized_haversine_li(
@@ -10,28 +11,14 @@ def create_vectorized_haversine_li(
     dest_lats: List[float],
     unit: str = "mi",
 ):
-    """
-    haversine formula: https://en.wikipedia.org/wiki/Haversine_formula
+    origin_lat = [origin[0]] * len(dest_lats)
+    origin_lon = [origin[1]] * len(dest_lons)
+    origin = list(zip(origin_lat, origin_lon))
+    dest = list(zip(dest_lats, dest_lons))
 
-    TODO: validate formula (w. tests)
-    returns distances:list
-    """
+    d = haversine_vector(origin, dest, unit=Unit.MILES)
 
-    origin_lat, origin_lon = origin
-
-    dlat = dest_lats - origin_lat
-    dlon = dest_lons - origin_lon
-
-    a = (
-        np.sin(dlat / 2) ** 2
-        + np.cos(origin_lat) * np.cos(dest_lats) * np.sin(dlon / 2) ** 2
-    )
-
-    c = 2 * np.arcsin(np.sqrt(a))
-
-    r = {"mi": 3956, "km": 6371}[unit]
-
-    return c * r
+    return d
 
 
 def create_matrix(
@@ -49,10 +36,8 @@ def create_matrix(
 
     returns matrix:list[list, ..., len(origin+lats)-1]
     """
-    origin_lat, origin_lon = np.radians(origin)
-
-    lats = np.array([origin_lat] + dest_lats, dtype=float)
-    lons = np.array([origin_lon] + dest_lons, dtype=float)
+    lats = [origin[0]] + list(dest_lats)
+    lons = [origin[1]] + list(dest_lons)
 
     matrix = []
     for i in range(len(lats)):

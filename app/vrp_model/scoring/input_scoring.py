@@ -31,6 +31,6 @@ def get_origin_position_factor(matrix: List[List[float]]):
     return float
     """
     # NOTE: matrix is processed to integers for solver (d * 100)
-    distance_factor = (sum(matrix[0]) / 100) / len(matrix[0])
+    distance_factor = (sum(matrix[0]) / 100) / len(matrix[0][1:])
 
     return distance_factor
