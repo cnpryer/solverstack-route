@@ -8,9 +8,7 @@ vagrantup.bat
 /vault
 /certs/localrancher*
 
-# chris' venv
 venv/
-.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
