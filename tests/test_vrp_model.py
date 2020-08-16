@@ -19,12 +19,6 @@ class TestVRPModel:
 
         load_factor = score.get_load_factor(vehicles["id"], demand[1:])
 
-        # good example of a score for validation that isn't necessarily a good test
-        aggregation = score.get_aggregation(vehicles["id"], demand[1:])
-        distance_factor = score.get_route_distance_factor(
-            vehicles["id"], vehicles["stops"], matrix
-        )
-
         assert load_factor <= self.MAX_VEHICLE_CAPACITY_UNITS
 
         assert len(vehicles["id"]) == len(clusters)
