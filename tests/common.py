@@ -71,29 +71,4 @@ def get_vrp_data():
         "vehicle_definitions": None,  # TODO
     }
 
-
-# def get_matrix_basic(origin, demands):
-#     origin_lat = origin["location"]["latitude"]
-#     origin_lon = origin["location"]["longitude"]
-#     demand_lats = get_vrp_lats_basic()
-#     demand_lons = get_vrp_lons_basic()
-
-#     return distance.create_matrix(origin_lat, origin_lon, demand_lats, demand_lons)
-
-
-# def get_matrix_csv():
-#     origin_lat, origin_lon = get_vrp_origin_basic()
-#     demand_lats = get_vrp_lats_csv()
-#     demand_lons = get_vrp_lons_csv()
-
-#     return distance.create_matrix(origin_lat, origin_lon, demand_lats, demand_lons)
-
-
-# def get_dbscan_clusters_csv():
-#     lats = get_vrp_lats_csv()
-#     lons = get_vrp_lons_csv()
-
-#     return distance.create_dbscan_clusters(lats, lons)
-
-
 VRP_DATA = get_vrp_data()

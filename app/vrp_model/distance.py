@@ -139,7 +139,6 @@ def add_closest_clusters(x: List[float], y: List[float], clusters: List[int]):
     """
 
     missing_clusters = np.where(clusters == np.nan)[0]
-    has_clusters = np.where(clusters != np.nan)[0]
 
     x_copy = np.array(x, dtype=float)
     x_copy[missing_clusters] = np.inf
@@ -190,7 +189,7 @@ def create_dbscan_clusters(latitudes: List[float], longitudes: List[float]):
     returns clusters:list
     """
     # projecting geocodes
-    x = np.array(latitudes, dtype=float) + 180
+    x = np.array(latitudes, dtype=float) + 90
     y = np.array(longitudes, dtype=float) + 180
 
     dbscan = create_dbscan_basic(x, y)
