@@ -117,9 +117,7 @@ class SolutionResponse(Model):
         :type demand: Demand
         """
         if demand is None:
-            raise ValueError(
-                "Invalid value for `demand`, must not be `None`"
-            )
+            raise ValueError("Invalid value for `demand`, must not be `None`")
 
         self._demand = demand
 

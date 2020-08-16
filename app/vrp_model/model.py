@@ -48,14 +48,15 @@ class VrpBasicBundle:
         """index of from (i) and to (j)"""
         node_i = self.manager.IndexToNode(i)
         node_j = self.manager.IndexToNode(j)
+        distance = self.distance_matrix[node_i][node_j]
 
-        return self.distance_matrix[node_i][node_j]
+        return distance
 
     def demand_callback(self, i: int):
         """capacity constraint"""
-        node = self.manager.IndexToNode(i)
+        demand = self.demand_quantities[self.manager.IndexToNode(i)]
 
-        return self.demand_quantities[node]
+        return demand
 
     def create_model(self):
         model = pywrapcp.RoutingModel(self.manager)
@@ -87,9 +88,6 @@ class VrpBasicBundle:
         return search_parameters
 
     def get_solution(self):
-        total_distance = 0
-        total_load = 0
-
         # positions in matrix (demand)
         vehicles = np.zeros(len(self.demand_quantities) - 1)
         stops = np.zeros(len(self.demand_quantities) - 1)
@@ -97,29 +95,21 @@ class VrpBasicBundle:
         # original solution building
         for vehicle in range(len(self.vehicles)):
             i = self.model.Start(vehicle)
-            info = {
-                "vehicle": vehicle,
-                "stops": list(),
-                "stop_distances": [0],
-                "stop_loads": list(),
-            }
+            vehicle_stops = []
 
             while not self.model.IsEnd(i):
                 node = self.manager.IndexToNode(i)
 
                 if node != 0:
                     vehicles[node - 1] = vehicle
-                    info["stops"].append(node - 1)
+                    vehicle_stops.append(node - 1)
 
-                previous_i = int(i)
                 i = self.assignment.Value(self.model.NextVar(i))
-                info["stop_distances"].append(
-                    self.model.GetArcCostForVehicle(previous_i, i, vehicle)
-                )
-         
-            stops[info["stops"]] = list(range(len(info["stops"])))
+
+            stops[vehicle_stops] = list(range(len(vehicle_stops)))
+
         stops = stops + 1
-        
+
         # NOTE: returning vehicle assignments only
         return {"id": vehicles, "stops": stops}
 

@@ -16,10 +16,7 @@ class Solution(Model):
     """
 
     def __init__(
-        self,
-        cluster_id: int = None,
-        vehicle_id: int = None,
-        stop_num: int = None,
+        self, cluster_id: int = None, vehicle_id: int = None, stop_num: int = None,
     ):  # noqa: E501
         """Solution - a model defined in Swagger
 
