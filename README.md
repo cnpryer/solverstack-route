@@ -1,4 +1,4 @@
-# solverstack-vrp
+# solverstack-route
 
 ![route](https://github.com/andromia/solverstack-route/workflows/route/badge.svg)
 [![Discord](https://img.shields.io/discord/721862473132540007?label=discord&style=plastic)](https://discord.gg/wg7xSAf)
