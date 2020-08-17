@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-    flask_vrp_dev:
-        image: flask_vrp_dev:1.00
-        container_name: flask_vrp_dev
+    flask_route_dev:
+        image: flask_route_dev:1.00
+        container_name: flask_route_dev
         restart: unless-stopped
         command: manage.py runserver --host=0.0.0.0
         build:

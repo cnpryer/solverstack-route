@@ -1,6 +1,6 @@
 # solverstack-vrp
 
-![vrp-rpc](https://github.com/andromia/solverstack-vrp/workflows/vrp-rpc/badge.svg)
+![route](https://github.com/andromia/solverstack-route/workflows/route/badge.svg)
 [![Discord](https://img.shields.io/discord/721862473132540007?label=discord&style=plastic)](https://discord.gg/wg7xSAf)
 [![Slack](https://img.shields.io/badge/slack-workspace-orange)](https://join.slack.com/t/andromiasoftware/shared_invite/zt-felqfjhs-Tvma8OYuCExxdmQgHOIGsg)
 
@@ -8,7 +8,7 @@
 
 **TODO**: add current and future specs/features.
 
-RPC API for logistics optimization web services.
+Service for route module.
 
 ## MVP
 
@@ -77,7 +77,7 @@ RPC API for logistics optimization web services.
 ## Usage
 
 - Clone the repository using git clone or download it as a _.zip_ and extract it.
-- `cd solverstack-vrp` or open a terminal in the _solverstack-vrp_ directory.
+- `cd solverstack-route` or open a terminal in the _solverstack-route_ directory.
 - **OPTIONAL** Create a virtual environment using python [venv](https://docs.python.org/3/tutorial/venv.html). This is **preferred** to keep the packages for this project separate.
 - Install required packages using `python -m pip install -r requirements.txt`
 - Run the flask server using `python manage.py runserver`
@@ -93,8 +93,8 @@ RPC API for logistics optimization web services.
 
 You can use a Docker container for running the tests by using the provided _Dockerfile.test_
 
-- Build the Docker image using `docker build -f Dockerfile.test . -t andromia:solverstack-vrp-test`.
-- Run the image using `docker run andromia:solverstack-vrp-test`
+- Build the Docker image using `docker build -f Dockerfile.test . -t andromia:solverstack-route-test`.
+- Run the image using `docker run andromia:solverstack-route-test`
 
 ## TODO
 
