@@ -3,7 +3,7 @@ module for running test cases for model scoring.
 
 TODO: use logging to define case logging
 """
-from scoring import DATA
+from tests.cases import DATA
 from app.vrp_model import model, distance
 from app.vrp_model.scoring import input_scoring, output_scoring
 
