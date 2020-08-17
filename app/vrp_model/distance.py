@@ -23,7 +23,6 @@ def create_vectorized_haversine_li(
 
 def create_matrix(
     origin: Tuple[float],
-    # destinations: List[Tuple[float]],
     dest_lats: List[float],
     dest_lons: List[float],
 ):
