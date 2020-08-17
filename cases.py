@@ -86,7 +86,7 @@ def score_outputs(case: dict, solution: dict):
 def main():
     """run all test cases"""
     for case in DATA:
-        print(f"{case['id']} | description: {case['desc']}")
+        print(f"{case['id']} :: description: {case['desc']}")
 
         score_inputs(case)
         solution = run_case(case)
