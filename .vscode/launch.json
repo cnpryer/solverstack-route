@@ -2,12 +2,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Module",
+            "name": "cases",
             "type": "python",
             "request": "launch",
             "console": "integratedTerminal",
             "pythonPath": "${workspaceRoot}/venv/Scripts/python.exe",
             "module": "cases",
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "tetsting",
+            "type": "python",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "pythonPath": "${workspaceRoot}/venv/Scripts/python.exe",
+            "module": "pytest",
             "cwd": "${workspaceRoot}"
         }
     ]
