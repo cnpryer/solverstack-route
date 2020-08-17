@@ -22,9 +22,7 @@ def create_vectorized_haversine_li(
 
 
 def create_matrix(
-    origin: Tuple[float],
-    dest_lats: List[float],
-    dest_lons: List[float],
+    origin: Tuple[float], dest_lats: List[float], dest_lons: List[float],
 ):
     """
     creates matrix using optimized matrix processing.

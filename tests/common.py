@@ -71,4 +71,5 @@ def get_vrp_data():
         "vehicle_definitions": None,  # TODO
     }
 
+
 VRP_DATA = get_vrp_data()

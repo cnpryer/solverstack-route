@@ -24,11 +24,11 @@ class VrpBasicBundle:
         """
         self.distance_matrix = distance_matrix
         self.demand_quantities = demand_quantities
-        
+
         # TODO: make this more robust
         if len(demand_quantities) == len(distance_matrix) - 1:
             self.demand_quantities = [0] + list(demand_quantities)
-        
+
         self.max_vehicle_cap = max_vehicle_capacity_units
         self.max_search_seconds = max_search_seconds
 

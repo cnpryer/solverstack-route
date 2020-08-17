@@ -33,4 +33,4 @@ def test_matrix():
 
     i = randint(0, len(matrix) - 1)
 
-    assert len(matrix) ==  len(matrix[i]) == len(dlats) + 1
+    assert len(matrix) == len(matrix[i]) == len(dlats) + 1
