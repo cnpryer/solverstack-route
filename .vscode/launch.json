@@ -11,13 +11,23 @@
             "cwd": "${workspaceRoot}"
         },
         {
-            "name": "tetsting",
+            "name": "tests",
             "type": "python",
             "request": "launch",
             "console": "integratedTerminal",
             "pythonPath": "${workspaceRoot}/venv/Scripts/python.exe",
             "module": "pytest",
             "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "distance tests",
+            "type": "python",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "pythonPath": "${workspaceRoot}/venv/Scripts/python.exe",
+            "module": "pytest",
+            "cwd": "${workspaceRoot}",
+            "args": ["tests/test_distance.py"]
         }
     ]
 }
