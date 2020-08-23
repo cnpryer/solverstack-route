@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: solverstack Vrp
+  title: solverstack route
   description: vehicle routing api
   # termsOfService: None yet
   contact:
@@ -8,26 +8,26 @@ info:
     email: api@solverstack.com
   license:
     name: MIT License
-    url: https://github.com/andromia/solverstack-vrp/blob/master/LICENSE
+    url: https://github.com/andromia/solverstack-route/blob/master/LICENSE
   version: 0.1.0
 # externalDocs:
 #   description: Find out more about Swagger
 #   url: http://swagger.io
 servers:
-- url: http://solverstack.com/api/v0_1/vrp
+- url: http://solverstack.com/api/v0_1/route
 tags:
-- name: vrp
+- name: route
   description: Gets the solution to your demand
   # externalDocs:
   #   description: Find out more
   #   url: http://swagger.io
 paths:
-  /vrp:
+  /route:
     post:
       tags:
-        - vrp
+        - route
       summary: Compute solution
-      operationId: vrp
+      operationId: route
       requestBody:
         description: Total data for computation
         required: true

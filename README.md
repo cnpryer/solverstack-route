@@ -16,7 +16,7 @@ Service for route module.
 
 ## Main Procedure
 
-- **Endpoint**: `/vrp`
+- **Endpoint**: `/route`
 - **Methods**: `POST`
 - **Request Syntax**:
 

@@ -1,26 +1,26 @@
 openapi: 3.0.1
 info:
-  title: solverstack Vrp
+  title: solverstack route
   description: vehicle routing api
   contact:
     name: solverstack
     email: api@solverstack.com
   license:
     name: MIT License
-    url: https://github.com/andromia/solverstack-vrp/blob/master/LICENSE
+    url: https://github.com/andromia/solverstack-route/blob/master/LICENSE
   version: 0.1.0
 servers:
   - url: /api/v0_1
 tags:
-  - name: vrp
+  - name: route
     description: Gets the solution to your demand
 paths:
-  /vrp:
+  /route:
     post:
       tags:
-        - vrp
+        - route
       summary: Compute solution
-      operationId: main.vrp_procedure
+      operationId: main.route_procedure
       requestBody:
         description: Total data for computation
         content:

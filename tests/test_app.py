@@ -105,7 +105,7 @@ class TestApp:
         logging.info(f"Testing with content-type : {content_type}")
 
         res: Response = client.post(
-            f"/api/{__version__}/vrp", headers={"Content-Type": content_type}, data=""
+            f"/api/{__version__}/route", headers={"Content-Type": content_type}, data=""
         )
 
         logging.debug(f"Response : {res}")
@@ -125,7 +125,7 @@ class TestApp:
 
         logging.debug(f"input data : {test_data}")
 
-        endpoint = f"/api/{__version__}/vrp"
+        endpoint = f"/api/{__version__}/route"
         logging.debug(f"endpoint: {endpoint}")
 
         # Send request

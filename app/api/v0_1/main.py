@@ -13,8 +13,8 @@ from app.vrp_model import distance, model
 from . import bp
 
 
-@bp.route("/vrp", methods=["POST"])
-def vrp_procedure():
+@bp.route("/route", methods=["POST"])
+def route_procedure():
     """
     Main RPC endpoint for passing input data for optimized outputs.
 
@@ -46,8 +46,8 @@ def vrp_procedure():
         )
     demand = body.demand
 
-    demand_latitudes = [d.latitude for d in demand]
-    demand_longitudes = [d.longitude for d in demand]
+    demand_latitudes = [float(d.latitude) for d in demand]
+    demand_longitudes = [float(d.longitude) for d in demand]
     demand_quantities = [d.quantity for d in demand]
 
     # cluster by location (lat, lon)
