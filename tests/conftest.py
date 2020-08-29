@@ -38,6 +38,7 @@ def client():
 def demand():
     return [
         {
+            "id": i,
             "latitude": random.uniform(-90, 90),
             "longitude": random.uniform(-180, 180),
             "quantity": random.randint(0, 26),
@@ -52,7 +53,7 @@ def origin():
     lat, lon = 41.4191, -87.7748
     logging.debug(f"origin lat: {lat}, lon: {lon}.")
 
-    return {"latitude": lat, "longitude": lon}
+    return {"id": 1, "latitude": lat, "longitude": lon}
 
 
 @pytest.fixture()

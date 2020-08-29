@@ -52,10 +52,14 @@ components:
       type: object
       description: A demand for some quantity of goods
       required:
+        - id
         - latitude
         - longitude
         - quantity
       properties:
+        id:
+          type: integer
+          format: int64
         latitude:
           $ref: "#/components/schemas/Latitude"
         longitude:
@@ -66,9 +70,13 @@ components:
       type: object
       description: A source point for demand
       required:
+        - id
         - latitude
         - longitude
       properties:
+        id:
+          type: integer
+          format: int64
         latitude:
           $ref: "#/components/schemas/Latitude"
         longitude:

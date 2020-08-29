@@ -18,7 +18,7 @@ class Origin(Model):
     """
 
     def __init__(
-        self, latitude: Latitude = None, longitude: Longitude = None
+        self, id: int = None, latitude: Latitude = None, longitude: Longitude = None
     ):  # noqa: E501
         """Origin - a model defined in Swagger
 
@@ -27,9 +27,14 @@ class Origin(Model):
         :param longitude: The longitude of this Origin.  # noqa: E501
         :type longitude: Longitude
         """
-        self.swagger_types = {"latitude": Latitude, "longitude": Longitude}
+        self.swagger_types = {"id": int, "latitude": Latitude, "longitude": Longitude}
 
-        self.attribute_map = {"latitude": "latitude", "longitude": "longitude"}
+        self.attribute_map = {
+            "id": "id",
+            "latitude": "latitude",
+            "longitude": "longitude",
+        }
+        self._id = id
         self._latitude = latitude
         self._longitude = longitude
 
@@ -43,6 +48,27 @@ class Origin(Model):
         :rtype: Origin
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self) -> int:
+        """Gets the id of this Origin.
+
+
+        :return: The id of this Origin.
+        :rtype: int
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int):
+        """Sets the id of this Origin.
+
+
+        :param id: The id of this Origin.
+        :type id: int
+        """
+
+        self._id = id
 
     @property
     def latitude(self) -> Latitude:

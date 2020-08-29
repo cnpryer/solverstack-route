@@ -25,11 +25,13 @@ _NOTE_: `origin` initially will just be a singular dictionary. Eventually lists 
 {
   "stack_id": <int>,
   "origin": [{
+    "id": <int>,
     "latitude": <float>,
     "longitude": <float>
   }],
   "demand": [
     {
+      "id": <int>,
       "latitude": <float>,
       "longitude": <float>,
       "quantity": <int>
@@ -59,10 +61,12 @@ _NOTE_: `origin` initially will just be a singular dictionary. Eventually lists 
 {
   "stack_id": <int>,
   "origin": [{
+    "id": <int>,
     "latitude": <float>,
     "longitude": <float>
   }],
   "demand": [{
+    "id": <int>,
     "latitude": <float>,
     "longitude": <float>,
     "quantity": <int>

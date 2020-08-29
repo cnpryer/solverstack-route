@@ -6,6 +6,7 @@ python-dotenv==0.13.0
 numpy==1.19.0
 haversine==2.2.0
 flask-cors==3.0.8
+requests==2.24.0
 ortools
 connexion
 connexion[swagger-ui]

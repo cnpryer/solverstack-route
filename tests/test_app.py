@@ -18,7 +18,7 @@ class TestApp:
 
         return {
             "stack_id": 1,
-            "origin": {"latitude": origin_lat, "longitude": origin_lon},
+            "origin": {"id": 1, "latitude": origin_lat, "longitude": origin_lon},
             "unit": "pallets",
             "demand": demand,
             "vehicle_capacity": 26,
@@ -134,6 +134,4 @@ class TestApp:
 
         output: dict = res.json
 
-        assert len(output["solution"]) == len(test_data["demand"])
-        assert output["origin"] == test_data["origin"]
-        assert output["unit"] == test_data["unit"]
+        assert len(output["routes"]) == len(test_data["demand"])

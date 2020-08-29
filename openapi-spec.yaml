@@ -97,6 +97,9 @@ components:
     Demand:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         latitude:
           $ref: '#/components/schemas/Latitude'
         longitude:
@@ -106,6 +109,9 @@ components:
     Origin:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         latitude:
           $ref: '#/components/schemas/Latitude'
         longitude:

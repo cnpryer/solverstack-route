@@ -20,6 +20,7 @@ class Demand(Model):
 
     def __init__(
         self,
+        id: int = None,
         latitude: Latitude = None,
         longitude: Longitude = None,
         quantity: Quantity = None,
@@ -34,16 +35,19 @@ class Demand(Model):
         :type quantity: Quantity
         """
         self.swagger_types = {
+            "id": int,
             "latitude": Latitude,
             "longitude": Longitude,
             "quantity": Quantity,
         }
 
         self.attribute_map = {
+            "id": "id",
             "latitude": "latitude",
             "longitude": "longitude",
             "quantity": "quantity",
         }
+        self._id = id
         self._latitude = latitude
         self._longitude = longitude
         self._quantity = quantity
@@ -58,6 +62,27 @@ class Demand(Model):
         :rtype: Demand
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self) -> int:
+        """Gets the id of this Demand.
+
+
+        :return: The id of this Demand.
+        :rtype: int
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int):
+        """Sets the id of this Demand.
+
+
+        :param id: The id of this Demand.
+        :type id: int
+        """
+
+        self._id = id
 
     @property
     def latitude(self) -> Latitude:
