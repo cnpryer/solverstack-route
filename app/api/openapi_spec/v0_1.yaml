@@ -44,6 +44,10 @@ paths:
       x-openapi-router-controller: app.api.v0_1
 components:
   schemas:
+    StackID:
+      type: integer
+      format: int64
+      minimum: 0
     Demand:
       type: object
       description: A demand for some quantity of goods
@@ -135,12 +139,16 @@ components:
           type: string
     procedureRequest:
       required:
+        - stack_id
         - demand
         - origin
         - unit
         - vehicle_capacity
       type: object
       properties:
+        stack_id:
+          type: integer
+          format: int64
         origin:
           $ref: "#/components/schemas/Origin"
         demand:
@@ -161,11 +169,15 @@ components:
       minimum: 0
     solutionResponse:
       required:
+        - stack_id
         - origin
         - solution
         - unit
         - vehicle_capacity
       properties:
+        stack_id:
+          type: integer
+          format: int64
         origin:
           $ref: "#/components/schemas/Origin"
         solution:

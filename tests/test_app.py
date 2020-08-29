@@ -1,24 +1,23 @@
+from app.api import __version__
+
 import json
 import logging
-
 import pytest
 from werkzeug.wrappers import Response
 
-from app.api import __version__
 
-# from . import common
-
-# VRP_DATA = common.VRP_DATA
+ENDPOINT: dict = f"/api/{__version__}/route"
 
 
 class TestApp:
     @pytest.fixture()
-    def test_data(self, origin, demand):
+    def test_data(self, origin: dict, demand: dict):
         # TODO: abstract json def
-        origin_lat = origin["latitude"]
-        origin_lon = origin["longitude"]
+        origin_lat: float = origin["latitude"]
+        origin_lon: float = origin["longitude"]
 
         return {
+            "stack_id": 1,
             "origin": {"latitude": origin_lat, "longitude": origin_lon},
             "unit": "pallets",
             "demand": demand,
@@ -99,14 +98,14 @@ class TestApp:
             "application/x-7z-compressed",
         ],
     )
-    def test_non_json_request(self, client, content_type):
+    def test_non_json_request(self, client, auth_header: dict, content_type: str):
         """Test with content types other than 'application/json'"""
 
         logging.info(f"Testing with content-type : {content_type}")
 
-        res: Response = client.post(
-            f"/api/{__version__}/route", headers={"Content-Type": content_type}, data=""
-        )
+        HEADERS: dict = dict(auth_header, **{"Content-Type": content_type})
+
+        res: Response = client.post(ENDPOINT, headers=HEADERS, data="")
 
         logging.debug(f"Response : {res}")
         logging.debug(f"Response Data : {res.data}")
@@ -119,24 +118,21 @@ class TestApp:
         )
 
     @pytest.mark.filterwarnings
-    def test_main_procedure(self, client, test_data):
+    def test_main_procedure(self, client, auth_header: dict, test_data: dict):
         """Test rpc with correct data"""
-        logging.debug
 
-        logging.debug(f"input data : {test_data}")
-
-        endpoint = f"/api/{__version__}/route"
-        logging.debug(f"endpoint: {endpoint}")
+        logging.debug(f"Input data : {test_data}")
+        logging.debug(f"endpoint: {ENDPOINT}")
 
         # Send request
-        response = client.post(endpoint, json=test_data)
+        res: Response = client.post(ENDPOINT, headers=auth_header, json=test_data)
 
         # Check if response is succesful
-        assert response.status_code == 200
+        assert res.status_code == 200
         # Check if response is of correct type
-        assert response.is_json
+        assert res.is_json
 
-        output = response.json
+        output: dict = res.json
 
         assert len(output["solution"]) == len(test_data["demand"])
         assert output["origin"] == test_data["origin"]

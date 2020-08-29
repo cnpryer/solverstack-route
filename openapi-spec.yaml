@@ -36,11 +36,15 @@ paths:
             schema:
               type: object
               required:
+                - stack_id
                 - origin
                 - demand
                 - vehicle_capacity
                 - unit
               properties:
+                stack_id:
+                  type: integer
+                  format: int64
                 origin:
                   $ref: '#/components/schemas/Origin'
                 demand:
@@ -70,12 +74,15 @@ paths:
             application/json:
               schema:
                 properties:
+                  stack_id:
+                    tpye: integer
+                    format: int64
                   origin:
-                      $ref: '#/components/schemas/Origin'
+                    $ref: '#/components/schemas/Origin'
                   solution:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Solution'
+                    $ref: '#/components/schemas/Solution'
                   unit:
                     $ref: '#/components/schemas/Unit'
                   vehicle_capacity:
@@ -83,6 +90,10 @@ paths:
                     format: int64
 components:
   schemas:
+    StackID:
+      type: integer
+      format: int64
+      minimum: 0
     Demand:
       type: object
       properties:

@@ -46,6 +46,7 @@ def route_procedure():
         )
     demand = body.demand
 
+    stack_id = body.stack_id
     demand_latitudes = [float(d.latitude) for d in demand]
     demand_longitudes = [float(d.longitude) for d in demand]
     demand_quantities = [d.quantity for d in demand]
@@ -63,6 +64,7 @@ def route_procedure():
     solution = model.create_vehicles(matrix, [0] + demand_quantities, clusters)
 
     response = {
+        "stack_id": stack_id,
         "origin": origin,
         "demand": demand,
         "unit": body.unit,

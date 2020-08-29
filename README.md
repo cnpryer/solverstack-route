@@ -15,17 +15,19 @@ Service for route module.
 `/api/<version>/`
 
 ## Main Procedure
+_NOTE_: `origin` initially will just be a singular dictionary. Eventually lists will be accepted.
 
 - **Endpoint**: `/route`
 - **Methods**: `POST`
 - **Request Syntax**:
 
-```
+```json
 {
-  "origin": {
+  "stack_id": <int>,
+  "origin": [{
     "latitude": <float>,
     "longitude": <float>
-  },
+  }],
   "demand": [
     {
       "latitude": <float>,
@@ -55,20 +57,22 @@ Service for route module.
 
 ```json
 {
-  "origin": {
+  "stack_id": <int>,
+  "origin": [{
     "latitude": <float>,
     "longitude": <float>
-  },
-  "demand": {
+  }],
+  "demand": [{
     "latitude": <float>,
     "longitude": <float>,
     "quantity": <int>
-  },
-  "solution": [
+  }],
+  "solution": [{
+      "id": <int>,
       "cluster_id": <int>,
       "vehicle_id": <int>,
       "stop_num": <int>
-  ],
+  }],
   "unit": <str>,
   "vehicle_max_capacity_units": <int>
 }

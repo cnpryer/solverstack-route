@@ -12,6 +12,7 @@ from app.api.models.origin import Origin  # noqa: F401,E501
 from app.api.models.demand import Demand
 from app.api.models.solution import Solution  # noqa: F401,E501
 from app.api.models.unit import Unit  # noqa: F401,E501
+from app.api.models.stack_id import StackID
 
 
 class SolutionResponse(Model):
@@ -22,6 +23,7 @@ class SolutionResponse(Model):
 
     def __init__(
         self,
+        stack_id: StackID = None,
         origin: Origin = None,
         demand: Demand = None,
         solution: List[Solution] = None,
@@ -30,6 +32,7 @@ class SolutionResponse(Model):
     ):  # noqa: E501
         """SolutionResponse - a model defined in Swagger
 
+        :param stack_id: TODO
         :param origin: The origin of this SolutionResponse.  # noqa: E501
         :type origin: Origin
         :param demand: The demand of this SolutionResponse.
@@ -42,6 +45,7 @@ class SolutionResponse(Model):
         :type vehicle_capacity: int
         """
         self.swagger_types = {
+            "stack_id": StackID,
             "origin": Origin,
             "demand": Demand,
             "solution": List[Solution],
@@ -50,12 +54,14 @@ class SolutionResponse(Model):
         }
 
         self.attribute_map = {
+            "stack_id": "stack_id",
             "origin": "origin",
             "demand": "demand",
             "solution": "solution",
             "unit": "unit",
             "vehicle_capacity": "vehicle_capacity",
         }
+        self._stack_id = stack_id
         self._origin = origin
         self._demand = demand
         self._solution = solution
@@ -72,6 +78,31 @@ class SolutionResponse(Model):
         :rtype: SolutionResponse
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def stack_id(self) -> StackID:
+        """Gets the stack_id of this SolutionResponse.
+
+
+        :return: The stack_id of this SolutionResponse.
+        :rtype: StackID
+        """
+        return self._stack_id
+
+    @stack_id.setter
+    def stack_id(self, stack_id: StackID):
+        """Sets the stack_id of this SolutionResponse.
+
+
+        :param stack_id: The stack_id of this SolutionResponse.
+        :type stack_id: StackID
+        """
+        if stack_id is None:
+            raise ValueError(
+                "Invalid value for `stack_id`, must not be `None`"
+            )  # noqa: E501
+
+        self._stack_id = stack_id
 
     @property
     def origin(self) -> Origin:

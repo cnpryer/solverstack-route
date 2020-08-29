@@ -12,6 +12,7 @@ from app.api.models.demand import Demand  # noqa: F401,E501
 from app.api.models.origin import Origin  # noqa: F401,E501
 from app.api.models.unit import Unit  # noqa: F401,E501
 from app.api.models.vehicle_capacity import VehicleCapacity  # noqa: F401,E501
+from app.api.models.stack_id import StackID
 
 
 class ProcedureRequest(Model):
@@ -22,6 +23,7 @@ class ProcedureRequest(Model):
 
     def __init__(
         self,
+        stack_id: StackID = None,
         origin: Origin = None,
         demand: List[Demand] = None,
         unit: Unit = None,
@@ -30,6 +32,7 @@ class ProcedureRequest(Model):
     ):  # noqa: E501
         """ProcedureRequest - a model defined in Swagger
 
+        :param stack_id: TODO
         :param origin: The origin of this ProcedureRequest.  # noqa: E501
         :type origin: Origin
         :param demand: The demand of this ProcedureRequest.  # noqa: E501
@@ -42,6 +45,7 @@ class ProcedureRequest(Model):
         :type vehicle_definitions: List[VehicleCapacity]
         """
         self.swagger_types = {
+            "stack_id": StackID,
             "origin": Origin,
             "demand": List[Demand],
             "unit": Unit,
@@ -50,12 +54,14 @@ class ProcedureRequest(Model):
         }
 
         self.attribute_map = {
+            "stack_id": "stack_id",
             "origin": "origin",
             "demand": "demand",
             "unit": "unit",
             "vehicle_capacity": "vehicle_capacity",
             "vehicle_definitions": "vehicle_definitions",
         }
+        self._stack_id = stack_id
         self._origin = origin
         self._demand = demand
         self._unit = unit
@@ -72,6 +78,31 @@ class ProcedureRequest(Model):
         :rtype: ProcedureRequest
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def stack_id(self) -> StackID:
+        """Gets the stack_id of this ProcedureRequest.
+
+
+        :return: The origin of this ProcedureRequest.
+        :rtype: StackID
+        """
+        return self._stack_id
+
+    @stack_id.setter
+    def stack_id(self, stack_id: StackID):
+        """Sets the stack_id of this ProcedureRequest.
+
+
+        :param stack_id: The stack_id of this ProcedureRequest.
+        :type stack_id: StackID
+        """
+        if stack_id is None:
+            raise ValueError(
+                "Invalid value for `stack_id`, must not be `None`"
+            )  # noqa: E501
+
+        self._stack_id = stack_id
 
     @property
     def origin(self) -> Origin:

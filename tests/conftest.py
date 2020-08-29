@@ -1,18 +1,32 @@
-import logging
-import random
-
-import pytest
-
+from . import common
 from app import create_app
 from app.vrp_model import distance
 from config import Config
 
-from . import common
+import logging
+import random
+import pytest
+from flask_jwt_extended import create_access_token
+
+
+TEST_USER: dict = {"id": 1, "username": "test", "password": "password"}
 
 
 class TestConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite://"
+
+
+@pytest.fixture()
+def auth_header():
+    app = create_app(TestConfig)
+
+    with app.app_context():
+        token = create_access_token(TEST_USER)
+
+    headers: dict = {"Authorization": "Bearer {}".format(token)}
+
+    return headers
 
 
 @pytest.fixture(scope="session")

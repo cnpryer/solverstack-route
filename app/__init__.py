@@ -3,14 +3,15 @@ import os
 from logging.handlers import RotatingFileHandler, SMTPHandler
 
 import connexion
-from flask import Flask, current_app, request
-from flask_caching import Cache
+from flask import Flask, current_app
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 from app import encoder
 from config import Config
 
-cache = Cache()
+
+jwt = JWTManager()
 
 
 def create_app(config_class=Config):
@@ -29,7 +30,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     CORS(app)
-    cache.init_app(app)
+    jwt.init_app(app)
 
     from app.api.v0_1 import bp as api_bp
 

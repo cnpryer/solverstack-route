@@ -14,3 +14,4 @@ from app.api.models.quantity import Quantity
 from app.api.models.solution import Solution
 from app.api.models.unit import Unit
 from app.api.models.vehicle_capacity import VehicleCapacity
+from app.api.models.stack_id import StackID

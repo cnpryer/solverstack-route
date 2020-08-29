@@ -1,6 +1,6 @@
 click==7.1.2
 Flask==1.1.2
-Flask-Caching==1.9.0
+Flask-JWT-Extended==3.24.1 
 Flask-Script==2.0.6
 python-dotenv==0.13.0
 numpy==1.19.0

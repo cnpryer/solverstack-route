@@ -9,6 +9,7 @@ load_dotenv(os.path.join(base_dir, ".env"))
 
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
+    JWT_SECRET_KEY = SECRET_KEY
     LOG_TO_STDOUT = os.environ.get("LOG_TO_STDOUT")
     ADMINS = ["christophpryer@gmail.com"]
     CACHE_TYPE = "simple"
