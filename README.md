@@ -15,7 +15,7 @@ Service for route module.
 `/api/<version>/`
 
 ## Main Procedure
-_NOTE_: `origin` initially will just be a singular dictionary. Eventually lists will be accepted.
+_NOTE_: `origin` initially will just be a single dictionary. Eventually lists will be accepted.
 
 - **Endpoint**: `/route`
 - **Methods**: `POST`
@@ -24,11 +24,11 @@ _NOTE_: `origin` initially will just be a singular dictionary. Eventually lists 
 ```json
 {
   "stack_id": <int>,
-  "origin": [{
+  "origin": {
     "id": <int>,
     "latitude": <float>,
     "longitude": <float>
-  }],
+  },
   "demand": [
     {
       "id": <int>,
