@@ -13,13 +13,13 @@ servers:
   - url: /api/v0_1
 tags:
   - name: route
-    description: Gets the solution to your demand
+    description: Gets the routes for your demand
 paths:
   /route:
     post:
       tags:
         - route
-      summary: Compute solution
+      summary: Compute routes
       operationId: main.route_procedure
       requestBody:
         description: Total data for computation
@@ -34,7 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/solutionResponse"
+                $ref: "#/components/schemas/routesResponse"
         "400":
           description: Invalid data supplied
           content:
@@ -119,10 +119,10 @@ components:
       format: int64
       minimum: 0
       exclusiveMinimum: true
-    Solution:
+    Route:
       type: object
       required:
-        - stop_num
+        - stop_number
         - cluster_id
         - vehicle_id
       properties:
@@ -134,7 +134,7 @@ components:
           type: integer
           format: int64
           minimum: 0
-        stop_num:
+        stop_number:
           type: integer
           format: int64
           minimum: 0
@@ -175,11 +175,11 @@ components:
       type: integer
       format: int64
       minimum: 0
-    solutionResponse:
+    routesResponse:
       required:
         - stack_id
         - origin
-        - solution
+        - routes
         - unit
         - vehicle_capacity
       properties:
@@ -188,10 +188,10 @@ components:
           format: int64
         origin:
           $ref: "#/components/schemas/Origin"
-        solution:
+        routes:
           type: array
           items:
-            $ref: "#/components/schemas/Solution"
+            $ref: "#/components/schemas/Route"
         unit:
           $ref: "#/components/schemas/Unit"
         vehicle_capacity:

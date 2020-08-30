@@ -17,7 +17,7 @@ servers:
 - url: http://solverstack.com/api/v0_1/route
 tags:
 - name: route
-  description: Gets the solution to your demand
+  description: Gets the routes for your demand
   # externalDocs:
   #   description: Find out more
   #   url: http://swagger.io
@@ -26,7 +26,7 @@ paths:
     post:
       tags:
         - route
-      summary: Compute solution
+      summary: Compute routes
       operationId: route
       requestBody:
         description: Total data for computation
@@ -79,10 +79,10 @@ paths:
                     format: int64
                   origin:
                     $ref: '#/components/schemas/Origin'
-                  solution:
+                  routes:
                     type: array
                     items:
-                    $ref: '#/components/schemas/Solution'
+                    $ref: '#/components/schemas/Route'
                   unit:
                     $ref: '#/components/schemas/Unit'
                   vehicle_capacity:
@@ -133,7 +133,7 @@ components:
     Quantity:
       type: integer
       format: int64
-    Solution:
+    Route:
       type: object
       properties:
         cluster_id:
@@ -142,7 +142,7 @@ components:
         vehicle_id:
           type: integer
           format: int32
-        stop_num:
+        stop_number:
           type: integer
           format: int32
     InvalidUsageError:

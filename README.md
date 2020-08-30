@@ -71,7 +71,7 @@ _NOTE_: `origin` initially will just be a single dictionary. Eventually lists wi
     "longitude": <float>,
     "quantity": <int>
   }],
-  "solution": [{
+  "routes": [{
       "id": <int>,
       "cluster_id": <int>,
       "vehicle_id": <int>,

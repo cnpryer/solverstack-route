@@ -3,7 +3,7 @@ from . import bp
 # from app.api.models.inline_response200 import InlineResponse200  # noqa: E501
 from app.api.models.invalid_usage_error import InvalidUsageError  # noqa: E501
 from app.api.v0_1.models.procedure_request import ProcedureRequest  # noqa: E501
-from app.api.v0_1.models.solution_response import SolutionResponse  # noqa: E501
+from app.api.v0_1.models.routes_response import RoutesResponse  # noqa: E501
 from app.vrp_model import distance, model
 
 import requests
@@ -13,7 +13,7 @@ from connexion import request
 from flask import jsonify, make_response
 
 
-CRUD_URL: str = "http://localhost:5006/api/v0.1/route"
+CRUD_URL: str = "http://localhost:5004/api/v0.1/route"
 
 
 @bp.route("/route", methods=["POST"])
@@ -67,7 +67,7 @@ def route_procedure():
     )
 
     # manage solve
-    solution = model.create_vehicles(matrix, [0] + demand_quantities, clusters)
+    routes = model.create_vehicles(matrix, [0] + demand_quantities, clusters)
 
     default_response = {
         "stack_id": stack_id,
@@ -82,13 +82,17 @@ def route_procedure():
             "depot_id": origin.id,
             "demand_id": demand[i].id,
             "cluster_id": clusters[i],
-            "stop_number": solution["stops"][i],
-            "vehicle_id": solution["id"][i],
+            "stop_number": routes["stops"][i],
+            "vehicle_id": routes["id"][i],
         }
         for i in range(len(demand))
     ]
 
     try:
+
+        if not request.headers.get("Authorization"):
+            raise ValueError("Unauthroized request")
+
         input_data: dict = {"stack_id": stack_id, "routes": results}
         response = requests.post(CRUD_URL, headers=request.headers, json=input_data)
 
