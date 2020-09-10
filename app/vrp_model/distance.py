@@ -50,7 +50,7 @@ def create_matrix(
 
 
 class DBSCAN:
-    def __init__(self, x, y, epsilon=0.5, minpts=2):
+    def __init__(self, epsilon=0.5, minpts=2):
         self.epsilon = epsilon
         self.minpts = minpts
 

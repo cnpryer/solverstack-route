@@ -16,8 +16,11 @@ class TestDistance:
 
         assert len(matrix) == len(latitudes) + 1
 
-    def test_cluster_processing(self, latitudes, longitudes):
+    def test_cluster_processing(self):
         """Test creation of clusters"""
+        latitudes = [40.1717, 33.9883, 33.9163, 39.8295, 39.9474, 33.9321, 40.8219]
+        longitudes = [-80.256, -83.8795, -84.8278, -75.4354, -75.1473, -83.3525, -74.42]
+
         assert len(latitudes) == len(longitudes)
 
         clusters = distance.create_dbscan_clusters(latitudes, longitudes)
