@@ -30,6 +30,16 @@
             "args": ["tests/test_distance.py"]
         },
         {
+            "name": "distance matrix test",
+            "type": "python",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "pythonPath": "${workspaceRoot}/venv/Scripts/python.exe",
+            "module": "pytest",
+            "cwd": "${workspaceRoot}",
+            "args": ["tests/test_distance.py::TestDistance::test_matrix_processing"]
+        },
+        {
             "name": "distance clusters test",
             "type": "python",
             "request": "launch",
