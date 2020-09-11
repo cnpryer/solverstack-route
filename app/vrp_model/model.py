@@ -66,9 +66,17 @@ class VrpBasicBundle:
     def create_model(self):
         model = pywrapcp.RoutingModel(self.manager)
 
-        # distance constraint setup
-        model.SetArcCostEvaluatorOfAllVehicles(
-            model.RegisterTransitCallback(self.matrix_callback)
+        # distance constraint setup TODO: tune this
+        MAX_DIST_INT = 200000  # distances are *100 for integer
+
+        callback_id = model.RegisterTransitCallback(self.matrix_callback)
+        model.SetArcCostEvaluatorOfAllVehicles(callback_id)
+        model.AddDimensionWithVehicleCapacity(
+            callback_id,
+            0,  # 0 slack
+            [MAX_DIST_INT for i in self.vehicles],
+            True,  # start to zero
+            "Distance",
         )
 
         # demand constraint setup
@@ -80,6 +88,11 @@ class VrpBasicBundle:
             True,  # start cumul to zero
             "Capacity",
         )
+
+        dst_dim = model.GetDimensionOrDie("Distance")
+        for i in range(self.manager.GetNumberOfVehicles()):
+            end_idx = model.End(i)
+            dst_dim.SetCumulVarSoftUpperBound(end_idx, int(MAX_DIST_INT * 0.75), 150)
 
         return model
 
