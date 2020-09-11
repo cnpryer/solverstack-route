@@ -77,6 +77,11 @@ def route_procedure():
         "vehicle_capacity": body.vehicle_capacity,
     }
 
+    if len(routes["stops"]) == 0:
+        default_response["routes"] = routes
+        
+        return make_response(jsonify(default_response), 200)
+
     results = [
         {
             "depot_id": origin.id,

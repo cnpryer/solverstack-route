@@ -106,6 +106,9 @@ class VrpBasicBundle:
         return search_parameters
 
     def get_solution(self):
+        if not self.assignment:
+            return None
+
         # positions in matrix (demand)
         vehicles = np.zeros(len(self.demand_quantities) - 1)
         stops = np.zeros(len(self.demand_quantities) - 1)
@@ -180,6 +183,9 @@ def create_vehicles(
 
         # list of vehcles # NOTE: will change
         solution = bndl.run().get_solution()
+
+        if not solution:
+            return {"id": [], "stops": []}
 
         # assign
         is_cluster = is_cluster[is_cluster != 0] - 1
