@@ -14,12 +14,12 @@ class TestVRPModel:
         origin_lat = origin["latitude"]
         origin_lon = origin["longitude"]
         demand = [int(d) for d in quantities]
-        vehicles = model.create_routes(
+        vehicles = model.create_vehicles(
             origin_lat=origin_lat,
             origin_lon=origin_lon,
             dest_lats=latitudes,
             dest_lons=longitudes,
-            demand_quantities=quantities,
+            demand_quantities=demand,
             max_vehicle_capacity=26,
         )
 
@@ -35,12 +35,12 @@ class TestVRPModel:
         origin_lat = origin["latitude"]
         origin_lon = origin["longitude"]
         demand = [int(d) for d in quantities]
-        vehicles = model.create_routes(
+        vehicles = model.create_vehicles(
             origin_lat=origin_lat,
             origin_lon=origin_lon,
             dest_lats=latitudes,
             dest_lons=longitudes,
-            demand_quantities=quantities,
+            demand_quantities=demand,
             max_vehicle_capacity=26,
         )
 

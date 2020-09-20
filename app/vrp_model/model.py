@@ -178,7 +178,7 @@ def solve(
         return solution
 
 
-def create_routes(
+def create_vehicles(
     origin_lat: float,
     origin_lon: float,
     dest_lats: List[float],

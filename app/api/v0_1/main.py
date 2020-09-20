@@ -59,7 +59,7 @@ def route_procedure():
     origin = body.origin
 
     # manage solve
-    routes = model.create_routes(
+    routes = model.create_vehicles(
         origin_lat=origin.latitude,
         origin_lon=origin.longitude,
         dest_lats=demand_latitudes,
