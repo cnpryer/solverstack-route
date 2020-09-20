@@ -123,13 +123,8 @@ components:
       type: object
       required:
         - stop_number
-        - cluster_id
         - vehicle_id
       properties:
-        cluster_id:
-          type: integer
-          format: int64
-          minimum: 0
         vehicle_id:
           type: integer
           format: int64

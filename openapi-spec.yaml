@@ -136,9 +136,6 @@ components:
     Route:
       type: object
       properties:
-        cluster_id:
-          type: integer
-          format: int32
         vehicle_id:
           type: integer
           format: int32

@@ -16,29 +16,24 @@ class Route(Model):
     """
 
     def __init__(
-        self, cluster_id: int = None, vehicle_id: int = None, stop_number: int = None,
+        self, vehicle_id: int = None, stop_number: int = None,
     ):  # noqa: E501
         """Route - a model defined in Swagger
 
-        :param cluster_id: The cluster_id of this Route.  # noqa: E501
-        :type cluster_id: int
         :param vehicle_id: The vehicle_id of this Route.  # noqa: E501
         :type vehicle_id: int
         :param stop_number: The stop_number of this Route.  # noqa: E501
         :type stop_number: int
         """
         self.swagger_types = {
-            "cluster_id": int,
             "vehicle_id": int,
             "stop_number": int,
         }
 
         self.attribute_map = {
-            "cluster_id": "cluster_id",
             "vehicle_id": "vehicle_id",
             "stop_number": "stop_number",
         }
-        self._cluster_id = cluster_id
         self._vehicle_id = vehicle_id
         self._stop_number = stop_number
 
@@ -52,31 +47,6 @@ class Route(Model):
         :rtype: Route
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def cluster_id(self) -> int:
-        """Gets the cluster_id of this Route.
-
-
-        :return: The cluster_id of this Route.
-        :rtype: int
-        """
-        return self._cluster_id
-
-    @cluster_id.setter
-    def cluster_id(self, cluster_id: int):
-        """Sets the cluster_id of this Route.
-
-
-        :param cluster_id: The cluster_id of this Route.
-        :type cluster_id: int
-        """
-        if cluster_id is None:
-            raise ValueError(
-                "Invalid value for `cluster_id`, must not be `None`"
-            )  # noqa: E501
-
-        self._cluster_id = cluster_id
 
     @property
     def vehicle_id(self) -> int:
