@@ -7,9 +7,7 @@ import numpy as np
 from app.vrp_model import cluster, distance
 
 
-def get_dropped_nodes(
-    model: "Ortools Routing Model", assignment: "Ortools Routing Assignment"
-) -> List[int]:
+def get_dropped_nodes(model, assignment) -> List[int]:
     dropped = []
     for idx in range(model.Size()):
         if assignment.Value(model.NextVar(idx)) == idx:
@@ -18,7 +16,7 @@ def get_dropped_nodes(
     return dropped
 
 
-def get_solution_str(solution: "Solution") -> str:
+def get_solution_str(solution: List) -> str:
     _str = ""
 
     for i, r in enumerate(solution):
@@ -37,7 +35,7 @@ def solve(
     depot_index: int,
     constraints: Tuple[int, int, int],
     max_search_seconds: int = 5,
-) -> "Solution":
+) -> List:
     """
     high level implementation of an ortools capacitated vehicle routing model.
 
@@ -185,7 +183,7 @@ def create_vehicles(
     dest_lons: List[float],
     demand_quantities: List[int],
     max_vehicle_capacity: int = 26,
-) -> "Vehicles":  # TODO: needs update
+) -> dict:  # TODO: needs update
     MAX_VEHICLE_DIST = 100000
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
     MAX_VEHICLE_DIST: int = 100000  # distance is x*100 for integers
