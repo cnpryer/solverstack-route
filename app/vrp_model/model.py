@@ -258,7 +258,7 @@ def create_vehicles(
 
             for n, stop in enumerate(vehicle):
                 if stop.idx != 0:
-                    vehicle_ids[n - 1] = vehicle_count
-                    stop_nums[n - 1] = n
+                    vehicle_ids[stop.idx - 1] = vehicle_count
+                    stop_nums[stop.idx - 1] = n
 
     return {"id": vehicle_ids, "stops": stop_nums}
