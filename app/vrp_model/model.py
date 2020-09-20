@@ -184,10 +184,16 @@ def create_vehicles(
     demand_quantities: List[int],
     max_vehicle_capacity: int = 26,
 ) -> dict:  # TODO: needs update
+    # demand including origin (ortools required)
+    if len(demand_quantities) == len(dest_lats):
+        ALL_DEMAND: List[int] = [0] + demand_quantities
+    else:
+        ALL_DEMAND: List[int] = demand_quantities
+
     MAX_VEHICLE_DIST = 100000
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
     MAX_VEHICLE_DIST: int = 100000  # distance is x*100 for integers
-    NUM_VEHICLES: int = len(demand_quantities)
+    NUM_VEHICLES: int = len(ALL_DEMAND)
     SOFT_MAX_VEHICLE_DIST: int = int(MAX_VEHICLE_DIST * 0.75)
     SOFT_MAX_VEHICLE_COST: int = 100000
 
@@ -201,12 +207,6 @@ def create_vehicles(
     )
 
     CLUSTERS: List[int] = cluster.create_dbscan_clusters(lats=dest_lats, lons=dest_lons)
-
-    # demand including origin (ortools required)
-    if len(demand_quantities) == len(dest_lats):
-        ALL_DEMAND: List[int] = [0] + demand_quantities
-    else:
-        ALL_DEMAND: List[int] = demand_quantities
 
     CONSTRAINTS_TYPE = Tuple[int, int, int]
     Constraints: CONSTRAINTS_TYPE = namedtuple(
@@ -249,6 +249,9 @@ def create_vehicles(
             depot_index=0,
             constraints=CONSTRAINTS,
         )
+
+        if not solution:
+            continue
 
         for vehicle in solution:
             vehicle_count += 1
