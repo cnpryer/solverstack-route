@@ -48,6 +48,16 @@
             "module": "pytest",
             "cwd": "${workspaceRoot}",
             "args": ["tests/test_distance.py::TestDistance::test_cluster_processing"]
+        },
+        {
+            "name": "model test",
+            "type": "python",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "pythonPath": "${workspaceRoot}/venv/Scripts/python.exe",
+            "module": "pytest",
+            "cwd": "${workspaceRoot}",
+            "args": ["tests/test_vrp_model.py::TestVRPModel::test_vrp_bundle_case"]
         }
     ]
 }
