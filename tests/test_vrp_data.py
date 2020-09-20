@@ -27,7 +27,9 @@ def test_matrix():
     olat, olon = 41.4191, -87.7748
     dlats = common.TESTING_CSV_DF.latitude.tolist()
     dlons = common.TESTING_CSV_DF.longitude.tolist()
-    matrix = distance.create_matrix((olat, olon), dlats, dlons)
+    matrix = distance.create_matrix(
+        origin_lat=olat, origin_lon=olon, dest_lats=dlats, dest_lons=dlons
+    )
 
     assert len(dlats) == len(dlons)
 

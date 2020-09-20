@@ -1,195 +1,263 @@
-"""ortools model via pyords bundle concept"""
-from typing import List
-
-import numpy as np
+"""TODO: omg refactor pls"""
+from typing import List, Tuple
+from collections import namedtuple
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
+import numpy as np
+
+from app.vrp_model import cluster, distance
 
 
-class VrpBasicBundle:
-    def __init__(
-        self,
-        distance_matrix: List[List[int]],
-        demand_quantities: List[int],
-        max_vehicle_capacity_units: int,
-        max_search_seconds: int = 5,
-    ):
-        """
-        high level implementation of an ortools capacitated vehicle routing model.
+def get_dropped_nodes(
+    model: "Ortools Routing Model", assignment: "Ortools Routing Assignment"
+) -> List[int]:
+    dropped = []
+    for idx in range(model.Size()):
+        if assignment.Value(model.NextVar(idx)) == idx:
+            dropped.append(idx)
 
-        :distance_matrix:          [[int, int, int, ...], [...] ...] distance matrix of origin
-                          at node 0 and demand nodes at 1 -> len(matrix) - 1.
-        :demand_quantities:          [int, int, ... len(demand nodes) - 1]
-        :max_vehicle_capacity_units:      int for vehicle capacity constraint (in demand units)
-        :max_search_seconds:      int for seconds allowance for solver
-        """
-        self.distance_matrix = distance_matrix
-        self.demand_quantities = demand_quantities
+    return dropped
 
-        # TODO: make this more robust
-        if len(demand_quantities) == len(distance_matrix) - 1:
-            self.demand_quantities = [0] + list(demand_quantities)
 
-        self.max_vehicle_cap = max_vehicle_capacity_units
-        self.max_search_seconds = max_search_seconds
+def get_solution_str(solution: "Solution") -> str:
+    _str = ""
 
-        self.vehicles = self.create_vehicles()
-        self.ortools()
+    for i, r in enumerate(solution):
+        _str += f"Route(idx={i})\n"
+        s = "\n".join("{}: {}".format(*k) for k in enumerate(r))
+        _str += s + "\n\n"
 
-        return None
+    return _str
 
-    def create_vehicles(self):
-        """
-        assumes origin is position 0 in self.distance_matrix and
-        defines a vehicle of max_cap for each destination.
-        """
-        return [self.max_vehicle_cap for i in range(len(self.distance_matrix[1:]))]
 
-    def create_manager(self):
-        return pywrapcp.RoutingIndexManager(
-            len(self.distance_matrix), len(self.vehicles), 0
-        )
+def solve(
+    nodes: List[Tuple[float, float]],
+    distance_matrix: List[List[int]],
+    demand: List[int],
+    vehicle_caps: List[int],
+    depot_index: int,
+    constraints: Tuple[int, int, int],
+    max_search_seconds: int = 5,
+) -> "Solution":
+    """
+    high level implementation of an ortools capacitated vehicle routing model.
 
-    def matrix_callback(self, i: int, j: int):
+    :nodes:                         list of tuples containing nodes (origin at index 0) with
+                                    lat(float), lon(float)
+    :distance_matrix:               [[int, int, int, ...], [...] ...] distance matrix of origin
+                                    at node 0 and demand nodes at 1 -> len(matrix) - 1 processed
+                                    at a known precision
+    :demand_quantities:             [int, int, ... len(demand nodes) - 1]
+    :vehicle_caps:                      list of integers for vehicle capacity constraint (in demand units)
+    :constraints:                   named tuple of "dist_constraint" (int) to use as distance
+                                    upper bound
+                                    "soft_dist_constraint" (int) for soft upper bound constraint
+                                    for vehicle distances
+                                    "soft_dist_penalty" (int) for soft upper bound penalty for
+                                    exceeding distance constraint
+    :max_search_seconds:            int of solve time
+
+    TODO:
+    [ ] update with namedtuple usage
+    [ ] use nodes list to handle as much as possible
+    [ ] handle integer precision entirely
+    [ ] refactor into smaller functions
+    [ ] refactor with less arg complexity (better arg and config management)
+    [ ] add solution type
+
+    """
+    NODES = nodes
+    DISTANCE_MATRIX = distance_matrix
+    NUM_NODES = len(nodes)
+
+    if len(distance_matrix) - 1 == len(demand):
+        DEMAND = [0] + list(demand)
+    else:
+        DEMAND = demand
+
+    # TODO: define a vehicle better
+    VEHICLE_CAPS = vehicle_caps
+    NUM_VEHICLES = len(VEHICLE_CAPS)
+    DEPOT_INDEX = depot_index
+    # TODO: can make these per vehicle
+    DISTANCE_CONSTRAINT = constraints.dist_constraint
+    SOFT_DISTANCE_CONSTRAINT = constraints.soft_dist_constraint
+    SOFT_DISTANCE_PENALTY = constraints.soft_dist_penalty
+    MAX_SEARCH_SECONDS = max_search_seconds
+
+    manager = pywrapcp.RoutingIndexManager(NUM_NODES, NUM_VEHICLES, depot_index)
+
+    def matrix_callback(i: int, j: int):
         """index of from (i) and to (j)"""
-        node_i = self.manager.IndexToNode(i)
-        node_j = self.manager.IndexToNode(j)
-        distance = self.distance_matrix[node_i][node_j]
+        node_i = manager.IndexToNode(i)
+        node_j = manager.IndexToNode(j)
+        distance = DISTANCE_MATRIX[node_i][node_j]
 
         return distance
 
-    def demand_callback(self, i: int):
+    def demand_callback(i: int):
         """capacity constraint"""
-        demand = self.demand_quantities[self.manager.IndexToNode(i)]
+        demand = DEMAND[manager.IndexToNode(i)]
 
         return demand
 
-    def create_model(self):
-        model = pywrapcp.RoutingModel(self.manager)
+    model = pywrapcp.RoutingModel(manager)
 
-        # distance constraint setup TODO: tune this
-        MAX_DIST_INT = 200000  # distances are *100 for integer
+    # distance constraints
+    callback_id = model.RegisterTransitCallback(matrix_callback)
+    model.SetArcCostEvaluatorOfAllVehicles(callback_id)
+    model.AddDimensionWithVehicleCapacity(
+        callback_id,
+        0,  # 0 slack
+        [DISTANCE_CONSTRAINT for i in range(NUM_VEHICLES)],
+        True,  # start to zero
+        "Distance",
+    )
 
-        callback_id = model.RegisterTransitCallback(self.matrix_callback)
-        model.SetArcCostEvaluatorOfAllVehicles(callback_id)
-        model.AddDimensionWithVehicleCapacity(
-            callback_id,
-            0,  # 0 slack
-            [MAX_DIST_INT for i in self.vehicles],
-            True,  # start to zero
-            "Distance",
+    # demand constraint setup
+    model.AddDimensionWithVehicleCapacity(
+        # function which return the load at each location (cf. cvrp.py example)
+        model.RegisterUnaryTransitCallback(demand_callback),
+        0,  # null capacity slack
+        VEHICLE_CAPS,  # vehicle maximum capacity
+        True,  # start cumul to zero
+        "Capacity",
+    )
+
+    dst_dim = model.GetDimensionOrDie("Distance")
+    for i in range(manager.GetNumberOfVehicles()):
+        end_idx = model.End(i)
+        dst_dim.SetCumulVarSoftUpperBound(
+            end_idx, SOFT_DISTANCE_CONSTRAINT, SOFT_DISTANCE_PENALTY
         )
 
-        # demand constraint setup
-        model.AddDimensionWithVehicleCapacity(
-            # function which return the load at each location (cf. cvrp.py example)
-            model.RegisterUnaryTransitCallback(self.demand_callback),
-            0,  # null capacity slack
-            [cap for cap in self.vehicles],  # vehicle maximum capacity
-            True,  # start cumul to zero
-            "Capacity",
-        )
+    search_parameters = pywrapcp.DefaultRoutingSearchParameters()
+    search_parameters.first_solution_strategy = (
+        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
+    )
+    search_parameters.time_limit.seconds = MAX_SEARCH_SECONDS
 
-        dst_dim = model.GetDimensionOrDie("Distance")
-        for i in range(self.manager.GetNumberOfVehicles()):
-            end_idx = model.End(i)
-            dst_dim.SetCumulVarSoftUpperBound(end_idx, int(MAX_DIST_INT * 0.75), 150)
+    assignment = model.SolveWithParameters(search_parameters)
 
-        return model
+    if assignment:
 
-    def create_search_params(self, max_seconds: int = 5):
-        search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-        search_parameters.first_solution_strategy = (
-            routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
-        )
-        search_parameters.time_limit.seconds = max_seconds
+        STOP_TYPE = Tuple[int, float, float, int, float]
+        Stop = namedtuple("Stop", ["idx", "lat", "lon", "demand", "dist"])
 
-        return search_parameters
+        solution = []
+        for _route_number in range(model.vehicles()):
+            route = []
+            idx = model.Start(_route_number)
 
-    def get_solution(self):
-        if not self.assignment:
-            return None
+            if model.IsEnd(assignment.Value(model.NextVar(idx))):
+                continue
 
-        # positions in matrix (demand)
-        vehicles = np.zeros(len(self.demand_quantities) - 1)
-        stops = np.zeros(len(self.demand_quantities) - 1)
+            else:
+                prev_node_index = manager.IndexToNode(idx)
 
-        # original solution building
-        for vehicle in range(len(self.vehicles)):
-            i = self.model.Start(vehicle)
-            vehicle_stops = []
+                while True:
 
-            while not self.model.IsEnd(i):
-                node = self.manager.IndexToNode(i)
+                    # TODO: time_var = time_dimension.CumulVar(order)
+                    node_index = manager.IndexToNode(idx)
+                    original_idx = NODES[node_index]["idx"]
+                    lat = NODES[node_index]["lat"]
+                    lon = NODES[node_index]["lon"]
 
-                if node != 0:
-                    vehicles[node - 1] = vehicle
-                    vehicle_stops.append(node - 1)
+                    demand = DEMAND[node_index]
+                    dist = DISTANCE_MATRIX[prev_node_index][node_index]
 
-                i = self.assignment.Value(self.model.NextVar(i))
+                    route.append(Stop(original_idx, lat, lon, demand, dist))
 
-            stops[vehicle_stops] = list(range(len(vehicle_stops)))
+                    if model.IsEnd(idx):
+                        break
 
-        stops = stops + 1
+                    prev_node = node_index
+                    idx = assignment.Value(model.NextVar(idx))
 
-        # NOTE: returning vehicle assignments only
-        return {"id": vehicles, "stops": stops}
+            solution.append(route)
 
-    def ortools(self):
-        """init of ortools modeling"""
-        self.manager = self.create_manager()
-        self.model = self.create_model()
-
-        return self
-
-    def run(self, max_search_seconds: int = 30):
-        search = self.create_search_params(max_search_seconds)
-        self.assignment = self.model.SolveWithParameters(search)
-
-        return self
+        return solution
 
 
-def create_vehicles(
-    distance_matrix: List[List[int]],
+def create_routes(
+    origin_lat: float,
+    origin_lon: float,
+    dest_lats: List[float],
+    dest_lons: List[float],
     demand_quantities: List[int],
-    clusters: List[int],
-    max_vehicle_capacity_units: int = 26,
-):
-    """
-    solve by cluster and return assigned list of vehicles
-    
-    :matrix:      list of lists for all-to-all distances (includes origin)
-    :demand:      list of demand (includes origin zero'd)
-    :clusters:    numpy array of cluster output. length is matrix|demand - 1
+    max_vehicle_capacity: int = 26,
+) -> "Vehicles":  # TODO: needs update
+    MAX_VEHICLE_DIST = 100000
+    MAX_VEHICLE_CAP: int = max_vehicle_capacity
+    MAX_VEHICLE_DIST: int = 100000  # distance is x*100 for integers
+    NUM_VEHICLES: int = len(demand_quantities)
+    SOFT_MAX_VEHICLE_DIST: int = int(MAX_VEHICLE_DIST * 0.75)
+    SOFT_MAX_VEHICLE_COST: int = 100000
 
-    returns vehicles:list
-    """
-    vehicles = np.zeros(len(demand_quantities) - 1)
-    stops = np.zeros(len(demand_quantities) - 1)
-    distance_matrix = np.array(distance_matrix)
-    demand_quantities = np.array(demand_quantities)
+    VEHICLE_CAPACITIES: List[int] = [MAX_VEHICLE_CAP for i in range(NUM_VEHICLES)]
 
-    for i, c in enumerate(np.unique(clusters)):
+    DIST_MATRIX: List[List[int]] = distance.create_matrix(
+        origin_lat=origin_lat,
+        origin_lon=origin_lon,
+        dest_lats=dest_lats,
+        dest_lons=dest_lons,
+    )
 
-        # align with matrix, demand_quantities
-        is_cluster = np.where(clusters == c)[0]
+    CLUSTERS: List[int] = cluster.create_dbscan_clusters(lats=dest_lats, lons=dest_lons)
+
+    # demand including origin (ortools required)
+    if len(demand_quantities) == len(dest_lats):
+        ALL_DEMAND: List[int] = [0] + demand_quantities
+    else:
+        ALL_DEMAND: List[int] = demand_quantities
+
+    CONSTRAINTS_TYPE = Tuple[int, int, int]
+    Constraints: CONSTRAINTS_TYPE = namedtuple(
+        "Constraint", ["dist_constraint", "soft_dist_constraint", "soft_dist_penalty"]
+    )
+    CONSTRAINTS: CONSTRAINTS_TYPE = Constraints(
+        dist_constraint=MAX_VEHICLE_DIST,
+        soft_dist_constraint=SOFT_MAX_VEHICLE_DIST,
+        soft_dist_penalty=SOFT_MAX_VEHICLE_COST,
+    )
+
+    NODES_ARR: np.ndarray = np.array(
+        [(0, origin_lat, origin_lon)]
+        + list(zip(list(range(1, len(ALL_DEMAND))), dest_lats, dest_lons)),
+        dtype=[("idx", int), ("lat", float), ("lon", float)],
+    )
+    MATRIX_ARR: np.ndarray = np.array(DIST_MATRIX)
+    DEMAND_ARR: np.ndarray = np.array(ALL_DEMAND)
+    VEHICLE_CAP_ARR: np.ndarray = np.array(VEHICLE_CAPACITIES)
+
+    # preprocess exceptions based on MAX_VEHICLE_DIST
+    EXCEPTIONS = np.where(MATRIX_ARR[0] > MAX_VEHICLE_DIST)
+
+    vehicle_count = 0
+    vehicle_ids = [None] * len(dest_lats)
+    stop_nums = [None] * len(dest_lats)
+    for i, c in enumerate(np.unique(CLUSTERS)):
+
+        # align with matrix
+        is_cluster = np.where(CLUSTERS == c)[0]
         is_cluster = is_cluster + 1
         is_cluster = np.insert(is_cluster, 0, 0)
+        is_cluster = is_cluster[~np.isin(is_cluster, EXCEPTIONS)]
 
-        bndl = VrpBasicBundle(
-            distance_matrix=distance_matrix[is_cluster],
-            demand_quantities=demand_quantities[is_cluster],
-            max_vehicle_capacity_units=max_vehicle_capacity_units,
+        solution = solve(
+            nodes=NODES_ARR[is_cluster],
+            distance_matrix=MATRIX_ARR[is_cluster],
+            demand=DEMAND_ARR[is_cluster],
+            vehicle_caps=VEHICLE_CAP_ARR[is_cluster],
+            depot_index=0,
+            constraints=CONSTRAINTS,
         )
 
-        # list of vehcles # NOTE: will change
-        solution = bndl.run().get_solution()
+        for vehicle in solution:
+            vehicle_count += 1
 
-        if not solution:
-            return {"id": [], "stops": []}
+            for n, stop in enumerate(vehicle):
+                if stop.idx != 0:
+                    vehicle_ids[n - 1] = vehicle_count
+                    stop_nums[n - 1] = n
 
-        # assign
-        is_cluster = is_cluster[is_cluster != 0] - 1
-        vehicles[is_cluster] = [f"{int(c)}{int(v)}{i}" for v in solution["id"]]
-        stops[is_cluster] = solution["stops"]
-
-    return {"id": vehicles, "stops": stops}
+    return {"id": vehicle_ids, "stops": stop_nums}

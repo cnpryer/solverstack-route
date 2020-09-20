@@ -4,7 +4,7 @@ from . import bp
 from app.api.models.invalid_usage_error import InvalidUsageError  # noqa: E501
 from app.api.v0_1.models.procedure_request import ProcedureRequest  # noqa: E501
 from app.api.v0_1.models.routes_response import RoutesResponse  # noqa: E501
-from app.vrp_model import distance, model
+from app.vrp_model import model
 
 import requests
 from json import loads
@@ -56,18 +56,17 @@ def route_procedure():
     demand_latitudes = [float(d.latitude) for d in demand]
     demand_longitudes = [float(d.longitude) for d in demand]
     demand_quantities = [d.quantity for d in demand]
-
-    # cluster by location (lat, lon)
-    clusters = distance.create_dbscan_clusters(demand_latitudes, demand_longitudes)
-
     origin = body.origin
-    # list of lists for all-to-all distances
-    matrix = distance.create_matrix(
-        (origin.latitude, origin.longitude), demand_latitudes, demand_longitudes,
-    )
 
     # manage solve
-    routes = model.create_vehicles(matrix, [0] + demand_quantities, clusters)
+    routes = model.create_routes(
+        origin_lat=origin.latitude,
+        origin_lon=origin.longitude,
+        dest_lats=demand_latitudes,
+        dest_lons=demand_longitudes,
+        demand_quantities=demand_quantities,
+        max_vehicle_capacity=body.vehicle_capacity,
+    )
 
     default_response = {
         "stack_id": stack_id,
@@ -79,14 +78,13 @@ def route_procedure():
 
     if len(routes["stops"]) == 0:
         default_response["routes"] = routes
-        
+
         return make_response(jsonify(default_response), 200)
 
     results = [
         {
             "depot_id": origin.id,
             "demand_id": demand[i].id,
-            "cluster_id": clusters[i],
             "stop_number": routes["stops"][i],
             "vehicle_id": routes["id"][i],
         }

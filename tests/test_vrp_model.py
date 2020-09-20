@@ -13,14 +13,19 @@ class TestVRPModel:
     def test_create_vehicles(self, clusters, origin, latitudes, longitudes, quantities):
         origin_lat = origin["latitude"]
         origin_lon = origin["longitude"]
-        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
-
         demand = [int(d) for d in quantities]
-        vehicles = model.create_vehicles(matrix, demand, np.array(clusters))
+        vehicles = model.create_routes(
+            origin_lat=origin_lat,
+            origin_lon=origin_lon,
+            dest_lats=latitudes,
+            dest_lons=longitudes,
+            demand_quantities=quantities,
+            max_vehicle_capacity=26,
+        )
 
         load_factor = output_scoring.get_load_factor(vehicles["id"], demand[1:])
 
-        #assert load_factor <= self.MAX_VEHICLE_CAPACITY_UNITS
+        # assert load_factor <= self.MAX_VEHICLE_CAPACITY_UNITS
 
         assert vehicles["id"] is not None
 
@@ -29,17 +34,15 @@ class TestVRPModel:
 
         origin_lat = origin["latitude"]
         origin_lon = origin["longitude"]
-        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
-
         demand = [int(d) for d in quantities]
-        bndl = model.VrpBasicBundle(
-            distance_matrix=matrix,
-            demand_quantities=demand,
-            max_vehicle_capacity_units=26,
-            max_search_seconds=30,
+        vehicles = model.create_routes(
+            origin_lat=origin_lat,
+            origin_lon=origin_lon,
+            dest_lats=latitudes,
+            dest_lons=longitudes,
+            demand_quantities=quantities,
+            max_vehicle_capacity=26,
         )
-
-        vehicles = bndl.run().get_solution()
 
         if not vehicles:
             return None

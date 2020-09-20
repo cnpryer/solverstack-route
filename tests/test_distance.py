@@ -1,5 +1,5 @@
 import pytest
-from app.vrp_model import distance
+from app.vrp_model import distance, cluster
 
 from . import common
 
@@ -15,7 +15,12 @@ class TestDistance:
 
         latitudes = [40.1717, 33.9883, 33.9163, 39.8295, 39.9474, 33.9321, 40.8219]
         longitudes = [-80.256, -83.8795, -84.8278, -75.4354, -75.1473, -83.3525, -74.42]
-        matrix = distance.create_matrix((origin_lat, origin_lon), latitudes, longitudes)
+        matrix = distance.create_matrix(
+            origin_lat=origin_lat,
+            origin_lon=origin_lon,
+            dest_lats=latitudes,
+            dest_lons=longitudes,
+        )
 
         assert len(matrix) == len(latitudes) + 1
 
@@ -26,6 +31,6 @@ class TestDistance:
 
         assert len(latitudes) == len(longitudes)
 
-        clusters = distance.create_dbscan_clusters(latitudes, longitudes)
+        clusters = cluster.create_dbscan_clusters(latitudes, longitudes)
 
         assert len(latitudes) == len(clusters)

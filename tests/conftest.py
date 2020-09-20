@@ -1,6 +1,6 @@
 from . import common
 from app import create_app
-from app.vrp_model import distance
+from app.vrp_model import distance, cluster
 from config import Config
 
 import logging
@@ -60,7 +60,7 @@ def origin():
 def clusters(latitudes, longitudes):
     """Return list of clusters"""
 
-    return distance.create_dbscan_clusters(latitudes, longitudes)
+    return cluster.create_dbscan_clusters(latitudes, longitudes)
 
 
 @pytest.fixture()
