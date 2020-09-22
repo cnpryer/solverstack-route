@@ -6,7 +6,11 @@ from haversine import haversine_vector, Unit
 
 
 def create_vectorized_haversine_li(
-    olat: float, olon: float, dlats: List[float], dlons: List[float],
+    olat: float,
+    olon: float,
+    dlats: List[float],
+    dlons: List[float],
+    dist_factor: float = 1.17,
 ) -> List[float]:
     assert len(dlats) == len(dlons)
 
@@ -16,6 +20,9 @@ def create_vectorized_haversine_li(
     ds: List[Tuple[float, float]] = list(zip(dlats, dlons))
 
     ds: List[float] = haversine_vector(os, ds, unit=Unit.MILES)
+
+    # distance factor adjust haversine for theoretical travel difference
+    ds *= dist_factor
 
     return ds
 

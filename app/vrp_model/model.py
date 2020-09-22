@@ -30,12 +30,14 @@ def get_solution_str(solution: List) -> str:
 def solve(
     nodes: List[Tuple[float, float]],
     distance_matrix: List[List[int]],
+    time_matrix: List[List[int]],
+    time_windows: List[Tuple[int, int]],
     demand: List[int],
     vehicle_caps: List[int],
     depot_index: int,
     constraints: Tuple[int, int, int],
     max_search_seconds: int = 5,
-) -> List:
+) -> "Solution":
     """
     high level implementation of an ortools capacitated vehicle routing model.
 
@@ -98,18 +100,14 @@ def solve(
 
         return demand
 
-    model = pywrapcp.RoutingModel(manager)
+    def time_callback(i: int, j: int):
+        """Returns the travel time between the two nodes."""
+        node_i = manager.IndexToNode(i)
+        node_j = manager.IndexToNode(j)
 
-    # distance constraints
-    callback_id = model.RegisterTransitCallback(matrix_callback)
-    model.SetArcCostEvaluatorOfAllVehicles(callback_id)
-    model.AddDimensionWithVehicleCapacity(
-        callback_id,
-        0,  # 0 slack
-        [DISTANCE_CONSTRAINT for i in range(NUM_VEHICLES)],
-        True,  # start to zero
-        "Distance",
-    )
+        return time_matrix[node_i][node_j]
+
+    model = pywrapcp.RoutingModel(manager)
 
     # demand constraint setup
     model.AddDimensionWithVehicleCapacity(
@@ -121,12 +119,51 @@ def solve(
         "Capacity",
     )
 
+    # distance constraints
+    dist_callback_index = model.RegisterTransitCallback(matrix_callback)
+    model.SetArcCostEvaluatorOfAllVehicles(dist_callback_index)
+    model.AddDimensionWithVehicleCapacity(
+        dist_callback_index,
+        0,  # 0 slack
+        [DISTANCE_CONSTRAINT for i in range(NUM_VEHICLES)],
+        True,  # start to zero
+        "Distance",
+    )
+
     dst_dim = model.GetDimensionOrDie("Distance")
     for i in range(manager.GetNumberOfVehicles()):
         end_idx = model.End(i)
         dst_dim.SetCumulVarSoftUpperBound(
             end_idx, SOFT_DISTANCE_CONSTRAINT, SOFT_DISTANCE_PENALTY
         )
+
+    # time windows constraint
+    transit_callback_index = model.RegisterTransitCallback(time_callback)
+    model.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
+    model.AddDimension(
+        transit_callback_index,
+        30,  # allow waiting time
+        30,  # maximum time per vehicle
+        False,  # Don't force start cumul to zero.
+        "Time",
+    )
+
+    time_dimension = model.GetDimensionOrDie("Time")
+    # Add time window constraints for each location except depot.
+    for location_idx, time_window in enumerate(time_windows):
+        if location_idx == 0:
+            continue
+        index = manager.NodeToIndex(location_idx)
+        time_dimension.CumulVar(index).SetRange(time_window[0], time_window[1])
+
+    # Add time window constraints for each vehicle start node.
+    for vehicle_id in range(NUM_VEHICLES):
+        index = model.Start(vehicle_id)
+        time_dimension.CumulVar(index).SetRange(time_windows[0][0], time_windows[0][1])
+
+    for i in range(NUM_VEHICLES):
+        model.AddVariableMinimizedByFinalizer(time_dimension.CumulVar(model.Start(i)))
+        model.AddVariableMinimizedByFinalizer(time_dimension.CumulVar(model.End(i)))
 
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
@@ -190,6 +227,7 @@ def create_vehicles(
     else:
         ALL_DEMAND: List[int] = demand_quantities
 
+    INT_PRECISION = 100
     MAX_VEHICLE_DIST = 100000
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
     MAX_VEHICLE_DIST: int = 100000  # distance is x*100 for integers
@@ -204,7 +242,13 @@ def create_vehicles(
         origin_lon=origin_lon,
         dest_lats=dest_lats,
         dest_lons=dest_lons,
+        int_precision=INT_PRECISION,
     )
+
+    TIME_MATRIX: List[List[int]] = (
+        (np.array(DIST_MATRIX) / 440 / INT_PRECISION).round(0).astype(int)
+    )
+    TIME_WINDOWS: List[Tuple[int, int]] = [(8, 17)] * len(DIST_MATRIX)
 
     CLUSTERS: List[int] = cluster.create_dbscan_clusters(lats=dest_lats, lons=dest_lons)
 
@@ -223,12 +267,14 @@ def create_vehicles(
         + list(zip(list(range(1, len(ALL_DEMAND))), dest_lats, dest_lons)),
         dtype=[("idx", int), ("lat", float), ("lon", float)],
     )
-    MATRIX_ARR: np.ndarray = np.array(DIST_MATRIX)
+    DIST_MATRIX_ARR: np.ndarray = np.array(DIST_MATRIX)
+    WINDOWS_MATRIX_ARR: np.ndarray = np.array(TIME_MATRIX)
+    WINDOWS_ARR: np.ndarray = np.array(TIME_WINDOWS, dtype=object)
     DEMAND_ARR: np.ndarray = np.array(ALL_DEMAND)
     VEHICLE_CAP_ARR: np.ndarray = np.array(VEHICLE_CAPACITIES)
 
     # preprocess exceptions based on MAX_VEHICLE_DIST
-    EXCEPTIONS = np.where(MATRIX_ARR[0] > MAX_VEHICLE_DIST)
+    EXCEPTIONS = np.where(DIST_MATRIX_ARR[0] > MAX_VEHICLE_DIST)
 
     vehicle_count = 0
     vehicle_ids = [None] * len(dest_lats)
@@ -243,7 +289,9 @@ def create_vehicles(
 
         solution = solve(
             nodes=NODES_ARR[is_cluster],
-            distance_matrix=MATRIX_ARR[is_cluster],
+            distance_matrix=DIST_MATRIX_ARR[is_cluster],
+            time_matrix=WINDOWS_MATRIX_ARR[is_cluster],
+            time_windows=WINDOWS_ARR[is_cluster],
             demand=DEMAND_ARR[is_cluster],
             vehicle_caps=VEHICLE_CAP_ARR[is_cluster],
             depot_index=0,
