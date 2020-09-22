@@ -37,7 +37,7 @@ def solve(
     depot_index: int,
     constraints: Tuple[int, int, int],
     max_search_seconds: int = 5,
-) -> "Solution":
+) -> List:
     """
     high level implementation of an ortools capacitated vehicle routing model.
 
