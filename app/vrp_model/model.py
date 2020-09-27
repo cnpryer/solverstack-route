@@ -248,7 +248,7 @@ def create_vehicles(
     TIME_MATRIX: List[List[int]] = (
         (np.array(DIST_MATRIX) / 440 / INT_PRECISION).round(0).astype(int)
     )
-    TIME_WINDOWS: List[Tuple[int, int]] = [(8, 17)] * len(DIST_MATRIX)
+    TIME_WINDOWS: List[Tuple[int, int]] = [(0, 23)] * len(DIST_MATRIX)
 
     CLUSTERS: List[int] = cluster.create_dbscan_clusters(lats=dest_lats, lons=dest_lons)
 
@@ -264,7 +264,7 @@ def create_vehicles(
 
     NODES_ARR: np.ndarray = np.array(
         [(0, origin_lat, origin_lon)]
-        + list(zip(list(range(1, len(ALL_DEMAND))), dest_lats, dest_lons)),
+        + list(zip(list(range(1, len(ALL_DEMAND) + 1)), dest_lats, dest_lons)),
         dtype=[("idx", int), ("lat", float), ("lon", float)],
     )
     DIST_MATRIX_ARR: np.ndarray = np.array(DIST_MATRIX)
@@ -296,6 +296,7 @@ def create_vehicles(
             vehicle_caps=VEHICLE_CAP_ARR[is_cluster],
             depot_index=0,
             constraints=CONSTRAINTS,
+            max_search_seconds=60,
         )
 
         if not solution:
