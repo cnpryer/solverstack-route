@@ -220,7 +220,7 @@ def create_vehicles(
     dest_lons: List[float],
     demand_quantities: List[int],
     max_vehicle_capacity: int = 26,
-) -> dict:  # TODO: needs update
+) -> dict:  # TODO: tune in ortools-pyinteractive
     # demand including origin (ortools required)
     if len(demand_quantities) == len(dest_lats):
         ALL_DEMAND: List[int] = [0] + demand_quantities
@@ -228,7 +228,7 @@ def create_vehicles(
         ALL_DEMAND: List[int] = demand_quantities
 
     INT_PRECISION = 100
-    MAX_VEHICLE_DIST = 400000
+    MAX_VEHICLE_DIST = 300000
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
     NUM_VEHICLES: int = len(ALL_DEMAND)
     SOFT_MAX_VEHICLE_DIST: int = int(MAX_VEHICLE_DIST * 0.75)
