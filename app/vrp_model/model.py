@@ -228,9 +228,8 @@ def create_vehicles(
         ALL_DEMAND: List[int] = demand_quantities
 
     INT_PRECISION = 100
-    MAX_VEHICLE_DIST = 100000
+    MAX_VEHICLE_DIST = 400000
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
-    MAX_VEHICLE_DIST: int = 100000  # distance is x*100 for integers
     NUM_VEHICLES: int = len(ALL_DEMAND)
     SOFT_MAX_VEHICLE_DIST: int = int(MAX_VEHICLE_DIST * 0.75)
     SOFT_MAX_VEHICLE_COST: int = 100000
