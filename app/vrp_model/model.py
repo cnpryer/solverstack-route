@@ -227,6 +227,16 @@ def create_vehicles(
     else:
         ALL_DEMAND: List[int] = demand_quantities
 
+    # ad-hoc dynamic solve time TODO: utilize unique clusters and sizes, etc.
+    if len(ALL_DEMAND) - 1 > 250:
+        MAX_SEARCH_SECONDS: int = 120
+    elif len(ALL_DEMAND) - 1 > 200 and len(ALL_DEMAND) - 1 <= 250:
+        MAX_SEARCH_SECONDS: int = 60
+    elif len(ALL_DEMAND) - 1 > 150 and len(ALL_DEMAND) - 1 <= 200:
+        MAX_SEARCH_SECONDS: int = 30
+    else:
+        MAX_SEARCH_SECONDS: int = 5
+
     INT_PRECISION = 100
     MAX_VEHICLE_DIST = 300000
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
@@ -266,6 +276,7 @@ def create_vehicles(
         + list(zip(list(range(1, len(ALL_DEMAND) + 1)), dest_lats, dest_lons)),
         dtype=[("idx", int), ("lat", float), ("lon", float)],
     )
+
     DIST_MATRIX_ARR: np.ndarray = np.array(DIST_MATRIX)
     WINDOWS_MATRIX_ARR: np.ndarray = np.array(TIME_MATRIX)
     WINDOWS_ARR: np.ndarray = np.array(TIME_WINDOWS, dtype=object)
@@ -295,7 +306,7 @@ def create_vehicles(
             vehicle_caps=VEHICLE_CAP_ARR[is_cluster],
             depot_index=0,
             constraints=CONSTRAINTS,
-            max_search_seconds=60,
+            max_search_seconds=MAX_SEARCH_SECONDS,
         )
 
         if not solution:
