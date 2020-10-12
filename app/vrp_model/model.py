@@ -238,11 +238,11 @@ def create_vehicles(
         MAX_SEARCH_SECONDS: int = 5
 
     INT_PRECISION = 100
-    MAX_VEHICLE_DIST = 300000
+    MAX_VEHICLE_DIST = 3500 * INT_PRECISION
     MAX_VEHICLE_CAP: int = max_vehicle_capacity
     NUM_VEHICLES: int = len(ALL_DEMAND)
     SOFT_MAX_VEHICLE_DIST: int = int(MAX_VEHICLE_DIST * 0.75)
-    SOFT_MAX_VEHICLE_COST: int = 100000
+    SOFT_MAX_VEHICLE_COST: int = MAX_VEHICLE_DIST + 1  # cost feels ambiguous
 
     VEHICLE_CAPACITIES: List[int] = [MAX_VEHICLE_CAP for i in range(NUM_VEHICLES)]
 
