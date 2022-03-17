@@ -1,8 +1,6 @@
 # solverstack-route
 
-![route](https://github.com/andromia/solverstack-route/workflows/route/badge.svg)
-[![Discord](https://img.shields.io/discord/721862473132540007?label=discord&style=plastic)](https://discord.gg/wg7xSAf)
-[![Slack](https://img.shields.io/badge/slack-workspace-orange)](https://join.slack.com/t/andromiasoftware/shared_invite/zt-felqfjhs-Tvma8OYuCExxdmQgHOIGsg)
+![route](https://github.com/cnpryer/solverstack-route/workflows/route/badge.svg)
 
 [**Under Development**] **NOTE**: API is not finalized and **will** change.
 
@@ -110,6 +108,6 @@ You can use a Docker container for running the tests by using the provided _Dock
 
 ## Other
 
-See [cvrp-poc](https://github.com/fingafrog/cvrp-poc) for demo application.
+See [cvrp-poc](https://github.com/cnpryer/cvrp-poc) for demo application.
 
-![Demo Image](https://github.com/fingafrog/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)
+![Demo Image](https://github.com/cnpryer/cvrp-poc/blob/master/docs/img/v0.0.8.PNG?raw=true)
